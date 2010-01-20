@@ -1,0 +1,16 @@
+[DEFAULT]
+verbose = True
+
+[project]
+target = git:target
+start-revision = INITIAL
+root-directory = /home/local/tamas/git/plfit
+state-file = tailor.state
+source = bzr:source
+subdir = .
+
+[bzr:source]
+repository = /home/local/tamas/dev/plfit
+
+[git:target]
+repository = /home/local/tamas/git/plfit
