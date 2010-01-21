@@ -17,11 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include <stdio.h>
 #include <float.h>
 #include <math.h>
 #include <stdlib.h>
 #include <string.h>
 #include "error.h"
+#include "plfit.h"
+#include "zeta.h"
+
+static int double_comparator(const void *a, const void *b) {
+	const double *da = (const double*)a;
+	const double *db = (const double*)b;
+	return (*da > *db) - (*da < *db);
+}
+
+/********** Continuous power law distribution fitting **********/
 
 int plfit_estimate_alpha_continuous(double* xs, int n, double xmin, double* alpha) {
 	double *px, *end, result;
@@ -77,6 +88,9 @@ int plfit_log_likelihood_continuous(double* xs, int n, double alpha, double xmin
 	double *px, *end, result, c;
 	int m;
 
+	if (alpha <= 1) {
+		PLFIT_ERROR("alpha must be greater than one", PLFIT_EINVAL);
+	}
 	if (xmin <= 0) {
 		PLFIT_ERROR("xmin must be greater than zero", PLFIT_EINVAL);
 	}
@@ -117,12 +131,6 @@ int plfit_i_ks_test_continuous(double* xs, double* xs_end, const double alpha, c
 	*D = result;
 
 	return PLFIT_SUCCESS;
-}
-
-static int double_comparator(const void *a, const void *b) {
-	const double *da = (const double*)a;
-	const double *db = (const double*)b;
-	return (*da > *db) - (*da < *db);
 }
 
 int plfit_continuous(double* xs, int n, double* alpha, double* xmin) {
@@ -168,5 +176,163 @@ int plfit_continuous(double* xs, int n, double* alpha, double* xmin) {
 		*xmin = best_xmin;
 
 	return PLFIT_SUCCESS;
+}
+
+/********** Discrete power law distribution fitting **********/
+
+int plfit_estimate_alpha_discrete_fast(double* xs, int n, double xmin, double* alpha) {
+	if (xmin < 1) {
+		PLFIT_ERROR("xmin must be at least 1", PLFIT_EINVAL);
+	}
+	return plfit_estimate_alpha_continuous(xs, n, xmin-0.5, alpha);
+}
+
+int plfit_estimate_alpha_discrete(double* xs, int n, double xmin, double* alpha) {
+	return plfit_estimate_alpha_discrete_in_range(xs, n, xmin, 1.5, 3.5, 0.01, alpha);
+}
+
+int plfit_estimate_alpha_discrete_in_range(double* xs, int n, double xmin,
+		double alpha_min, double alpha_max, double alpha_step, double *alpha) {
+	double curr_alpha, best_alpha, L, L_max;
+	double logsum;
+	double *end, *px;
+	long int m;
+
+	if (xmin < 1) {
+		PLFIT_ERROR("xmin must be at least 1", PLFIT_EINVAL);
+	}
+	if (alpha_min <= 1) {
+		PLFIT_ERROR("alpha_min must be greater than 1", PLFIT_EINVAL);
+	}
+	if (alpha_max < alpha_min) {
+		PLFIT_ERROR("alpha_max must be larger than alpha_min", PLFIT_EINVAL);
+	}
+
+	end = xs + n;
+	for (px = xs, m = 0, logsum = 0; px != end; px++) {
+		if (*px < xmin)
+			continue;
+
+		logsum += log(*px);
+		m++;
+	}
+
+	best_alpha = alpha_min; L_max = -DBL_MAX;
+	for (curr_alpha = alpha_min; curr_alpha <= alpha_max; curr_alpha += alpha_step) {
+		L = -curr_alpha * logsum - m * log(gsl_sf_hzeta(curr_alpha, xmin));
+		if (L > L_max) {
+			L_max = L;
+			best_alpha = curr_alpha;
+		}
+	}
+
+	*alpha = best_alpha;
+
+	return PLFIT_SUCCESS;
+}
+
+int plfit_log_likelihood_discrete(double* xs, int n, double alpha, double xmin, double* L) {
+	double *px, *end, result;
+	int m;
+
+	if (alpha <= 1) {
+		PLFIT_ERROR("alpha must be greater than one", PLFIT_EINVAL);
+	}
+	if (xmin <= 0) {
+		PLFIT_ERROR("xmin must be greater than zero", PLFIT_EINVAL);
+	}
+
+	end = xs + n;
+	for (px = xs, m = 0, result = 0; px != end; px++) {
+		if (*px < xmin)
+			continue;
+
+		result += log(*px);
+		m++;
+	}
+	result = - alpha * result - m * log(gsl_sf_hzeta(alpha, xmin));
+
+	*L = result;
+
+	return PLFIT_SUCCESS;
+}
+
+int plfit_i_ks_test_discrete(double* xs, double* xs_end, const double alpha, const double xmin, double* D) {
+	/* Assumption: xs is sorted and cut off at xmin so the first element is
+	 * always larger than or equal to xmin. */
+	double result = 0, n, hzeta, x;
+	int m = 0;
+
+	n = xs_end - xs;
+	hzeta = gsl_sf_hzeta(alpha, xmin);
+
+	while (xs < xs_end) {
+		double d;
+
+		x = *xs;
+		d = fabs(1-(gsl_sf_hzeta(alpha, x) / hzeta) - m / n);
+
+		if (d > result)
+			result = d;
+
+		do {
+			xs++; m++;
+		} while (xs < xs_end && *xs == x);
+	}
+
+	*D = result;
+
+	return PLFIT_SUCCESS;
+}
+
+int plfit_discrete_in_range(double* xs, int n, double alpha_min, double alpha_max,
+		double alpha_step, double* alpha, double* xmin) {
+	double curr_D, curr_alpha, best_D, best_xmin, best_alpha;
+	double *xs_copy, *px, *end, prev_x;
+	int m;
+
+	if (n <= 0) {
+		PLFIT_ERROR("no data points", PLFIT_EINVAL);
+	}
+
+	/* Make a copy of xs and sort it */
+	xs_copy = (double*)malloc(sizeof(double) * n);
+	memcpy(xs_copy, xs, sizeof(double) * n);
+	qsort(xs_copy, n, sizeof(double), double_comparator);
+
+	prev_x = 0; best_D = DBL_MAX; best_xmin = 0; best_alpha = 0;
+
+	end = xs_copy + n - 1; px = xs_copy; m = 0;
+	while (px < end) {
+		while (px < end && *px == prev_x) {
+			px++; m++;
+		}
+
+		plfit_estimate_alpha_discrete_in_range(px, n-m, *px,
+				alpha_min, alpha_max, alpha_step, &curr_alpha);
+		plfit_i_ks_test_discrete(px, end+1, curr_alpha, *px, &curr_D);
+
+		if (curr_D < best_D) {
+			best_alpha = curr_alpha;
+			best_xmin = *px;
+			best_D = curr_D;
+		}
+
+		prev_x = *px;
+		px++; m++;
+	}
+
+	free(xs_copy);
+
+	if (alpha)
+		*alpha = best_alpha;
+	if (xmin)
+		*xmin = best_xmin;
+
+	return PLFIT_SUCCESS;
+}
+
+int plfit_discrete(double* xs, int n, double* alpha, double* xmin) {
+	return plfit_discrete_in_range(xs, n, 1.5, 3.5, 0.01, alpha, xmin);
 }
 

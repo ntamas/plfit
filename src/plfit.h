@@ -32,10 +32,23 @@
 
 __BEGIN_DECLS
 
+/********** Continuous power law distribution fitting **********/
+
 int plfit_estimate_alpha_continuous(double* xs, int n, double xmin, double* alpha);
 int plfit_estimate_alpha_continuous_sorted(double* xs, int n, double xmin, double* alpha);
 int plfit_log_likelihood_continuous(double* xs, int n, double alpha, double xmin, double* L);
-int plfit_estimate_continuous(double* xs, int n, double* alpha, double* xmin);
+int plfit_continuous(double* xs, int n, double* alpha, double* xmin);
+
+/********** Discrete power law distribution fitting **********/
+
+int plfit_estimate_alpha_discrete(double* xs, int n, double xmin, double* alpha);
+int plfit_estimate_alpha_discrete_in_range(double* xs, int n, double xmin,
+		double alpha_min, double alpha_max, double alpha_step, double* alpha);
+int plfit_estimate_alpha_discrete_fast(double* xs, int n, double xmin, double* alpha);
+int plfit_log_likelihood_discrete(double* xs, int n, double alpha, double xmin, double* L);
+int plfit_discrete(double* xs, int n, double* alpha, double* xmin);
+int plfit_discrete_in_range(double* xs, int n, double alpha_min, double alpha_max,
+		double alpha_step, double* alpha, double* xmin);
 
 __END_DECLS
 
