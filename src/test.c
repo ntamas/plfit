@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <math.h>
+#include "kolmogorov.h"
 #include "plfit.h"
 
 #define RUN_TEST_CASE(func) do { \
@@ -38,6 +39,11 @@ int test_read_file(const char* fname, double* data, int max_n) {
 
 	fclose(f);
 	return n;
+}
+
+int test_kolmogorov() {
+	ASSERT_ALMOST_EQUAL(plfit_ks_test_two_sample_p(0.1733, 50, 30), 0.574, 1e-2);
+	return 0;
 }
 
 int test_continuous() {
@@ -97,7 +103,8 @@ int test_discrete() {
 }
 
 int test() {
-	/* RUN_TEST_CASE(test_continuous); */
+	RUN_TEST_CASE(test_kolmogorov);
+	RUN_TEST_CASE(test_continuous);
 	RUN_TEST_CASE(test_discrete);
 
 	return 0;
