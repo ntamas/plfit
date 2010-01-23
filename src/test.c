@@ -42,7 +42,11 @@ int test_read_file(const char* fname, double* data, int max_n) {
 }
 
 int test_kolmogorov() {
-	ASSERT_ALMOST_EQUAL(plfit_ks_test_two_sample_p(0.1733, 50, 30), 0.574, 1e-2);
+	ASSERT_ALMOST_EQUAL(plfit_kolmogorov(1.0), 0.27, 1e-3);
+	ASSERT_ALMOST_EQUAL(plfit_kolmogorov(0.8), 0.5442, 1e-3);
+	ASSERT_ALMOST_EQUAL(plfit_ks_test_one_sample_p(0.2553, 10), 0.5322, 1e-3);
+	ASSERT_ALMOST_EQUAL(plfit_ks_test_two_sample_p(0.021, 1218, 1588), 0.917, 1e-2);
+	ASSERT_ALMOST_EQUAL(plfit_ks_test_two_sample_p(0.5, 30, 50), 9.065e-05, 1e-4);
 	return 0;
 }
 
