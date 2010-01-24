@@ -1,0 +1,8 @@
+I lifted some code from other open-source projects in order to make
+this package as self-contained as possible. I am particularly
+grateful to the following people for sharing their code and saving
+me a great deal of time:
+
+- Mark K. King (for the free BSD-licensed getopt implementation)
+- G. Jungman (for the implementation of the Hurwitz zeta function in GSL)
+- Rene Brun (for the KolmogorovProb function in CERN's TMath library)
