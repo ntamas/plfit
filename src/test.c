@@ -24,9 +24,9 @@
 	} \
 } while (0)
 
-int test_read_file(const char* fname, double* data, int max_n) {
+size_t test_read_file(const char* fname, double* data, int max_n) {
 	FILE* f = fopen(fname, "r");
-	int n = 0;
+	size_t n = 0;
 
 	if (!f)
 		return 0;
@@ -53,7 +53,7 @@ int test_kolmogorov() {
 int test_continuous() {
 	plfit_result_t result;
 	double data[10000];
-	int n;
+	size_t n;
 
 	n = test_read_file("../data/continuous_data.txt", data, 10000);
 
@@ -79,7 +79,7 @@ int test_continuous() {
 int test_discrete() {
 	plfit_result_t result;
 	double data[10000];
-	int n;
+	size_t n;
 
 	n = test_read_file("../data/discrete_data.txt", data, 10000);
 

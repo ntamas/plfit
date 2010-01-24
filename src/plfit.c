@@ -35,7 +35,7 @@ static int double_comparator(const void *a, const void *b) {
 
 /********** Continuous power law distribution fitting **********/
 
-int plfit_estimate_alpha_continuous(double* xs, int n, double xmin, double* alpha) {
+int plfit_estimate_alpha_continuous(double* xs, size_t n, double xmin, double* alpha) {
 	double *px, *end, result;
 	int m;
 
@@ -60,7 +60,7 @@ int plfit_estimate_alpha_continuous(double* xs, int n, double xmin, double* alph
 	return PLFIT_SUCCESS;
 }
 
-int plfit_estimate_alpha_continuous_sorted(double* xs, int n, double xmin, double* alpha) {
+int plfit_estimate_alpha_continuous_sorted(double* xs, size_t n, double xmin, double* alpha) {
 	double *px, *end, result;
 	int m;
 
@@ -85,7 +85,7 @@ int plfit_estimate_alpha_continuous_sorted(double* xs, int n, double xmin, doubl
 }
 
 
-int plfit_log_likelihood_continuous(double* xs, int n, double alpha, double xmin, double* L) {
+int plfit_log_likelihood_continuous(double* xs, size_t n, double alpha, double xmin, double* L) {
 	double *px, *end, result, c;
 	int m;
 
@@ -134,7 +134,7 @@ int plfit_i_ks_test_continuous(double* xs, double* xs_end, const double alpha, c
 	return PLFIT_SUCCESS;
 }
 
-int plfit_continuous(double* xs, int n, plfit_result_t* result) {
+int plfit_continuous(double* xs, size_t n, plfit_result_t* result) {
 	double curr_D, curr_alpha, best_D, best_xmin, best_alpha;
 	double *xs_copy, *px, *end, prev_x;
 	int m;
@@ -181,18 +181,18 @@ int plfit_continuous(double* xs, int n, plfit_result_t* result) {
 
 /********** Discrete power law distribution fitting **********/
 
-int plfit_estimate_alpha_discrete_fast(double* xs, int n, double xmin, double* alpha) {
+int plfit_estimate_alpha_discrete_fast(double* xs, size_t n, double xmin, double* alpha) {
 	if (xmin < 1) {
 		PLFIT_ERROR("xmin must be at least 1", PLFIT_EINVAL);
 	}
 	return plfit_estimate_alpha_continuous(xs, n, xmin-0.5, alpha);
 }
 
-int plfit_estimate_alpha_discrete(double* xs, int n, double xmin, double* alpha) {
+int plfit_estimate_alpha_discrete(double* xs, size_t n, double xmin, double* alpha) {
 	return plfit_estimate_alpha_discrete_in_range(xs, n, xmin, 1.5, 3.5, 0.01, alpha);
 }
 
-int plfit_estimate_alpha_discrete_in_range(double* xs, int n, double xmin,
+int plfit_estimate_alpha_discrete_in_range(double* xs, size_t n, double xmin,
 		double alpha_min, double alpha_max, double alpha_step, double *alpha) {
 	double curr_alpha, best_alpha, L, L_max;
 	double logsum;
@@ -232,7 +232,7 @@ int plfit_estimate_alpha_discrete_in_range(double* xs, int n, double xmin,
 	return PLFIT_SUCCESS;
 }
 
-int plfit_log_likelihood_discrete(double* xs, int n, double alpha, double xmin, double* L) {
+int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha, double xmin, double* L) {
 	double *px, *end, result;
 	int m;
 
@@ -286,7 +286,7 @@ int plfit_i_ks_test_discrete(double* xs, double* xs_end, const double alpha, con
 	return PLFIT_SUCCESS;
 }
 
-int plfit_discrete_in_range(double* xs, int n, double alpha_min, double alpha_max,
+int plfit_discrete_in_range(double* xs, size_t n, double alpha_min, double alpha_max,
 		double alpha_step, plfit_result_t* result) {
 	double curr_D, curr_alpha, best_D, best_xmin, best_alpha;
 	double *xs_copy, *px, *end, prev_x;
@@ -333,7 +333,7 @@ int plfit_discrete_in_range(double* xs, int n, double alpha_min, double alpha_ma
 	return PLFIT_SUCCESS;
 }
 
-int plfit_discrete(double* xs, int n, plfit_result_t* result) {
+int plfit_discrete(double* xs, size_t n, plfit_result_t* result) {
 	return plfit_discrete_in_range(xs, n, 1.5, 3.5, 0.01, result);
 }
 
