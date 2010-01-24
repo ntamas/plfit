@@ -24,6 +24,7 @@
 #include <string.h>
 #include "error.h"
 #include "plfit.h"
+#include "kolmogorov.h"
 #include "zeta.h"
 
 static int double_comparator(const void *a, const void *b) {
@@ -133,7 +134,7 @@ int plfit_i_ks_test_continuous(double* xs, double* xs_end, const double alpha, c
 	return PLFIT_SUCCESS;
 }
 
-int plfit_continuous(double* xs, int n, double* alpha, double* xmin) {
+int plfit_continuous(double* xs, int n, plfit_result_t* result) {
 	double curr_D, curr_alpha, best_D, best_xmin, best_alpha;
 	double *xs_copy, *px, *end, prev_x;
 	int m;
@@ -170,10 +171,10 @@ int plfit_continuous(double* xs, int n, double* alpha, double* xmin) {
 
 	free(xs_copy);
 
-	if (alpha)
-		*alpha = best_alpha;
-	if (xmin)
-		*xmin = best_xmin;
+	result->alpha = best_alpha;
+	result->xmin  = best_xmin;
+	result->p = plfit_ks_test_one_sample_p(best_D, n);
+	plfit_log_likelihood_continuous(xs, n, result->alpha, result->xmin, &result->L);
 
 	return PLFIT_SUCCESS;
 }
@@ -286,7 +287,7 @@ int plfit_i_ks_test_discrete(double* xs, double* xs_end, const double alpha, con
 }
 
 int plfit_discrete_in_range(double* xs, int n, double alpha_min, double alpha_max,
-		double alpha_step, double* alpha, double* xmin) {
+		double alpha_step, plfit_result_t* result) {
 	double curr_D, curr_alpha, best_D, best_xmin, best_alpha;
 	double *xs_copy, *px, *end, prev_x;
 	int m;
@@ -324,15 +325,15 @@ int plfit_discrete_in_range(double* xs, int n, double alpha_min, double alpha_ma
 
 	free(xs_copy);
 
-	if (alpha)
-		*alpha = best_alpha;
-	if (xmin)
-		*xmin = best_xmin;
+	result->alpha = best_alpha;
+	result->xmin  = best_xmin;
+	result->p = plfit_ks_test_one_sample_p(best_D, n);
+	plfit_log_likelihood_discrete(xs, n, result->alpha, result->xmin, &result->L);
 
 	return PLFIT_SUCCESS;
 }
 
-int plfit_discrete(double* xs, int n, double* alpha, double* xmin) {
-	return plfit_discrete_in_range(xs, n, 1.5, 3.5, 0.01, alpha, xmin);
+int plfit_discrete(double* xs, int n, plfit_result_t* result) {
+	return plfit_discrete_in_range(xs, n, 1.5, 3.5, 0.01, result);
 }
 

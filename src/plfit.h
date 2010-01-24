@@ -32,12 +32,19 @@
 
 __BEGIN_DECLS
 
+typedef struct _plfit_result_t {
+	double alpha;
+	double xmin;
+	double L;
+	double p;
+} plfit_result_t;
+
 /********** Continuous power law distribution fitting **********/
 
 int plfit_estimate_alpha_continuous(double* xs, int n, double xmin, double* alpha);
 int plfit_estimate_alpha_continuous_sorted(double* xs, int n, double xmin, double* alpha);
 int plfit_log_likelihood_continuous(double* xs, int n, double alpha, double xmin, double* L);
-int plfit_continuous(double* xs, int n, double* alpha, double* xmin);
+int plfit_continuous(double* xs, int n, plfit_result_t* result);
 
 /********** Discrete power law distribution fitting **********/
 
@@ -46,11 +53,11 @@ int plfit_estimate_alpha_discrete_in_range(double* xs, int n, double xmin,
 		double alpha_min, double alpha_max, double alpha_step, double* alpha);
 int plfit_estimate_alpha_discrete_fast(double* xs, int n, double xmin, double* alpha);
 int plfit_log_likelihood_discrete(double* xs, int n, double alpha, double xmin, double* L);
-int plfit_discrete(double* xs, int n, double* alpha, double* xmin);
+int plfit_discrete(double* xs, int n, plfit_result_t* result);
 int plfit_discrete_in_range(double* xs, int n, double alpha_min, double alpha_max,
-		double alpha_step, double* alpha, double* xmin);
+		double alpha_step, plfit_result_t* result);
 
 __END_DECLS
 
-#endif /* __ZETA_H__ */
+#endif /* __PLFIT_H__ */
 

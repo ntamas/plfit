@@ -51,57 +51,58 @@ int test_kolmogorov() {
 }
 
 int test_continuous() {
-	double alpha, xmin, L;
+	plfit_result_t result;
 	double data[10000];
 	int n;
 
 	n = test_read_file("../data/continuous_data.txt", data, 10000);
 
-	alpha = 2.53282;
-	xmin = 1.43628;
-	plfit_log_likelihood_continuous(data, n, alpha, xmin, &L);
-	ASSERT_ALMOST_EQUAL(L, -9276.42, 1e-1);
+	result.alpha = 2.53282;
+	result.xmin = 1.43628;
+	plfit_log_likelihood_continuous(data, n, result.alpha, result.xmin, &result.L);
+	ASSERT_ALMOST_EQUAL(result.L, -9276.42, 1e-1);
 
-	alpha = 0;
-	xmin = 1.43628;
-	plfit_estimate_alpha_continuous(data, n, xmin, &alpha);
-	ASSERT_ALMOST_EQUAL(alpha, 2.53282, 1e-4);
+	result.alpha = 0;
+	result.xmin = 1.43628;
+	plfit_estimate_alpha_continuous(data, n, result.xmin, &result.alpha);
+	ASSERT_ALMOST_EQUAL(result.alpha, 2.53282, 1e-4);
 
-	alpha = xmin = 0;
-	plfit_continuous(data, n, &alpha, &xmin);
-	ASSERT_ALMOST_EQUAL(alpha, 2.53282, 1e-4);
-	ASSERT_ALMOST_EQUAL(xmin, 1.43628, 1e-4);
+	result.alpha = result.xmin = result.L = 0;
+	plfit_continuous(data, n, &result);
+	ASSERT_ALMOST_EQUAL(result.alpha, 2.53282, 1e-4);
+	ASSERT_ALMOST_EQUAL(result.xmin, 1.43628, 1e-4);
+	ASSERT_ALMOST_EQUAL(result.L, -9276.42, 1e-1);
 
 	return 0;
 }
 
 int test_discrete() {
-	double alpha, xmin, L;
+	plfit_result_t result;
 	double data[10000];
 	int n;
 
 	n = test_read_file("../data/discrete_data.txt", data, 10000);
 
-	alpha = 2.58;
-	xmin = 2;
-	plfit_log_likelihood_discrete(data, n, alpha, xmin, &L);
-	ASSERT_ALMOST_EQUAL(L, -9155.62809, 1e-4);
+	result.alpha = 2.58;
+	result.xmin = 2;
+	plfit_log_likelihood_discrete(data, n, result.alpha, result.xmin, &result.L);
+	ASSERT_ALMOST_EQUAL(result.L, -9155.62809, 1e-4);
 
-	alpha = 0;
-	xmin = 2;
-	plfit_estimate_alpha_discrete_fast(data, n, xmin, &alpha);
-	ASSERT_ALMOST_EQUAL(alpha, 2.43, 1e-1);
+	result.alpha = 0;
+	result.xmin = 2;
+	plfit_estimate_alpha_discrete_fast(data, n, result.xmin, &result.alpha);
+	ASSERT_ALMOST_EQUAL(result.alpha, 2.43, 1e-1);
 
-	alpha = 0;
-	xmin = 2;
-	plfit_estimate_alpha_discrete(data, n, xmin, &alpha);
-	ASSERT_ALMOST_EQUAL(alpha, 2.58, 1e-1);
+	result.alpha = 0;
+	result.xmin = 2;
+	plfit_estimate_alpha_discrete(data, n, result.xmin, &result.alpha);
+	ASSERT_ALMOST_EQUAL(result.alpha, 2.58, 1e-1);
 
-	alpha = 0;
-	xmin = 0;
-	plfit_discrete(data, n, &alpha, &xmin);
-	ASSERT_ALMOST_EQUAL(alpha, 2.58, 1e-1);
-	ASSERT_EQUAL(xmin, 2);
+	result.alpha = result.xmin = result.L = 0;
+	plfit_discrete(data, n, &result);
+	ASSERT_ALMOST_EQUAL(result.alpha, 2.58, 1e-1);
+	ASSERT_EQUAL(result.xmin, 2);
+	ASSERT_ALMOST_EQUAL(result.L, -9155.62809, 1e-4);
 
 	return 0;
 }
