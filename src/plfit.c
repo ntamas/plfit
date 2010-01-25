@@ -134,7 +134,8 @@ int plfit_i_ks_test_continuous(double* xs, double* xs_end, const double alpha, c
 	return PLFIT_SUCCESS;
 }
 
-int plfit_continuous(double* xs, size_t n, plfit_result_t* result) {
+int plfit_continuous(double* xs, size_t n, unsigned short int finite_size_correction,
+		plfit_result_t* result) {
 	double curr_D, curr_alpha, best_D, best_xmin, best_alpha;
 	double *xs_copy, *px, *end, prev_x;
 	int m;
@@ -170,6 +171,10 @@ int plfit_continuous(double* xs, size_t n, plfit_result_t* result) {
 	}
 
 	free(xs_copy);
+
+	if (finite_size_correction) {
+		best_alpha = best_alpha * (n-1) / n + 1.0 / n;
+	}
 
 	result->alpha = best_alpha;
 	result->xmin  = best_xmin;
@@ -287,7 +292,8 @@ int plfit_i_ks_test_discrete(double* xs, double* xs_end, const double alpha, con
 }
 
 int plfit_discrete_in_range(double* xs, size_t n, double alpha_min, double alpha_max,
-		double alpha_step, plfit_result_t* result) {
+		double alpha_step, unsigned short int finite_size_correction,
+		plfit_result_t* result) {
 	double curr_D, curr_alpha, best_D, best_xmin, best_alpha;
 	double *xs_copy, *px, *end, prev_x;
 	int m;
@@ -325,6 +331,10 @@ int plfit_discrete_in_range(double* xs, size_t n, double alpha_min, double alpha
 
 	free(xs_copy);
 
+	if (finite_size_correction) {
+		best_alpha = best_alpha * (n-1) / n + 1.0 / n;
+	}
+
 	result->alpha = best_alpha;
 	result->xmin  = best_xmin;
 	result->p = plfit_ks_test_one_sample_p(best_D, n);
@@ -333,7 +343,9 @@ int plfit_discrete_in_range(double* xs, size_t n, double alpha_min, double alpha
 	return PLFIT_SUCCESS;
 }
 
-int plfit_discrete(double* xs, size_t n, plfit_result_t* result) {
-	return plfit_discrete_in_range(xs, n, 1.5, 3.5, 0.01, result);
+int plfit_discrete(double* xs, size_t n, unsigned short int finite_size_correction,
+		plfit_result_t* result) {
+	return plfit_discrete_in_range(xs, n, 1.5, 3.5, 0.01,
+			finite_size_correction, result);
 }
 

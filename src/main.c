@@ -32,6 +32,8 @@ typedef struct _cmd_options_t {
 	double alpha_min;
 	double alpha_step;
 	double alpha_max;
+	unsigned short int brief_mode;
+	unsigned short int finite_size_correction;
 } cmd_options_t;
 
 cmd_options_t opts;
@@ -57,6 +59,8 @@ void usage(char* argv[]) {
 			"              when a discrete power-law distribution is fitted.\n"
 			"              RANGE must be in MIN:STEP:MAX format, the default\n"
 			"              is 1.5:0.01:3.5.\n"
+			"    -b        brief (but easily parseable) output format\n"
+			"    -f        use finite-size correction\n"
 	);
 	return;
 }
@@ -67,10 +71,12 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
 	opts->alpha_min  = 1.5;
 	opts->alpha_step = 0.01;
 	opts->alpha_max  = 3.5;
+	opts->brief_mode = 0;
+	opts->finite_size_correction = 0;
 
 	opterr = 0;
 
-	while ((c = getopt(argc, argv, "a:htv")) != -1) {
+	while ((c = getopt(argc, argv, "a:bfhtv")) != -1) {
 		switch (c) {
 			case 'a':
 				if (sscanf(optarg, "%lf:%lf:%lf", &opts->alpha_min,
@@ -78,6 +84,14 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
 					fprintf(stderr, "Invalid format for option `-a': %s\n", optarg);
 					return 1;
 				}
+				break;
+
+			case 'b':           /* brief mode */
+				opts->brief_mode = 1;
+				break;
+
+			case 'f':           /* finite size correction */
+				opts->finite_size_correction = 1;
 				break;
 
 			case 'h':           /* shows help */
@@ -157,12 +171,30 @@ void process_file(FILE* f, const char* fname) {
 
 	/* fit the power-law distribution */
 	if (discrete)
-		plfit_discrete_in_range(data, n, opts.alpha_min, opts.alpha_max, opts.alpha_step, &result);
+		plfit_discrete_in_range(data, n, opts.alpha_min, opts.alpha_max, opts.alpha_step,
+				opts.finite_size_correction, &result);
 	else
-		plfit_continuous(data, n, &result);
+		plfit_continuous(data, n, opts.finite_size_correction, &result);
 
 	/* print the results */
-	printf("%s: %lg %lg %lg %lg\n", fname, result.alpha, result.xmin, result.L, result.p);
+	if (opts.brief_mode) {
+		printf("%s: %c %lg %lg %lg %lg\n", fname, discrete ? 'D' : 'C',
+				result.alpha, result.xmin, result.L, result.p);
+	} else {
+		printf("%s:\n", fname);
+		if (!opts.finite_size_correction && n < 50)
+			printf("\tWARNING: finite size bias may be present\n\n");
+
+		printf("\t%s MLE", discrete ? "Discrete" : "Continuous");
+		if (opts.finite_size_correction)
+			printf(" with finite size correction");
+		printf("\n");
+		printf("\talpha = %11.5lf\n", result.alpha);
+		printf("\txmin  = %11.5lf\n", result.xmin );
+		printf("\tL     = %11.5lf\n", result.L    );
+		printf("\tp     = %11.5lf\n", result.p    );
+		printf("\n");
+	}
 
 	/* free the stored data */
 	free(data);

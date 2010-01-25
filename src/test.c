@@ -87,7 +87,7 @@ int test_continuous() {
 	ASSERT_ALMOST_EQUAL(result.alpha, 2.53282, 1e-4);
 
 	result.alpha = result.xmin = result.L = 0;
-	plfit_continuous(data, n, &result);
+	plfit_continuous(data, n, 0, &result);
 	ASSERT_ALMOST_EQUAL(result.alpha, 2.53282, 1e-4);
 	ASSERT_ALMOST_EQUAL(result.xmin, 1.43628, 1e-4);
 	ASSERT_ALMOST_EQUAL(result.L, -9276.42, 1e-1);
@@ -118,7 +118,7 @@ int test_discrete() {
 	ASSERT_ALMOST_EQUAL(result.alpha, 2.58, 1e-1);
 
 	result.alpha = result.xmin = result.L = 0;
-	plfit_discrete(data, n, &result);
+	plfit_discrete(data, n, 0, &result);
 	ASSERT_ALMOST_EQUAL(result.alpha, 2.58, 1e-1);
 	ASSERT_EQUAL(result.xmin, 2);
 	ASSERT_ALMOST_EQUAL(result.L, -9155.62809, 1e-4);
