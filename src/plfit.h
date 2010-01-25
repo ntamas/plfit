@@ -39,21 +39,21 @@ typedef struct _plfit_result_t {
 	double p;
 } plfit_result_t;
 
-/********** Continuous power law distribution fitting **********/
+/********** continuous power law distribution fitting **********/
 
 int plfit_estimate_alpha_continuous(double* xs, size_t n, double xmin, double* alpha);
 int plfit_estimate_alpha_continuous_sorted(double* xs, size_t n, double xmin, double* alpha);
-int plfit_log_likelihood_continuous(double* xs, size_t n, double alpha, double xmin, double* L);
+int plfit_log_likelihood_continuous(double* xs, size_t n, double alpha, double xmin, double* l);
 int plfit_continuous(double* xs, size_t n, unsigned short int finite_size_correction,
 		plfit_result_t* result);
 
-/********** Discrete power law distribution fitting **********/
+/********** discrete power law distribution fitting **********/
 
 int plfit_estimate_alpha_discrete(double* xs, size_t n, double xmin, double* alpha);
 int plfit_estimate_alpha_discrete_in_range(double* xs, size_t n, double xmin,
 		double alpha_min, double alpha_max, double alpha_step, double* alpha);
 int plfit_estimate_alpha_discrete_fast(double* xs, size_t n, double xmin, double* alpha);
-int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha, double xmin, double* L);
+int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha, double xmin, double* l);
 int plfit_discrete(double* xs, size_t n, unsigned short int finite_size_correction,
 		plfit_result_t* result);
 int plfit_discrete_in_range(double* xs, size_t n, double alpha_min, double alpha_max,
