@@ -55,6 +55,15 @@ typedef struct _plfit_result_t {
     double xmin;
     double L;
     double p;
+
+    %extend {
+        char *__str__() {
+            static char temp[512];
+            sprintf(temp, "alpha = %lg, xmin = %lg, L = %lg, p = %lg",
+                $self->alpha, $self->xmin, $self->L, $self->p);
+            return temp;
+        }
+    }
 } plfit_result_t;
 
 /* Typemap for incoming samples */

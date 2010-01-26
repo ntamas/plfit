@@ -14,5 +14,5 @@ if(PLFIT_COMPILE_PYTHON_MODULE)
 
 	set(CMAKE_SWIG_FLAGS "")
 	swig_add_module(plfit python plfit.i ${PLFIT_CORE_SRCS})
-	swig_link_libraries(plfit ${PYTHON_LIBRARIES} m)
+	swig_link_libraries(plfit m)
 endif(PLFIT_COMPILE_PYTHON_MODULE)
