@@ -54,13 +54,14 @@ typedef struct _plfit_result_t {
     double alpha;
     double xmin;
     double L;
+    double D;
     double p;
 
     %extend {
         char *__str__() {
             static char temp[512];
-            sprintf(temp, "alpha = %lg, xmin = %lg, L = %lg, p = %lg",
-                $self->alpha, $self->xmin, $self->L, $self->p);
+            sprintf(temp, "alpha = %lg, xmin = %lg, L = %lg, D = %lg, p = %lg",
+                $self->alpha, $self->xmin, $self->L, $self->D, $self->p);
             return temp;
         }
     }
