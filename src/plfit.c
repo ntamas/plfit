@@ -212,7 +212,7 @@ int plfit_estimate_alpha_discrete_in_range(double* xs, size_t n, double xmin,
 		PLFIT_ERROR("alpha_min must be greater than 1", PLFIT_EINVAL);
 	}
 	if (alpha_max < alpha_min) {
-		PLFIT_ERROR("alpha_max must be larger than alpha_min", PLFIT_EINVAL);
+		PLFIT_ERROR("alpha_max must be greater than alpha_min", PLFIT_EINVAL);
 	}
 
 	end = xs + n;
@@ -296,11 +296,17 @@ int plfit_discrete_in_range(double* xs, size_t n, double alpha_min, double alpha
 		double alpha_step, unsigned short int finite_size_correction,
 		plfit_result_t* result) {
 	double curr_D, curr_alpha, best_D, best_xmin, best_alpha;
-	double *xs_copy, *px, *end, prev_x;
+	double *xs_copy, *px, *end, *end_xmin, prev_x;
 	int m;
 
 	if (n <= 0) {
 		PLFIT_ERROR("no data points", PLFIT_EINVAL);
+	}
+	if (alpha_min <= 1.0) {
+		PLFIT_ERROR("alpha_min must be greater than 1.0", PLFIT_EINVAL);
+	}
+	if (alpha_max < alpha_min) {
+		PLFIT_ERROR("alpha_max must be greater than alpha_min", PLFIT_EINVAL);
 	}
 
 	/* Make a copy of xs and sort it */
@@ -308,17 +314,26 @@ int plfit_discrete_in_range(double* xs, size_t n, double alpha_min, double alpha
 	memcpy(xs_copy, xs, sizeof(double) * n);
 	qsort(xs_copy, n, sizeof(double), double_comparator);
 
-	prev_x = 0; best_D = DBL_MAX; best_xmin = 0; best_alpha = 0;
+	best_D = DBL_MAX; best_xmin = 1; best_alpha = alpha_min;
 
-	end = xs_copy + n - 1; px = xs_copy; m = 0;
-	while (px < end) {
-		while (px < end && *px == prev_x) {
+	/* Make sure there are at least three distinct values if possible */
+	px = xs_copy; end = px + n; end_xmin = end - 1; m = 0;
+	prev_x = *end_xmin;
+	while (*end_xmin == prev_x && end_xmin > px)
+		end_xmin--;
+	prev_x = *end_xmin;
+	while (*end_xmin == prev_x && end_xmin > px)
+		end_xmin--;
+
+	prev_x = 0;
+	while (px < end_xmin) {
+		while (px < end_xmin && *px == prev_x) {
 			px++; m++;
 		}
 
 		plfit_estimate_alpha_discrete_in_range(px, n-m, *px,
 				alpha_min, alpha_max, alpha_step, &curr_alpha);
-		plfit_i_ks_test_discrete(px, end+1, curr_alpha, *px, &curr_D);
+		plfit_i_ks_test_discrete(px, end, curr_alpha, *px, &curr_D);
 
 		if (curr_D < best_D) {
 			best_alpha = curr_alpha;
