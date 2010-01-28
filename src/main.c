@@ -186,8 +186,8 @@ void process_file(FILE* f, const char* fname) {
 
 	/* print the results */
 	if (opts.brief_mode) {
-		printf("%s: %c %lg %lg %lg %lg\n", fname, discrete ? 'D' : 'C',
-				result.alpha, result.xmin, result.L, result.p);
+		printf("%s: %c %lg %lg %lg %lg %lg\n", fname, discrete ? 'D' : 'C',
+				result.alpha, result.xmin, result.L, result.D, result.p);
 	} else {
 		printf("%s:\n", fname);
 		if (!opts.finite_size_correction && n < 50)
@@ -200,6 +200,7 @@ void process_file(FILE* f, const char* fname) {
 		printf("\talpha = %12.5lf\n", result.alpha);
 		printf("\txmin  = %12.5lf\n", result.xmin );
 		printf("\tL     = %12.5lf\n", result.L    );
+		printf("\tD     = %12.5lf\n", result.D    );
 		printf("\tp     = %12.5lf\n", result.p    );
 		printf("\n");
 	}

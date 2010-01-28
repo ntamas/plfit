@@ -176,10 +176,9 @@ int plfit_continuous(double* xs, size_t n, unsigned short int finite_size_correc
 		best_alpha = best_alpha * (n-1) / n + 1.0 / n;
 	}
 
-	printf("best_D = %.7f, n = %ld\n", best_D, n);
-
 	result->alpha = best_alpha;
 	result->xmin  = best_xmin;
+	result->D = best_D;
 	result->p = plfit_ks_test_one_sample_p(best_D, n);
 	plfit_log_likelihood_continuous(xs, n, result->alpha, result->xmin, &result->L);
 
@@ -339,6 +338,7 @@ int plfit_discrete_in_range(double* xs, size_t n, double alpha_min, double alpha
 
 	result->alpha = best_alpha;
 	result->xmin  = best_xmin;
+	result->D = best_D;
 	result->p = plfit_ks_test_one_sample_p(best_D, n);
 	plfit_log_likelihood_discrete(xs, n, result->alpha, result->xmin, &result->L);
 

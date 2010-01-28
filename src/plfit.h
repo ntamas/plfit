@@ -33,10 +33,11 @@
 __BEGIN_DECLS
 
 typedef struct _plfit_result_t {
-	double alpha;
-	double xmin;
-	double L;
-	double p;
+	double alpha;     /* fitted power-law exponent */
+	double xmin;      /* cutoff where the power-law behaviour kicks in */
+	double L;         /* log-likelihood of the sample */
+	double D;         /* test statistic for the KS test */
+	double p;         /* p-value of the KS test */
 } plfit_result_t;
 
 /********** continuous power law distribution fitting **********/
