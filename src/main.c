@@ -34,6 +34,7 @@ typedef struct _cmd_options_t {
 	double alpha_max;
 	unsigned short int brief_mode;
 	unsigned short int finite_size_correction;
+	unsigned short int force_continuous;
 } cmd_options_t;
 
 cmd_options_t opts;
@@ -60,6 +61,8 @@ void usage(char* argv[]) {
 			"              RANGE must be in MIN:STEP:MAX format, the default\n"
 			"              is 1.5:0.01:3.5.\n"
 			"    -b        brief (but easily parseable) output format\n"
+			"    -c        force continuous fitting even when every sample\n"
+			"              is an integer\n"
 			"    -f        use finite-size correction\n"
 	);
 	return;
@@ -73,10 +76,11 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
 	opts->alpha_max  = 3.5;
 	opts->brief_mode = 0;
 	opts->finite_size_correction = 0;
+	opts->force_continuous = 0;
 
 	opterr = 0;
 
-	while ((c = getopt(argc, argv, "a:bfhtv")) != -1) {
+	while ((c = getopt(argc, argv, "a:bcfhtv")) != -1) {
 		switch (c) {
 			case 'a':
 				if (sscanf(optarg, "%lf:%lf:%lf", &opts->alpha_min,
@@ -88,6 +92,10 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
 
 			case 'b':           /* brief mode */
 				opts->brief_mode = 1;
+				break;
+
+			case 'c':           /* force continuous fitting */
+				opts->force_continuous = 1;
 				break;
 
 			case 'f':           /* finite size correction */
@@ -125,7 +133,7 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
 void process_file(FILE* f, const char* fname) {
 	double* data;
 	size_t n = 0, nalloc = 100;
-	unsigned short int warned = 0, discrete = 1;
+	unsigned short int warned = 0, discrete = opts.force_continuous ? 0 : 1;
 	plfit_result_t result;
 
 	/* allocate memory for 100 samples */
@@ -189,10 +197,10 @@ void process_file(FILE* f, const char* fname) {
 		if (opts.finite_size_correction)
 			printf(" with finite size correction");
 		printf("\n");
-		printf("\talpha = %11.5lf\n", result.alpha);
-		printf("\txmin  = %11.5lf\n", result.xmin );
-		printf("\tL     = %11.5lf\n", result.L    );
-		printf("\tp     = %11.5lf\n", result.p    );
+		printf("\talpha = %12.5lf\n", result.alpha);
+		printf("\txmin  = %12.5lf\n", result.xmin );
+		printf("\tL     = %12.5lf\n", result.L    );
+		printf("\tp     = %12.5lf\n", result.p    );
 		printf("\n");
 	}
 

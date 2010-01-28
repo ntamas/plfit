@@ -176,6 +176,8 @@ int plfit_continuous(double* xs, size_t n, unsigned short int finite_size_correc
 		best_alpha = best_alpha * (n-1) / n + 1.0 / n;
 	}
 
+	printf("best_D = %.7f, n = %ld\n", best_D, n);
+
 	result->alpha = best_alpha;
 	result->xmin  = best_xmin;
 	result->p = plfit_ks_test_one_sample_p(best_D, n);

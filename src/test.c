@@ -22,8 +22,9 @@
 #include "kolmogorov.h"
 #include "plfit.h"
 
-#define RUN_TEST_CASE(func) do { \
+#define RUN_TEST_CASE(func, label) do { \
 	int result; \
+	fprintf(stderr, "Testing " label "...\n"); \
 	result = func(); \
 	if (result != 0) return result; \
 } while (0)
@@ -61,10 +62,15 @@ size_t test_read_file(const char* fname, double* data, int max_n) {
 }
 
 int test_kolmogorov() {
+	ASSERT_ALMOST_EQUAL(plfit_kolmogorov(3.252691), 1.292e-09, 1e-11);
 	ASSERT_ALMOST_EQUAL(plfit_kolmogorov(1.0), 0.27, 1e-3);
 	ASSERT_ALMOST_EQUAL(plfit_kolmogorov(0.8), 0.5442, 1e-3);
-	ASSERT_ALMOST_EQUAL(plfit_ks_test_one_sample_p(0.2553, 10), 0.5322, 1e-3);
+	ASSERT_ALMOST_EQUAL(plfit_kolmogorov(0.4949748), 0.967, 1e-3);
+	ASSERT_ALMOST_EQUAL(plfit_ks_test_one_sample_p(0.1149, 100), 0.1426, 1e-3);
+	ASSERT_ALMOST_EQUAL(plfit_ks_test_one_sample_p(0.2553,  10), 0.5322, 1e-3);
+	ASSERT_ALMOST_EQUAL(plfit_ks_test_one_sample_p(0.4435, 100), 2.2e-16, 1e-14);
 	ASSERT_ALMOST_EQUAL(plfit_ks_test_two_sample_p(0.021, 1218, 1588), 0.917, 1e-2);
+	ASSERT_ALMOST_EQUAL(plfit_ks_test_two_sample_p(0.07, 100, 100), 0.967, 1e-2);
 	ASSERT_ALMOST_EQUAL(plfit_ks_test_two_sample_p(0.5, 30, 50), 9.065e-05, 1e-4);
 	return 0;
 }
@@ -127,9 +133,9 @@ int test_discrete() {
 }
 
 int test() {
-	RUN_TEST_CASE(test_kolmogorov);
-	RUN_TEST_CASE(test_continuous);
-	RUN_TEST_CASE(test_discrete);
+	RUN_TEST_CASE(test_kolmogorov, "Kolmogorov-Smirnov test");
+	RUN_TEST_CASE(test_continuous, "continuous MLE");
+	RUN_TEST_CASE(test_discrete, "discrete MLE");
 
 	return 0;
 }
