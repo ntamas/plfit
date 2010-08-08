@@ -35,7 +35,8 @@ static int double_comparator(const void *a, const void *b) {
 
 /********** Continuous power law distribution fitting **********/
 
-int plfit_estimate_alpha_continuous(double* xs, size_t n, double xmin, double* alpha) {
+int plfit_estimate_alpha_continuous(double* xs, size_t n,
+		double xmin, double* alpha) {
 	double *px, *end, result;
 	int m;
 
@@ -85,7 +86,8 @@ int plfit_estimate_alpha_continuous_sorted(double* xs, size_t n, double xmin, do
 }
 
 
-int plfit_log_likelihood_continuous(double* xs, size_t n, double alpha, double xmin, double* L) {
+int plfit_log_likelihood_continuous(double* xs, size_t n, double alpha,
+		double xmin, double* L) {
 	double *px, *end, result, c;
 	int m;
 
@@ -112,7 +114,8 @@ int plfit_log_likelihood_continuous(double* xs, size_t n, double alpha, double x
 	return PLFIT_SUCCESS;
 }
 
-int plfit_i_ks_test_continuous(double* xs, double* xs_end, const double alpha, const double xmin, double* D) {
+static int plfit_i_ks_test_continuous(double* xs, double* xs_end,
+		const double alpha, const double xmin, double* D) {
 	/* Assumption: xs is sorted and cut off at xmin so the first element is
 	 * always larger than or equal to xmin. */
 	double result = 0, n;
@@ -187,14 +190,16 @@ int plfit_continuous(double* xs, size_t n, unsigned short int finite_size_correc
 
 /********** Discrete power law distribution fitting **********/
 
-int plfit_estimate_alpha_discrete_fast(double* xs, size_t n, double xmin, double* alpha) {
+int plfit_estimate_alpha_discrete_fast(double* xs, size_t n,
+		double xmin, double* alpha) {
 	if (xmin < 1) {
 		PLFIT_ERROR("xmin must be at least 1", PLFIT_EINVAL);
 	}
 	return plfit_estimate_alpha_continuous(xs, n, xmin-0.5, alpha);
 }
 
-int plfit_estimate_alpha_discrete(double* xs, size_t n, double xmin, double* alpha) {
+int plfit_estimate_alpha_discrete(double* xs, size_t n,
+		double xmin, double* alpha) {
 	return plfit_estimate_alpha_discrete_in_range(xs, n, xmin, 1.5, 3.5, 0.01, alpha);
 }
 
@@ -238,7 +243,8 @@ int plfit_estimate_alpha_discrete_in_range(double* xs, size_t n, double xmin,
 	return PLFIT_SUCCESS;
 }
 
-int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha, double xmin, double* L) {
+int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha,
+		double xmin, double* L) {
 	double *px, *end, result;
 	int m;
 
@@ -264,7 +270,8 @@ int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha, double xmi
 	return PLFIT_SUCCESS;
 }
 
-int plfit_i_ks_test_discrete(double* xs, double* xs_end, const double alpha, const double xmin, double* D) {
+static int plfit_i_ks_test_discrete(double* xs, double* xs_end, const double alpha,
+		const double xmin, double* D) {
 	/* Assumption: xs is sorted and cut off at xmin so the first element is
 	 * always larger than or equal to xmin. */
 	double result = 0, n, hzeta, x;
