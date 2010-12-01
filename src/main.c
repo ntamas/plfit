@@ -53,10 +53,14 @@ void usage(char* argv[]) {
             "distribution to them, one by one, according to the method of\n"
 			"Clauset, Shalizi and Newman. If no input files are given, the\n"
 			"standard input will be processed.\n\n"
+            "This implementation uses the L-BFGS optimization method to find\n"
+            "the optimal alpha for a given xmin in the discrete case. If you\n"
+            "want to use the legacy brute-force approach originally published\n"
+            "in the above paper, use the -a switch.\n\n"
             "Options:\n"
             "    -h        shows this help message\n"
             "    -v        shows version information\n"
-			"    -a RANGE  specifies the range of power-law exponents to try\n"
+			"    -a RANGE  use legacy brute-force search for the optimal alpha\n"
 			"              when a discrete power-law distribution is fitted.\n"
 			"              RANGE must be in MIN:STEP:MAX format, the default\n"
 			"              is 1.5:0.01:3.5.\n"
@@ -72,7 +76,7 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
 	int c;
 
 	opts->alpha_min  = 1.5;
-	opts->alpha_step = 0.01;
+	opts->alpha_step = 0;
 	opts->alpha_max  = 3.5;
 	opts->brief_mode = 0;
 	opts->finite_size_correction = 0;
@@ -178,10 +182,16 @@ void process_file(FILE* f, const char* fname) {
 	}
 
 	/* fit the power-law distribution */
-	if (discrete)
-		plfit_discrete_in_range(data, n, opts.alpha_min, opts.alpha_max, opts.alpha_step,
-				opts.finite_size_correction, &result);
-	else
+    if (discrete) {
+        if (opts.alpha_step > 0) {
+            /* Old estimation based on brute-force search */
+            plfit_discrete_in_range(data, n, opts.alpha_min, opts.alpha_max, opts.alpha_step,
+                    opts.finite_size_correction, &result);
+        } else {
+            /* New estimation with the L-BFGS algorithm */
+            plfit_discrete(data, n, opts.finite_size_correction, &result);
+        }
+    } else
 		plfit_continuous(data, n, opts.finite_size_correction, &result);
 
 	/* print the results */

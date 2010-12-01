@@ -6,3 +6,4 @@ me a great deal of time:
 - Mark K. King (for the free BSD-licensed getopt implementation)
 - G. Jungman (for the implementation of the Hurwitz zeta function in GSL)
 - Rene Brun (for the KolmogorovProb function in CERN's TMath library)
+- Naoaki Okazaki (for the MIT-licensed libLBFGS library)

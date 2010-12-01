@@ -1,4 +1,4 @@
-set(PLFIT_CORE_SRCS error.c kolmogorov.c plfit.c zeta.c)
+set(PLFIT_CORE_SRCS lbfgs.c error.c kolmogorov.c plfit.c zeta.c)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR})
 
