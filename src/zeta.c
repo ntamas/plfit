@@ -82,7 +82,7 @@ static double hzeta_c[15] = {
 
 /*-*-*-*-*-*-*-*-*-*-*-* Functions with Error Codes *-*-*-*-*-*-*-*-*-*-*-*/
 
-int gsl_sf_hzeta_e(const double s, const double q, gsl_sf_result * result)
+static int gsl_sf_hzeta_e(const double s, const double q, gsl_sf_result * result)
 {
   /* CHECK_POINTER(result) */
 

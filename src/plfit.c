@@ -60,7 +60,8 @@ double plfit_i_logsum_continuous(double* begin, double* end, double xmin) {
     return logsum;
 }
 
-int plfit_estimate_alpha_continuous(double* xs, size_t n, double xmin, double* alpha) {
+int plfit_estimate_alpha_continuous(double* xs, size_t n,
+		double xmin, double* alpha) {
 	double result;
 	size_t m;
 
@@ -98,7 +99,8 @@ int plfit_estimate_alpha_continuous_sorted(double* xs, size_t n, double xmin, do
 }
 
 
-int plfit_log_likelihood_continuous(double* xs, size_t n, double alpha, double xmin, double* L) {
+int plfit_log_likelihood_continuous(double* xs, size_t n, double alpha,
+		double xmin, double* L) {
 	double logsum, c;
 	size_t m;
 
@@ -116,7 +118,8 @@ int plfit_log_likelihood_continuous(double* xs, size_t n, double alpha, double x
 	return PLFIT_SUCCESS;
 }
 
-int plfit_i_ks_test_continuous(double* xs, double* xs_end, const double alpha, const double xmin, double* D) {
+static int plfit_i_ks_test_continuous(double* xs, double* xs_end,
+		const double alpha, const double xmin, double* D) {
 	/* Assumption: xs is sorted and cut off at xmin so the first element is
 	 * always larger than or equal to xmin. */
 	double result = 0, n;
@@ -366,7 +369,8 @@ int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha, double xmi
 	return PLFIT_SUCCESS;
 }
 
-int plfit_i_ks_test_discrete(double* xs, double* xs_end, const double alpha, const double xmin, double* D) {
+static int plfit_i_ks_test_discrete(double* xs, double* xs_end, const double alpha,
+		const double xmin, double* D) {
 	/* Assumption: xs is sorted and cut off at xmin so the first element is
 	 * always larger than or equal to xmin. */
 	double result = 0, n, hzeta, x;
