@@ -32,6 +32,8 @@
 
 __BEGIN_DECLS
 
+typedef unsigned short int plfit_bool_t;
+
 typedef struct _plfit_result_t {
 	double alpha;     /* fitted power-law exponent */
 	double xmin;      /* cutoff where the power-law behaviour kicks in */

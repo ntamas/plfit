@@ -197,18 +197,23 @@ typedef struct {
     double xmin;
 } plfit_i_estimate_alpha_discrete_data_t;
 
-void plfit_i_logsum_less_than_discrete(double* xs, size_t n, double xmin,
+double plfit_i_logsum_discrete(double* begin, double* end, double xmin) {
+	double logsum = 0.0;
+	for (; begin != end; begin++)
+		logsum += log(*begin);
+    return logsum;
+}
+
+void plfit_i_logsum_less_than_discrete(double* begin, double* end, double xmin,
         double* logsum, size_t* m) {
 	double result = 0.0;
 	size_t count = 0;
-	double *end;
 
-	end = xs + n;
-	for (count = 0, result = 0; xs != end; xs++) {
-		if (*xs < xmin)
+	for (; begin != end; begin++) {
+		if (*begin < xmin)
 			continue;
 
-		result += log(*xs);
+		result += log(*begin);
 		count++;
 	}
 
@@ -244,7 +249,8 @@ int plfit_i_estimate_alpha_discrete_progress(void* instance,
     return 0;
 }
 
-int plfit_estimate_alpha_discrete(double* xs, size_t n, double xmin, double* alpha) {
+int plfit_i_estimate_alpha_discrete(double* xs, size_t n, double xmin, double* alpha,
+        plfit_bool_t sorted) {
     lbfgs_parameter_t param;
     lbfgsfloatval_t* variables;
     plfit_i_estimate_alpha_discrete_data_t data;
@@ -260,7 +266,12 @@ int plfit_estimate_alpha_discrete(double* xs, size_t n, double xmin, double* alp
 
     /* Set up context for optimization */
     data.xmin = xmin;
-    plfit_i_logsum_less_than_discrete(xs, n, xmin, &data.logsum, &data.m);
+    if (sorted) {
+        data.logsum = plfit_i_logsum_discrete(xs, xs+n, xmin);
+        data.m = n;
+    } else {
+        plfit_i_logsum_less_than_discrete(xs, xs+n, xmin, &data.logsum, &data.m);
+    }
 
     /* Allocate space for the single alpha variable */
     variables = lbfgs_malloc(1);
@@ -289,6 +300,10 @@ int plfit_estimate_alpha_discrete(double* xs, size_t n, double xmin, double* alp
     return PLFIT_SUCCESS;
 }
 
+int plfit_estimate_alpha_discrete(double* xs, size_t n, double xmin, double* alpha) {
+    return plfit_i_estimate_alpha_discrete(xs, n, xmin, alpha, /* sorted = */ 0);
+}
+
 int plfit_estimate_alpha_discrete_fast(double* xs, size_t n, double xmin, double* alpha) {
 	if (xmin < 1) {
 		PLFIT_ERROR("xmin must be at least 1", PLFIT_EINVAL);
@@ -312,7 +327,7 @@ int plfit_estimate_alpha_discrete_in_range(double* xs, size_t n, double xmin,
 		PLFIT_ERROR("alpha_max must be greater than alpha_min", PLFIT_EINVAL);
 	}
 
-    plfit_i_logsum_less_than_discrete(xs, n, xmin, &logsum, &m);
+    plfit_i_logsum_less_than_discrete(xs, xs+n, xmin, &logsum, &m);
 
 	best_alpha = alpha_min; L_max = -DBL_MAX;
 	for (curr_alpha = alpha_min; curr_alpha <= alpha_max; curr_alpha += alpha_step) {
@@ -343,7 +358,7 @@ int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha, double xmi
 		PLFIT_ERROR("xmin must be greater than zero", PLFIT_EINVAL);
 	}
 
-    plfit_i_logsum_less_than_discrete(xs, n, xmin, &result, &m);
+    plfit_i_logsum_less_than_discrete(xs, xs+n, xmin, &result, &m);
 	result = - alpha * result - m * log(gsl_sf_hzeta(alpha, xmin));
 
 	*L = result;
@@ -480,7 +495,7 @@ int plfit_discrete(double* xs, size_t n, unsigned short int finite_size_correcti
 			px++; m++;
 		}
 
-		plfit_estimate_alpha_discrete(px, n-m, *px, &curr_alpha);
+		plfit_i_estimate_alpha_discrete(px, n-m, *px, &curr_alpha, /* sorted = */ 1);
 		plfit_i_ks_test_discrete(px, end, curr_alpha, *px, &curr_D);
 
 		if (curr_D < best_D) {
