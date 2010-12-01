@@ -24,8 +24,6 @@
 #include "getopt.h"
 #include "plfit.h"
 
-#define VERSION "0.1"
-
 extern int test();
 
 typedef struct _cmd_options_t {
@@ -40,7 +38,7 @@ typedef struct _cmd_options_t {
 cmd_options_t opts;
 
 void show_version(FILE* f) {
-	fprintf(f, "plfit " VERSION "\n");
+	fprintf(f, "plfit " PLFIT_VERSION_STRING "\n");
 	return;
 }
 

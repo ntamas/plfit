@@ -32,6 +32,10 @@
 
 __BEGIN_DECLS
 
+#define PLFIT_VERSION_MAJOR 0
+#define PLFIT_VERSION_MINOR 2
+#define PLFIT_VERSION_STRING "0.2"
+
 typedef unsigned short int plfit_bool_t;
 
 typedef struct _plfit_result_t {
