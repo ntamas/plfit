@@ -26,7 +26,11 @@
 /* $Id: arithmetic_sse_float.h 65 2010-01-29 12:19:16Z naoaki $ */
 
 #include <stdlib.h>
+
+#if !defined(__APPLE__)
 #include <malloc.h>
+#endif
+
 #include <memory.h>
 
 #if     1400 <= _MSC_VER

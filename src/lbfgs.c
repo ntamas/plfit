@@ -62,7 +62,7 @@ licence.
 */
 
 #ifdef  HAVE_CONFIG_H
-#include <config.h>
+#include "config.h"
 #endif/*HAVE_CONFIG_H*/
 
 #include <stdio.h>
@@ -93,6 +93,9 @@ typedef unsigned int uint32_t;
 #define min2(a, b)      ((a) <= (b) ? (a) : (b))
 #define max2(a, b)      ((a) >= (b) ? (a) : (b))
 #define max3(a, b, c)   max2(max2((a), (b)), (c));
+
+#define is_aligned(p, bytes) \
+	(((uintptr_t)(const void*)(p)) % (bytes) == 0)
 
 struct tag_callback_data {
     int n;
@@ -290,7 +293,7 @@ int lbfgs(
     if (n % 8 != 0) {
         return LBFGSERR_INVALID_N_SSE;
     }
-    if (((unsigned short)x & 0x000F) != 0) {
+    if (!is_aligned(x, 16)) {
         return LBFGSERR_INVALID_X_SSE;
     }
 #endif/*defined(USE_SSE)*/

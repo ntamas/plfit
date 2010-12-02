@@ -26,7 +26,11 @@
 /* $Id: arithmetic_sse_double.h 65 2010-01-29 12:19:16Z naoaki $ */
 
 #include <stdlib.h>
+
+#if !defined(__APPLE__)
 #include <malloc.h>
+#endif
+
 #include <memory.h>
 
 #if     1400 <= _MSC_VER
@@ -41,6 +45,9 @@ inline static void* vecalloc(size_t size)
 {
 #ifdef	_MSC_VER
     void *memblock = _aligned_malloc(size, 16);
+#elif defined(__APPLE__)
+	/* Memory on Mac OS X is already aligned to 16 bytes */
+	void *memblock = malloc(size);
 #else
     void *memblock = memalign(16, size);
 #endif
