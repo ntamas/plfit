@@ -31,8 +31,8 @@
 #define ASSERT_ALMOST_EQUAL(obs, exp, eps) do { \
 	double diff = (obs) - (exp); \
 	if (isnan(diff) || diff < -eps || diff > eps) { \
-		fprintf(stderr, "%s:%d : expected %.8f, got %.8f\n", \
-				__FILE__, __LINE__, (double)exp, (double)obs); \
+		fprintf(stderr, "%s:%d : expected %.8f, got %.8f, difference: %g\n", \
+				__FILE__, __LINE__, (double)exp, (double)obs, diff); \
 		return 1; \
 	} \
 } while (0)
@@ -89,7 +89,7 @@ int test_continuous() {
 
 	result.alpha = 0;
 	result.xmin = 1.43628;
-	plfit_estimate_alpha_continuous(data, n, result.xmin, &result.alpha);
+	plfit_estimate_alpha_continuous(data, n, result.xmin, 0, &result);
 	ASSERT_ALMOST_EQUAL(result.alpha, 2.53282, 1e-4);
 
 	result.alpha = result.xmin = result.L = 0;
@@ -115,19 +115,25 @@ int test_discrete() {
 
 	result.alpha = 0;
 	result.xmin = 2;
-	plfit_estimate_alpha_discrete_fast(data, n, result.xmin, &result.alpha);
+	plfit_estimate_alpha_discrete_fast(data, n, result.xmin, 0, &result);
 	ASSERT_ALMOST_EQUAL(result.alpha, 2.43, 1e-1);
 
 	result.alpha = 0;
 	result.xmin = 2;
-	plfit_estimate_alpha_discrete(data, n, result.xmin, &result.alpha);
+	plfit_estimate_alpha_discrete(data, n, result.xmin, 0, &result);
 	ASSERT_ALMOST_EQUAL(result.alpha, 2.58, 1e-1);
 
 	result.alpha = result.xmin = result.L = 0;
-	plfit_discrete(data, n, 0, &result);
+	plfit_discrete_in_range(data, n, 1.01, 5.0, 0.01, 0, &result);
 	ASSERT_ALMOST_EQUAL(result.alpha, 2.58, 1e-1);
 	ASSERT_EQUAL(result.xmin, 2);
 	ASSERT_ALMOST_EQUAL(result.L, -9155.62809, 1e-4);
+
+	result.alpha = result.xmin = result.L = 0;
+    plfit_discrete(data, n, 0, &result);
+	ASSERT_ALMOST_EQUAL(result.alpha, 2.58035, 1e-1);
+	ASSERT_EQUAL(result.xmin, 2);
+	ASSERT_ALMOST_EQUAL(result.L, -9155.617067, 1e-4);
 
 	return 0;
 }

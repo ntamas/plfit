@@ -33,6 +33,7 @@ typedef struct _cmd_options_t {
     unsigned short int brief_mode;
     unsigned short int finite_size_correction;
     unsigned short int force_continuous;
+    double xmin;
 } cmd_options_t;
 
 cmd_options_t opts;
@@ -66,6 +67,8 @@ void usage(char* argv[]) {
             "    -c        force continuous fitting even when every sample\n"
             "              is an integer\n"
             "    -f        use finite-size correction\n"
+            "    -m XMIN   use XMIN as the minimum value for x instead of searching\n"
+            "              for the optimal value\n"
     );
     return;
 }
@@ -79,10 +82,11 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
     opts->brief_mode = 0;
     opts->finite_size_correction = 0;
     opts->force_continuous = 0;
+    opts->xmin = -1;
 
     opterr = 0;
 
-    while ((c = getopt(argc, argv, "a:bcfhtv")) != -1) {
+    while ((c = getopt(argc, argv, "a:bcfhm:tv")) != -1) {
         switch (c) {
             case 'a':
                 if (sscanf(optarg, "%lf:%lf:%lf", &opts->alpha_min,
@@ -107,6 +111,13 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
             case 'h':           /* shows help */
                 usage(argv);
                 return 0;
+
+            case 'm':           /* specify xmin explicitly */
+                if (!sscanf(optarg, "%lg", &opts->xmin) || opts->xmin < 0) {
+                    fprintf(stderr, "Invalid value for option `-%c'\n", optopt);
+                    return 1;
+                }
+                break;
 
             case 't':           /* self-test */
                 return test();
@@ -183,14 +194,40 @@ void process_file(FILE* f, const char* fname) {
     if (discrete) {
         if (opts.alpha_step > 0) {
             /* Old estimation based on brute-force search */
-            plfit_discrete_in_range(data, n, opts.alpha_min, opts.alpha_max, opts.alpha_step,
-                    opts.finite_size_correction, &result);
+            if (opts.xmin < 0) {
+                /* Estimate xmin and alpha */
+                plfit_discrete_in_range(data, n,
+                        opts.alpha_min, opts.alpha_max, opts.alpha_step,
+                        opts.finite_size_correction, &result);
+            } else {
+                /* Estimate alpha only */
+                plfit_estimate_alpha_discrete_old(data, n, opts.xmin,
+                        opts.alpha_min, opts.alpha_max, opts.alpha_step,
+                        opts.finite_size_correction, &result);
+            }
         } else {
             /* New estimation with the L-BFGS algorithm */
-            plfit_discrete(data, n, opts.finite_size_correction, &result);
+            if (opts.xmin < 0) {
+                /* Estimate xmin and alpha */
+                plfit_discrete(data, n,
+                        opts.finite_size_correction, &result);
+            } else {
+                /* Estimate alpha only */
+                plfit_estimate_alpha_discrete(data, n, opts.xmin,
+                        opts.finite_size_correction, &result);
+            }
         }
-    } else
-        plfit_continuous(data, n, opts.finite_size_correction, &result);
+    } else {
+        if (opts.xmin < 0) {
+            /* Estimate xmin and alpha */
+            plfit_continuous(data, n,
+                    opts.finite_size_correction, &result);
+        } else {
+            /* Estimate alpha only */
+            plfit_estimate_alpha_continuous(data, n, opts.xmin,
+                    opts.finite_size_correction, &result);
+        }
+    }
 
     /* print the results */
     if (opts.brief_mode) {
