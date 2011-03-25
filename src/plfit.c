@@ -284,6 +284,10 @@ lbfgsfloatval_t plfit_i_estimate_alpha_discrete_evaluate(
     else if (dx < -0.001)
         dx = -0.001;
 
+	/* Is x[0] in its valid range? */
+	if (x[0] < 1.0 || x[0] + dx < 1.0)
+		return 1e10;   /* a very large number */
+
     g[0] = data->logsum + data->m *
         (log(gsl_sf_hzeta(x[0] + dx, data->xmin)) - log(gsl_sf_hzeta(x[0], data->xmin))) / dx;
     return x[0] * data->logsum + data->m * log(gsl_sf_hzeta(x[0], data->xmin));
@@ -559,6 +563,7 @@ int plfit_discrete(double* xs, size_t n, unsigned short int finite_size_correcti
     double curr_D, curr_alpha;
     plfit_result_t best_result;
     double *xs_copy, *px, *end, *end_xmin, prev_x;
+	size_t best_n;
     int m;
 
     DATA_POINTS_CHECK;
@@ -571,6 +576,7 @@ int plfit_discrete(double* xs, size_t n, unsigned short int finite_size_correcti
     best_result.D = DBL_MAX;
     best_result.xmin = 1;
     best_result.alpha = 1;
+	best_n = 0;
 
     /* Make sure there are at least three distinct values if possible */
     px = xs_copy; end = px + n; end_xmin = end - 1; m = 0;
@@ -594,19 +600,21 @@ int plfit_discrete(double* xs, size_t n, unsigned short int finite_size_correcti
             best_result.alpha = curr_alpha;
             best_result.xmin = *px;
             best_result.D = curr_D;
+			best_n = n-m;
         }
 
         prev_x = *px;
         px++; m++;
     }
 
-    free(xs_copy);
-
     *result = best_result;
     if (finite_size_correction)
-        plfit_i_perform_finite_size_correction(result, n);
-    result->p = plfit_ks_test_one_sample_p(result->D, n);
-    plfit_log_likelihood_discrete(xs, n, result->alpha, result->xmin, &result->L);
+        plfit_i_perform_finite_size_correction(result, best_n);
+    result->p = plfit_ks_test_one_sample_p(result->D, best_n);
+    plfit_log_likelihood_discrete(xs_copy+(n-best_n), best_n,
+			result->alpha, result->xmin, &result->L);
+
+    free(xs_copy);
 
     return PLFIT_SUCCESS;
 }
