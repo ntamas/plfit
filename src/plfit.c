@@ -191,6 +191,7 @@ int plfit_estimate_alpha_continuous_sorted(double* xs, size_t n, double xmin,
 int plfit_continuous(double* xs, size_t n, unsigned short int finite_size_correction,
         plfit_result_t* result) {
     plfit_result_t best_result;
+	size_t best_n;
     double curr_D, curr_alpha;
     double *xs_copy, *px, *end, prev_x;
     int m;
@@ -202,7 +203,7 @@ int plfit_continuous(double* xs, size_t n, unsigned short int finite_size_correc
     memcpy(xs_copy, xs, sizeof(double) * n);
     qsort(xs_copy, n, sizeof(double), double_comparator);
 
-    prev_x = 0;
+    prev_x = 0; best_n = 0;
     best_result.D = DBL_MAX;
     best_result.xmin = 0;
     best_result.alpha = 0;
@@ -220,19 +221,20 @@ int plfit_continuous(double* xs, size_t n, unsigned short int finite_size_correc
             best_result.alpha = curr_alpha;
             best_result.xmin = *px;
             best_result.D = curr_D;
+			best_n = n-m;
         }
 
         prev_x = *px;
         px++; m++;
     }
 
-    free(xs_copy);
-
     *result = best_result;
     if (finite_size_correction)
-        plfit_i_perform_finite_size_correction(result, n);
-    result->p = plfit_ks_test_one_sample_p(result->D, n);
-    plfit_log_likelihood_continuous(xs, n, result->alpha, result->xmin, &result->L);
+        plfit_i_perform_finite_size_correction(result, best_n);
+    result->p = plfit_ks_test_one_sample_p(result->D, best_n);
+    plfit_log_likelihood_continuous(xs_copy+n-best_n, best_n, result->alpha, result->xmin, &result->L);
+
+    free(xs_copy);
 
     return PLFIT_SUCCESS;
 }
