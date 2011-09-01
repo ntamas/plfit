@@ -31,8 +31,8 @@ static char *plfit_i_error_strings[] = {
 
 static plfit_error_handler_t* plfit_error_handler = plfit_error_handler_abort;
 
-const char* plfit_strerror(const int igraph_errno) {
-  return plfit_i_error_strings[igraph_errno];
+const char* plfit_strerror(const int plfit_errno) {
+  return plfit_i_error_strings[plfit_errno];
 }
 
 plfit_error_handler_t* plfit_set_error_handler(plfit_error_handler_t* new_handler) {

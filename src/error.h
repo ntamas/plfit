@@ -55,7 +55,7 @@ extern plfit_error_handler_t plfit_error_handler_printignore;
 plfit_error_handler_t* plfit_set_error_handler(plfit_error_handler_t* new_handler);
 
 void plfit_error(const char *reason, const char *file, int line, int plfit_errno);
-const char* plfit_strerror(const int igraph_errno);
+const char* plfit_strerror(const int plfit_errno);
 
 void plfit_error_handler_abort(const char *reason, const char *file, int line,
 		int plfit_errno);

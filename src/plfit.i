@@ -50,6 +50,8 @@ static PyObject* l_output_helper(PyObject* target, PyObject* o) {
 %}
 
 /* Data types */
+typedef unsigned short int plfit_bool_t;
+
 typedef struct _plfit_result_t {
     double alpha;
     double xmin;
@@ -93,11 +95,16 @@ typedef struct _plfit_result_t {
     if ($1) free($1);
 }
 
+/* Typemap for incoming plfit_bool_t */
+%typemap(in) plfit_bool_t {
+    $1 = PyObject_IsTrue($input);
+}
+
 /* Typemap for outgoing plfit_result_t */
-%typemap(in,numinputs=0) plfit_result_t *result (plfit_result_t temp) {
+%typemap(in,numinputs=0) plfit_result_t *OUTPUT (plfit_result_t temp) {
     $1 = &temp;
 }
-%typemap(argout) (plfit_result_t* result) {
+%typemap(argout) (plfit_result_t* OUTPUT) {
     plfit_result_t *result_new;
     PyObject *o;
     result_new = (plfit_result_t*)calloc(1, sizeof(plfit_result_t));
@@ -106,9 +113,14 @@ typedef struct _plfit_result_t {
     $result = l_output_helper($result, o);
 }
 
+/* Module initialization */
+%init {
+    plfit_set_error_handler(plfit_error_handler_ignore);
+}
+
 /* Exception handler for return codes */
 %typemap(out) int {};
-%exception plfit_continuous {
+%exception {
     $action
     if (result != 0) {
         SWIG_exception(SWIG_RuntimeError, plfit_strerror(result));
@@ -116,29 +128,29 @@ typedef struct _plfit_result_t {
     }
 }
 
-/* Module initialization */
-%init {
-    plfit_set_error_handler(plfit_error_handler_ignore);
-}
-
 /********** continuous power law distribution fitting **********/
 
-int plfit_estimate_alpha_continuous(double* xs, size_t n, double xmin, double* OUTPUT);
 int plfit_log_likelihood_continuous(double* xs, size_t n, double alpha, double xmin, double* OUTPUT);
-int plfit_continuous(double* xs, size_t n, unsigned short int finite_size_correction = 0,
-    plfit_result_t* result = 0);
+int plfit_estimate_alpha_continuous(double* xs, size_t n, double xmin, plfit_bool_t finite_size_correction = 0, plfit_result_t* OUTPUT);
+int plfit_continuous(double* xs, size_t n, plfit_bool_t finite_size_correction = 0, plfit_result_t* OUTPUT);
 
 /********** discrete power law distribution fitting **********/
 
-%rename(plfit_discrete) plfit_discrete_in_range;
-%rename(plfit_estimate_alpha_discrete) plfit_estimate_alpha_discrete_in_range;
-
-int plfit_estimate_alpha_discrete_in_range(double* xs, size_t n, double xmin,
+int plfit_estimate_alpha_discrete(double* xs, size_t n, double xmin,
+        plfit_bool_t finite_size_correction = 0, plfit_result_t* OUTPUT);
+int plfit_estimate_alpha_discrete_old(double* xs, size_t n, double xmin,
         double alpha_min = 1.5, double alpha_max = 3.5, double alpha_step = 0.01,
-        double* OUTPUT);
-int plfit_estimate_alpha_discrete_fast(double* xs, size_t n, double xmin, double* OUTPUT);
-int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha, double xmin, double* OUTPUT);
+        plfit_bool_t finite_size_correction = 0, plfit_result_t* OUTPUT);
+int plfit_estimate_alpha_discrete_fast(double* xs, size_t n, double xmin,
+        plfit_bool_t finite_size_correction = 0, plfit_result_t* OUTPUT);
+int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha,
+        double xmin, double* OUTPUT);
+int plfit_discrete(double* xs, size_t n,
+        plfit_bool_t finite_size_correction = 0,
+        plfit_result_t* OUTPUT);
 int plfit_discrete_in_range(double* xs, size_t n, double alpha_min = 1.5,
         double alpha_max = 3.5, double alpha_step = 0.01,
         unsigned short int finite_size_correction = 0,
-        plfit_result_t* result = 0);
+        plfit_result_t* OUTPUT);
+
+%exception;

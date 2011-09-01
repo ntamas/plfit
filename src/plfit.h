@@ -50,26 +50,26 @@ typedef struct _plfit_result_t {
 
 int plfit_log_likelihood_continuous(double* xs, size_t n, double alpha, double xmin, double* l);
 int plfit_estimate_alpha_continuous(double* xs, size_t n, double xmin,
-        unsigned short int finite_size_correction, plfit_result_t* result);
+        plfit_bool_t finite_size_correction, plfit_result_t* result);
 int plfit_estimate_alpha_continuous_sorted(double* xs, size_t n, double xmin,
-        unsigned short int finite_size_correction, plfit_result_t* result);
-int plfit_continuous(double* xs, size_t n, unsigned short int finite_size_correction,
+        plfit_bool_t finite_size_correction, plfit_result_t* result);
+int plfit_continuous(double* xs, size_t n, plfit_bool_t finite_size_correction,
 		plfit_result_t* result);
 
 /********** discrete power law distribution fitting **********/
 
 int plfit_estimate_alpha_discrete(double* xs, size_t n, double xmin,
-        unsigned short int finite_size_correction, plfit_result_t *result);
+        plfit_bool_t finite_size_correction, plfit_result_t *result);
 int plfit_estimate_alpha_discrete_fast(double* xs, size_t n, double xmin,
-        unsigned short int finite_size_correction, plfit_result_t *result);
+        plfit_bool_t finite_size_correction, plfit_result_t *result);
 int plfit_estimate_alpha_discrete_old(double* xs, size_t n, double xmin,
         double alpha_min, double alpha_max, double alpha_step,
-        unsigned short int finite_size_correction, plfit_result_t *result);
+        plfit_bool_t finite_size_correction, plfit_result_t *result);
 int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha, double xmin, double* l);
-int plfit_discrete(double* xs, size_t n, unsigned short int finite_size_correction,
+int plfit_discrete(double* xs, size_t n, plfit_bool_t finite_size_correction,
 		plfit_result_t* result);
 int plfit_discrete_in_range(double* xs, size_t n, double alpha_min, double alpha_max,
-		double alpha_step, unsigned short int finite_size_correction,
+		double alpha_step, plfit_bool_t finite_size_correction,
 		plfit_result_t* result);
 
 __END_DECLS
