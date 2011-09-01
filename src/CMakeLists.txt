@@ -6,6 +6,7 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 add_executable(plfit ${PLFIT_CORE_SRCS} main.c test.c)
 target_link_libraries(plfit m)
+install(TARGETS plfit RUNTIME DESTINATION bin)
 
 if(PLFIT_COMPILE_PYTHON_MODULE)
     # Check whether we have SWIG and the Python libraries installed

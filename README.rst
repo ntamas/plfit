@@ -39,6 +39,11 @@ just do this from the command line::
     $ cmake ..
     $ make
 
+If you have permission to write in ``/usr/local``, you can also invoke
+``make install`` at this point, which will place the executable in
+``/usr/local/bin``. Adjusting ``CMAKE_INSTALL_PREFIX`` using ``ccmake``
+will let you install ``plfit`` in a different folder.
+
 The above code snippet compiles the main executable (``plfit``) but not
 the Python module. If you need the Python module as well, the dance goes
 like this::
