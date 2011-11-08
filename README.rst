@@ -89,16 +89,21 @@ Usage
 From the command line
 ^^^^^^^^^^^^^^^^^^^^^
 
-Prepare a data file consisting your input data, one number per line.
-Then simply run::
+Prepare a data file consisting your input data, one number (i.e. sample)
+per line. So, for instance, if you want to find out whether the degrees
+of some graph follow a power-law distribution or not, just dump the
+degrees into the input file, one vertex per line. If you are interested
+in whether the magnitude of earthquakes follow a power-law, dump the
+magnitudes into the input file, one earthquake per line. There is no
+need to calculate the cumulative distribution function or the probability
+density function before, nor to normalize the input data. Then simply run::
 
     $ ./plfit input_data.txt
 
-The program will assume that the data is discrete when the file
-contains integers only; otherwise it will assume that the data is
-continuous. If your data file contains integers only but you know
-that they come from a continuous distribution, use ``-c`` to
-force continuous fitting::
+The program will assume that the data is discrete when the file contains
+integers only; otherwise it will assume that the data is continuous. If your
+data file contains integers only but you know that they come from a continuous
+distribution, use ``-c`` to force continuous fitting::
 
     $ ./plfit -c input_data.txt
 
