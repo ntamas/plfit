@@ -27,6 +27,10 @@ Below is a description of the input data for the testsuite.
   self-loops nor multiple edges.  The degree sequence reflects these
   assumptions.
 
+* The data file ``karate.dat`` contains the (total) degree sequence of
+  the Zachary karate club nework, as described in [Zachary1977]_.
+
+
 .. [Newman2001a]
    M. E. J. Newman. Scientific collaboration networks: I. Network
    construction and fundamental results. *Physical Review E*,
@@ -47,3 +51,8 @@ Below is a description of the input data for the testsuite.
    Structure of the Nervous System of the Nematode Caenorhabditis
    elegans.  *Philosophical Transactions of The Royal Society B*,
    314(1165):1--340, 1986, doi:10.1098/rstb.1986.0056.
+
+.. [Zachary1977]
+   Wayne W. Zachary. An Information Flow Model for Conflict and
+   Fission in Small Groups. *Journal of Anthropological Research*,
+   33(4):452--473, 1977.
