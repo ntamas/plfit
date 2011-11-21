@@ -89,7 +89,7 @@ Usage
 From the command line
 ^^^^^^^^^^^^^^^^^^^^^
 
-Prepare a data file consisting your input data, one number (i.e. sample)
+Prepare a data file consisting of your input data, one number (i.e. sample)
 per line. So, for instance, if you want to find out whether the degrees
 of some graph follow a power-law distribution or not, just dump the
 degrees into the input file, one vertex per line. If you are interested
