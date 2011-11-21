@@ -18,6 +18,24 @@ Below is a description of the input data for the testsuite.
   turn obtained the dataset from original experimental data by
   [WhiteEtAl1986]_.
 
+* The data file ``condmat2005-degree.dat`` contains the 2005 update of
+  the collaboration network of scientists posting preprints on the
+  condensed matter archive at www.arxiv.org.  The network is weighted,
+  with weights assigned as described in [Newman2001a]_.  The data
+  should be cited as an updated version of the dataset used in
+  [Newman2001b]_.  The network is undirected and we assume it has no
+  self-loops nor multiple edges.  The degree sequence reflects these
+  assumptions.
+
+.. [Newman2001a]
+   M. E. J. Newman. Scientific collaboration networks: I. Network
+   construction and fundamental results. *Physical Review E*,
+   64(1):016131, 2001, doi:10.1103/PhysRevE.64.016131.
+
+.. [Newman2001b]
+   M. E. J. Newman. The structure of scientific collaboration
+   networks. *Proceedings of the National Academy of Sciences USA*,
+   98(2):404--409, 2001, doi:10.1073/pnas.98.2.404.
 
 .. [WattsStrogatz1998]
    Duncan J. Watts and Steven H. Strogatz.  Collective dynamics of
