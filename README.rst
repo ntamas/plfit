@@ -100,6 +100,7 @@ density function before, nor to normalize the input data. Then simply run::
 
     $ ./plfit input_data.txt
 
+For some inspiration, see the sample data files under the directory ``test``.
 The program will assume that the data is discrete when the file contains
 integers only; otherwise it will assume that the data is continuous. If your
 data file contains integers only but you know that they come from a continuous
