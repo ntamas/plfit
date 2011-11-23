@@ -1,6 +1,7 @@
 cmake_minimum_required(VERSION 2.6)
 
 project(plfit C CXX)
+enable_testing()
 
 option(PLFIT_COMPILE_PYTHON_MODULE
 	   "Whether we want to compile the Python module (requires SWIG)"
@@ -20,3 +21,4 @@ if(PLFIT_USE_SSE)
 endif(PLFIT_USE_SSE)
 
 add_subdirectory(src)
+add_subdirectory(test)

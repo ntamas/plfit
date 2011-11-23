@@ -4,8 +4,9 @@ set(PLFIT_CORE_SRCS lbfgs.c error.c kolmogorov.c plfit.c zeta.c)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
-add_executable(plfit ${PLFIT_CORE_SRCS} main.c test.c)
-target_link_libraries(plfit m)
+add_library(libplfit ${PLFIT_CORE_SRCS})
+add_executable(plfit main.c)
+target_link_libraries(plfit libplfit m)
 install(TARGETS plfit RUNTIME DESTINATION bin)
 
 if(PLFIT_COMPILE_PYTHON_MODULE)

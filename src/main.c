@@ -24,8 +24,6 @@
 #include "getopt.h"
 #include "plfit.h"
 
-extern int test();
-
 typedef struct _cmd_options_t {
     double alpha_min;
     double alpha_step;
@@ -118,9 +116,6 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
                     return 1;
                 }
                 break;
-
-            case 't':           /* self-test */
-                return test();
 
             case 'v':           /* version information */
                 show_version(stdout);

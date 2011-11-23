@@ -20,6 +20,8 @@
 #ifndef __PLFIT_H__
 #define __PLFIT_H__
 
+#include <stdlib.h>
+
 #undef __BEGIN_DECLS
 #undef __END_DECLS
 #ifdef __cplusplus

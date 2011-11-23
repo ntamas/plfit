@@ -287,11 +287,20 @@ lbfgsfloatval_t plfit_i_estimate_alpha_discrete_evaluate(
         dx = -0.001;
 
 	/* Is x[0] in its valid range? */
-	if (x[0] < 1.0 || x[0] + dx < 1.0)
-		return 1e10;   /* a very large number */
+	if (x[0] <= 1.0) {
+		/* The Hurwitz zeta function is infinite in this case */
+		if (x[0] + dx <= 1.0)
+			g[0] = data->logsum;
+		else
+			g[0] = -INFINITY;
+		return INFINITY;
+	}
+	if (x[0] + dx <= 1.0)
+		g[0] = INFINITY;
+	else
+		g[0] = data->logsum + data->m *
+			(log(gsl_sf_hzeta(x[0] + dx, data->xmin)) - log(gsl_sf_hzeta(x[0], data->xmin))) / dx;
 
-    g[0] = data->logsum + data->m *
-        (log(gsl_sf_hzeta(x[0] + dx, data->xmin)) - log(gsl_sf_hzeta(x[0], data->xmin))) / dx;
     return x[0] * data->logsum + data->m * log(gsl_sf_hzeta(x[0], data->xmin));
 }
 
