@@ -285,8 +285,13 @@ lbfgsfloatval_t plfit_i_estimate_alpha_discrete_evaluate(
     data = (plfit_i_estimate_alpha_discrete_data_t*)instance;
 
 #ifdef PLFIT_DEBUG
-    printf("- Evaluating at %.4f (step = %.4f)", *x, step);
+    printf("- Evaluating at %.4f (step = %.4f, xmin = %.4f)\n", *x, step, data->xmin);
 #endif
+
+	if (isnan(*x)) {
+		g[0] = huge;
+		return huge;
+	}
 
     /* Find the delta X value to estimate the gradient */
     if (dx > 0.001 || dx == 0)
