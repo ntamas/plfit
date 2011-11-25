@@ -29,6 +29,8 @@
 #include "kolmogorov.h"
 #include "zeta.h"
 
+/* #define PLFIT_DEBUG */
+
 #define DATA_POINTS_CHECK \
     if (n <= 0) { \
         PLFIT_ERROR("no data points", PLFIT_EINVAL); \
@@ -276,10 +278,15 @@ lbfgsfloatval_t plfit_i_estimate_alpha_discrete_evaluate(
         lbfgsfloatval_t* g, const int n,
         const lbfgsfloatval_t step) {
     plfit_i_estimate_alpha_discrete_data_t* data;
+    lbfgsfloatval_t result;
     double dx = step;
-    double huge = 1e10;     /* pseudo-infinity */
+    double huge = 1e10;     /* pseudo-infinity; apparently DBL_MAX does not work */
 
     data = (plfit_i_estimate_alpha_discrete_data_t*)instance;
+
+#ifdef PLFIT_DEBUG
+    printf("- Evaluating at %.4f (step = %.4f)", *x, step);
+#endif
 
     /* Find the delta X value to estimate the gradient */
     if (dx > 0.001 || dx == 0)
@@ -299,7 +306,14 @@ lbfgsfloatval_t plfit_i_estimate_alpha_discrete_evaluate(
 		g[0] = data->logsum + data->m *
 			(log(gsl_sf_hzeta(x[0] + dx, data->xmin)) - log(gsl_sf_hzeta(x[0], data->xmin))) / dx;
 
-    return x[0] * data->logsum + data->m * log(gsl_sf_hzeta(x[0], data->xmin));
+    result = x[0] * data->logsum + data->m * log(gsl_sf_hzeta(x[0], data->xmin));
+
+#ifdef PLFIT_DEBUG
+    printf("  - Gradient: %.4f\n", g[0]);
+    printf("  - Result: %.4f\n", result);
+#endif
+
+    return result;
 }
 
 int plfit_i_estimate_alpha_discrete_progress(void* instance,
