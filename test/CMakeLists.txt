@@ -1,6 +1,6 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 
-set(TEST_CASES kolmogorov discrete continuous)
+set(TEST_CASES kolmogorov discrete continuous real)
 
 foreach(test ${TEST_CASES})
 	add_executable(test_${test} test_${test}.c test_common.c)
