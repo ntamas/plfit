@@ -277,6 +277,7 @@ lbfgsfloatval_t plfit_i_estimate_alpha_discrete_evaluate(
         const lbfgsfloatval_t step) {
     plfit_i_estimate_alpha_discrete_data_t* data;
     double dx = step;
+    double huge = 1e10;     /* pseudo-infinity */
 
     data = (plfit_i_estimate_alpha_discrete_data_t*)instance;
 
@@ -289,14 +290,11 @@ lbfgsfloatval_t plfit_i_estimate_alpha_discrete_evaluate(
 	/* Is x[0] in its valid range? */
 	if (x[0] <= 1.0) {
 		/* The Hurwitz zeta function is infinite in this case */
-		if (x[0] + dx <= 1.0)
-			g[0] = data->logsum;
-		else
-			g[0] = -INFINITY;
-		return INFINITY;
+        g[0] = (dx > 0) ? -huge : huge;
+		return huge;
 	}
 	if (x[0] + dx <= 1.0)
-		g[0] = INFINITY;
+		g[0] = huge;
 	else
 		g[0] = data->logsum + data->m *
 			(log(gsl_sf_hzeta(x[0] + dx, data->xmin)) - log(gsl_sf_hzeta(x[0], data->xmin))) / dx;
