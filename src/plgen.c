@@ -46,13 +46,16 @@ void usage(char* argv[]) {
     fprintf(stderr, "\nUsage: %s [options] num_samples gamma [kappa]\n\n", argv[0]);
     fprintf(stderr,
             "Generates a given number of samples from a power-law distribution\n"
-            "with an optional exponential cutoff.\n\n"
-            "gamma is the exponent of the power-law distribution and kappa is\n"
-            "the scale parameter of the exponential cutoff.\n\n"
+            "with an optional exponential cutoff. The pdf being sampled is given\n"
+            "as follows:\n\n"
+            "P(k) = C * k^(-gamma) * exp(-k/kappa)\n\n"
+            "where C is an appropriate normalization constant. gamma is given by\n"
+            "the second command line argument, kappa is given by the -k switch.\n\n"
             "Options:\n"
             "    -h         shows this help message\n"
             "    -v         shows version information\n"
             "    -c         generate continuous samples\n"
+            "    -k KAPPA   use exponential cutoff with kappa = KAPPA\n"
             "    -o OFFSET  add OFFSET to each generated sample\n"
     );
     return;
@@ -67,7 +70,7 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
 
     opterr = 0;
 
-    while ((c = getopt(argc, argv, "cho:v")) != -1) {
+    while ((c = getopt(argc, argv, "chk:o:v")) != -1) {
         switch (c) {
             case 'c':           /* force continuous samples */
                 opts->continuous = 1;
@@ -76,6 +79,13 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
             case 'h':           /* shows help */
                 usage(argv);
                 return 0;
+
+            case 'k':           /* use exponential cutoff */
+                if (!sscanf(optarg, "%lg", &opts->kappa)) {
+                    fprintf(stderr, "Invalid value for option `-%c'\n", optopt);
+                    return 1;
+                }
+                break;
 
             case 'o':           /* specify offset explicitly */
                 if (!sscanf(optarg, "%lg", &opts->offset)) {
@@ -144,7 +154,7 @@ int sample() {
     if (plfit_walker_alias_sampler_init(&sampler, probs, num_probs)) {
         fprintf(stderr, "Error while initializing sampler\n");
         free(probs);
-        return 5;
+        return 9;
     }
 
     /* Free "probs" array */
@@ -157,7 +167,7 @@ int sample() {
 
         if (opts.continuous) {
             fprintf(stderr, "Continuous sampling not implemented yet, sorry.\n");
-            return 6;
+            return 5;
         } else {
             for (i = 0; i < n; i++) {
                 printf("%ld\n", (long int)(samples[i] + opts.offset));
@@ -183,18 +193,14 @@ int main(int argc, char* argv[]) {
     retval = 0;
     if (argc - optind < 2) {
         /* not enough arguments */
-        fprintf(stderr, "Not enough arguments\n");
         usage(argv);
-        retval = 1;
+        retval = 2;
     } else {
         if (!sscanf(argv[optind], "%ld", &opts.num_samples)) {
             fprintf(stderr, "Format of num_samples parameter is invalid.\n");
-            retval = 2;
+            retval = 3;
         } else if (!sscanf(argv[optind+1], "%lg", &opts.gamma)) {
             fprintf(stderr, "Format of gamma parameter is invalid.\n");
-            retval = 3;
-        } else if (argc-optind >= 3 && !sscanf(argv[optind+2], "%lg", &opts.kappa)) {
-            fprintf(stderr, "Format of kappa parameter is invalid.\n");
             retval = 4;
         } else {
             retval = sample();
