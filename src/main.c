@@ -1,6 +1,6 @@
-/* plfit.c
+/* main.c
  *
- * Copyright (C) 2010-2011 Tamas Nepusz
+ * Copyright (C) 2010-2012 Tamas Nepusz
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -122,7 +122,7 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
                 return 0;
 
             case '?':           /* unknown option */
-                if (optopt == 'a')
+                if (optopt == 'a' || optopt == 'm')
                     fprintf(stderr, "Option `-%c' requires an argument\n", optopt);
                 else if (isprint(optopt))
                     fprintf(stderr, "Invalid option `-%c'\n", optopt);
