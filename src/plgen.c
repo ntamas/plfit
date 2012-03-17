@@ -21,16 +21,22 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <time.h>
 #include "getopt.h"
 #include "plfit.h"
 #include "sampling.h"
 
 typedef struct _cmd_options_t {
     long int num_samples;
+
     double gamma;
     double kappa;
     double offset;
+
     plfit_bool_t continuous;
+
+    plfit_bool_t use_seed;
+    unsigned long seed;
 } cmd_options_t;
 
 cmd_options_t opts;
@@ -57,6 +63,7 @@ void usage(char* argv[]) {
             "    -c         generate continuous samples\n"
             "    -k KAPPA   use exponential cutoff with kappa = KAPPA\n"
             "    -o OFFSET  add OFFSET to each generated sample\n"
+            "    -s SEED    use SEED to seed the random number generator\n"
     );
     return;
 }
@@ -67,12 +74,14 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
     opts->offset = 0;
     opts->continuous = 0;
     opts->kappa = -1;
+    opts->seed = 0;
+    opts->use_seed = 0;
 
     opterr = 0;
 
-    while ((c = getopt(argc, argv, "chk:o:v")) != -1) {
+    while ((c = getopt(argc, argv, "chk:o:s:v")) != -1) {
         switch (c) {
-            case 'c':           /* force continuous samples */
+            case 'c':           /* use continuous samples */
                 opts->continuous = 1;
                 break;
 
@@ -94,12 +103,20 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
                 }
                 break;
 
+            case 's':           /* set random seed */
+                if (!sscanf(optarg, "%lu", &opts->seed)) {
+                    fprintf(stderr, "Invalid value for option `-%c'\n", optopt);
+                    return 1;
+                }
+                opts->use_seed = 1;
+                break;
+
             case 'v':           /* version information */
                 show_version(stdout);
                 return 0;
 
             case '?':           /* unknown option */
-                if (optopt == 'o')
+                if (optopt == 'o' || optopt == 's' || optopt == 'k')
                     fprintf(stderr, "Option `-%c' requires an argument\n", optopt);
                 else if (isprint(optopt))
                     fprintf(stderr, "Invalid option `-%c'\n", optopt);
@@ -115,7 +132,7 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
     return -1;
 }
 
-int sample() {
+int sample_discrete() {
     const long int BLOCK_SIZE = 16384;
     long int samples[BLOCK_SIZE];
     double* probs;
@@ -135,10 +152,7 @@ int sample() {
     }
 
     probs[0] = 0;
-    if (opts.kappa == 0) {
-        fprintf(stderr, "kappa may not be zero\n");
-        return 8;
-    } else if (opts.kappa > 0) {
+    if (opts.kappa > 0) {
         /* Power law with exponential cutoff */
         for (i = 1; i < num_probs; i++) {
             probs[i] = exp(-i / opts.kappa) * pow(i, -opts.gamma);
@@ -165,13 +179,8 @@ int sample() {
         n = opts.num_samples > BLOCK_SIZE ? BLOCK_SIZE : opts.num_samples;
         plfit_walker_alias_sampler_sample(&sampler, samples, n);
 
-        if (opts.continuous) {
-            fprintf(stderr, "Continuous sampling not implemented yet, sorry.\n");
-            return 5;
-        } else {
-            for (i = 0; i < n; i++) {
-                printf("%ld\n", (long int)(samples[i] + opts.offset));
-            }
+        for (i = 0; i < n; i++) {
+            printf("%ld\n", (long int)(samples[i] + opts.offset));
         }
 
         opts.num_samples -= n;
@@ -179,6 +188,24 @@ int sample() {
 
     /* Destroy sampler */
     plfit_walker_alias_sampler_destroy(&sampler);
+
+    return 0;
+}
+
+int sample_continuous() {
+    long int i;
+    double u;
+    double gamma = 1.0 / (1 - opts.gamma);
+
+    if (opts.kappa > 0) {
+        fprintf(stderr, "Exponential cutoff not supported for continuous sampling, sorry.\n");
+        return 5;
+    }
+
+    for (i = 0; i < opts.num_samples; i++) {
+        u = rand() / ((double)RAND_MAX);
+        printf("%.8f\n", pow(u, gamma));
+    }
 
     return 0;
 }
@@ -203,7 +230,8 @@ int main(int argc, char* argv[]) {
             fprintf(stderr, "Format of gamma parameter is invalid.\n");
             retval = 4;
         } else {
-            retval = sample();
+            srand(opts.use_seed ? opts.seed : time(0));
+            retval = opts.continuous ? sample_continuous() : sample_discrete();
         }
     }
 
