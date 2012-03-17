@@ -37,7 +37,8 @@ enum {
 	PLFIT_FAILURE  = 1,
 	PLFIT_EINVAL   = 2,
 	PLFIT_UNDRFLOW = 3,
-	PLFIT_OVERFLOW = 4
+	PLFIT_OVERFLOW = 4,
+	PLFIT_ENOMEM   = 5
 };
 
 #define PLFIT_ERROR(reason,plfit_errno) \

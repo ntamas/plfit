@@ -21,32 +21,39 @@
 #include <stdlib.h>
 
 #define RUN_TEST_CASE(func, label) do { \
-	int result; \
-	fprintf(stderr, "Testing " label "...\n"); \
-	result = func(); \
-	if (result != 0) return result; \
+    int result; \
+    fprintf(stderr, "Testing " label "...\n"); \
+    result = func(); \
+    if (result != 0) return result; \
 } while (0)
 #define ASSERT_ALMOST_EQUAL(obs, exp, eps) do { \
-	double diff = (obs) - (exp); \
-	if (isnan(diff) || diff < -eps || diff > eps) { \
-		fprintf(stderr, "%s:%d : expected %.8f, got %.8f, difference: %g\n", \
-				__FILE__, __LINE__, (double)exp, (double)obs, diff); \
-		return 1; \
-	} \
+    double diff = (obs) - (exp); \
+    if (isnan(diff) || diff < -eps || diff > eps) { \
+        fprintf(stderr, "%s:%d : expected %.8f, got %.8f, difference: %g\n", \
+                __FILE__, __LINE__, (double)exp, (double)obs, diff); \
+        return 1; \
+    } \
 } while (0)
 #define ASSERT_EQUAL(obs, exp) do { \
-	if (obs != exp) { \
-		fprintf(stderr, "%s:%d : expected %.8f, got %.8f\n", \
-				__FILE__, __LINE__, (double)exp, (double)obs); \
-		return 1; \
-	} \
+    if (obs != exp) { \
+        fprintf(stderr, "%s:%d : expected %.8f, got %.8f\n", \
+                __FILE__, __LINE__, (double)exp, (double)obs); \
+        return 1; \
+    } \
 } while (0)
 #define ASSERT_NONZERO(obs) do { \
-	if (!obs) { \
-		fprintf(stderr, "%s:%d : expected nonzero value, got %.8f\n", \
-				__FILE__, __LINE__, (double)obs); \
-		return 1; \
-	} \
+    if (!obs) { \
+        fprintf(stderr, "%s:%d : expected nonzero value, got %.8f\n", \
+                __FILE__, __LINE__, (double)obs); \
+        return 1; \
+    } \
+} while (0)
+#define ASSERT_WITHIN_RANGE(obs, lo, hi) do { \
+    if (obs < lo || obs > hi) { \
+        fprintf(stderr, "%s:%d : expected in [%.8f; %.8f], got %.8f\n", \
+                __FILE__, __LINE__, (double)lo, (double)hi, (double)obs); \
+        return 1; \
+    } \
 } while (0)
 
 size_t test_read_file(const char* fname, double* data, int max_n);

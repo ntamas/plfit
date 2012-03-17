@@ -26,7 +26,8 @@ static char *plfit_i_error_strings[] = {
     "Failed",
     "Invalid value",
     "Underflow",
-    "Overflow"
+    "Overflow",
+    "Not enough memory"
 };
 
 static plfit_error_handler_t* plfit_error_handler = plfit_error_handler_abort;

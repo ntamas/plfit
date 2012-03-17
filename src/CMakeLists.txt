@@ -1,6 +1,6 @@
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DIR}/config.h)
 
-set(PLFIT_CORE_SRCS lbfgs.c error.c kolmogorov.c plfit.c zeta.c)
+set(PLFIT_CORE_SRCS lbfgs.c error.c kolmogorov.c plfit.c sampling.c zeta.c)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
