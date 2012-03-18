@@ -30,6 +30,9 @@ int test_sampling() {
     long int data[NUM_SAMPLES];
     long int hist[NUM_ITEMS];
     long int i, j, max_hist;
+    mt_rng_t rng;
+
+    mt_init(&rng);
 
     /* Create the sampler, sample, destroy */
     for (i = 0; i < NUM_ITEMS; i++) {
@@ -39,7 +42,7 @@ int test_sampling() {
     if (plfit_walker_alias_sampler_init(&sampler, probs, NUM_ITEMS)) {
         return 1;
     }
-    if (plfit_walker_alias_sampler_sample(&sampler, data, NUM_SAMPLES)) {
+    if (plfit_walker_alias_sampler_sample(&sampler, data, NUM_SAMPLES, &rng)) {
         return 2;
     }
     plfit_walker_alias_sampler_destroy(&sampler);

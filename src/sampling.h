@@ -21,6 +21,7 @@
 #define __SAMPLING_H__
 
 #include <stdlib.h>
+#include "mt.h"
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -70,10 +71,11 @@ void plfit_walker_alias_sampler_destroy(plfit_walker_alias_sampler_t* sampler);
  * \param  xs       pointer to an array where the sampled items should be
  *                  written
  * \param  n        the number of samples to draw
+ * \param  rng      the Mersenne Twister random number generator to use
  * \return error code
  */
 int plfit_walker_alias_sampler_sample(const plfit_walker_alias_sampler_t* sampler,
-        long int* xs, size_t n);
+        long int* xs, size_t n, mt_rng_t* rng);
 
 __END_DECLS
 

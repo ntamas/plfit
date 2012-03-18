@@ -40,6 +40,7 @@ typedef struct _cmd_options_t {
 } cmd_options_t;
 
 cmd_options_t opts;
+mt_rng_t rng;
 
 void show_version(FILE* f) {
     fprintf(f, "plgen " PLFIT_VERSION_STRING "\n");
@@ -177,7 +178,7 @@ int sample_discrete() {
     /* Sampling */
     while (opts.num_samples > 0) {
         n = opts.num_samples > BLOCK_SIZE ? BLOCK_SIZE : opts.num_samples;
-        plfit_walker_alias_sampler_sample(&sampler, samples, n);
+        plfit_walker_alias_sampler_sample(&sampler, samples, n, &rng);
 
         for (i = 0; i < n; i++) {
             printf("%ld\n", (long int)(samples[i] + opts.offset));
@@ -203,7 +204,7 @@ int sample_continuous() {
     }
 
     for (i = 0; i < opts.num_samples; i++) {
-        u = rand() / ((double)RAND_MAX);
+        u = mt_uniform_01(&rng);
         printf("%.8f\n", pow(u, gamma));
     }
 
@@ -231,6 +232,7 @@ int main(int argc, char* argv[]) {
             retval = 4;
         } else {
             srand(opts.use_seed ? opts.seed : time(0));
+            mt_init(&rng);
             retval = opts.continuous ? sample_continuous() : sample_discrete();
         }
     }
