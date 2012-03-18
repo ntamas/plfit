@@ -121,11 +121,23 @@ int plfit_walker_alias_sampler_sample(const plfit_walker_alias_sampler_t* sample
     long int *x;
 
     x = xs;
-    while (n > 0) {
-        u = mt_uniform_01(rng);
-        j = mt_random(rng) % sampler->num_bins;
-        *x = (u < sampler->probs[j]) ? j : sampler->indexes[j];
-        n--; x++;
+
+    if (rng == 0) {
+        /* Using built-in RNG */
+        while (n > 0) {
+            u = rand() / ((double)RAND_MAX);
+            j = rand() % sampler->num_bins;
+            *x = (u < sampler->probs[j]) ? j : sampler->indexes[j];
+            n--; x++;
+        }
+    } else {
+        /* Using Mersenne Twister */
+        while (n > 0) {
+            u = mt_uniform_01(rng);
+            j = mt_random(rng) % sampler->num_bins;
+            *x = (u < sampler->probs[j]) ? j : sampler->indexes[j];
+            n--; x++;
+        }
     }
 
     return PLFIT_SUCCESS;
