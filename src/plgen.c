@@ -205,7 +205,7 @@ int sample_continuous() {
 
     for (i = 0; i < opts.num_samples; i++) {
         u = mt_uniform_01(&rng);
-        printf("%.8f\n", pow(u, gamma));
+        printf("%.8f\n", pow(u, gamma) + opts.offset);
     }
 
     return 0;
