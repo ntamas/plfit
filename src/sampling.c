@@ -91,12 +91,23 @@ int plfit_walker_alias_sampler_init(plfit_walker_alias_sampler_t* sampler,
         short_index = short_sticks[--num_short_sticks];
         long_index = long_sticks[num_long_sticks-1];
         sampler->indexes[short_index] = long_index;
-        sampler->probs[long_index] -= (1 - sampler->probs[short_index]);
+        sampler->probs[long_index] =     /* numerical stability */
+			(sampler->probs[long_index] + sampler->probs[short_index]) - 1;
         if (sampler->probs[long_index] < 1) {
             short_sticks[num_short_sticks++] = long_index;
             num_long_sticks--;
         }
     }
+	
+	/* Fix numerical stability issues */
+	while (num_long_sticks) {
+        i = long_sticks[--num_long_sticks];
+		sampler->probs[i] = 1;
+	}
+	while (num_short_sticks) {
+        i = short_sticks[--num_short_sticks];
+		sampler->probs[i] = 1;
+	}
 
     return PLFIT_SUCCESS;
 }
