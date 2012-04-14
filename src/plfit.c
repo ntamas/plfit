@@ -471,13 +471,13 @@ int plfit_estimate_alpha_discrete(double* xs, size_t n, double xmin,
     plfit_i_estimate_alpha_discrete(xs, n, xmin, &result->alpha, /* sorted = */ 1);
     plfit_i_ks_test_discrete(xs, end, result->alpha, xmin, &result->D);
 
-    free(xs_copy);
-
     result->xmin = xmin;
     if (finite_size_correction)
         plfit_i_perform_finite_size_correction(result, n);
     result->p = plfit_ks_test_one_sample_p(result->D, n);
     plfit_log_likelihood_discrete(xs, n, result->alpha, result->xmin, &result->L);
+
+    free(xs_copy);
 
     return PLFIT_SUCCESS;
 }
@@ -508,13 +508,13 @@ int plfit_estimate_alpha_discrete_old(double* xs, size_t n, double xmin,
             alpha_step, &result->alpha);
     plfit_i_ks_test_discrete(xs, end, result->alpha, xmin, &result->D);
 
-    free(xs_copy);
-
     result->xmin = xmin;
     if (finite_size_correction)
         plfit_i_perform_finite_size_correction(result, n);
     result->p = plfit_ks_test_one_sample_p(result->D, n);
     plfit_log_likelihood_discrete(xs, n, result->alpha, result->xmin, &result->L);
+
+    free(xs_copy);
 
     return PLFIT_SUCCESS;
 }
@@ -574,13 +574,13 @@ int plfit_discrete_in_range(double* xs, size_t n, double alpha_min, double alpha
         px++; m++;
     }
 
-    free(xs_copy);
-
     *result = best_result;
     if (finite_size_correction)
         plfit_i_perform_finite_size_correction(result, n);
     result->p = plfit_ks_test_one_sample_p(result->D, n);
     plfit_log_likelihood_discrete(xs, n, result->alpha, result->xmin, &result->L);
+
+    free(xs_copy);
 
     return PLFIT_SUCCESS;
 }
