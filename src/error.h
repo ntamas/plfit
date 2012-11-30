@@ -41,6 +41,22 @@ enum {
 	PLFIT_ENOMEM   = 5
 };
 
+#if (defined(__GNUC__) && GCC_VERSION_MAJOR >= 3)
+#  define PLFIT_UNLIKELY(a) __builtin_expect((a), 0)
+#  define PLFIT_LIKELY(a)   __builtin_expect((a), 1)
+#else
+#  define PLFIT_UNLIKELY(a) a
+#  define PLFIT_LIKELY(a)   a
+#endif
+
+#define PLFIT_CHECK(a) \
+	do {\
+		int plfit_i_ret=(a); \
+		if (PLFIT_UNLIKELY(plfit_i_ret != PLFIT_SUCCESS)) {\
+			return plfit_i_ret; \
+		} \
+	} while(0)
+
 #define PLFIT_ERROR(reason,plfit_errno) \
 	do {\
 		plfit_error (reason, __FILE__, __LINE__, plfit_errno) ; \

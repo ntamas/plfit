@@ -42,9 +42,18 @@
     } \
 } while (0)
 #define ASSERT_NONZERO(obs) do { \
-    if (!obs) { \
+    double __retval = obs; \
+    if (__retval == 0) { \
         fprintf(stderr, "%s:%d : expected nonzero value, got %.8f\n", \
-                __FILE__, __LINE__, (double)obs); \
+                __FILE__, __LINE__, __retval); \
+        return 1; \
+    } \
+} while (0)
+#define ASSERT_SUCCESSFUL(obs) do { \
+    int __retval = obs; \
+    if (__retval) { \
+        fprintf(stderr, "%s:%d : expected no error code, got %d\n", \
+                __FILE__, __LINE__, __retval); \
         return 1; \
     } \
 } while (0)
@@ -52,6 +61,14 @@
     if (obs < lo || obs > hi) { \
         fprintf(stderr, "%s:%d : expected in [%.8f; %.8f], got %.8f\n", \
                 __FILE__, __LINE__, (double)lo, (double)hi, (double)obs); \
+        return 1; \
+    } \
+} while (0)
+#define ASSERT_ZERO(obs) do { \
+    double __retval = obs; \
+    if (__retval != 0) { \
+        fprintf(stderr, "%s:%d : expected zero value, got %.8f\n", \
+                __FILE__, __LINE__, __retval); \
         return 1; \
     } \
 } while (0)

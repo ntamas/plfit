@@ -23,8 +23,11 @@
 
 int test_discrete() {
 	plfit_result_t result;
+	plfit_discrete_options_t options;
 	double data[10000];
 	size_t n;
+
+	plfit_discrete_options_init(&options);
 
 	n = test_read_file("discrete_data.txt", data, 10000);
 	ASSERT_NONZERO(n);
@@ -36,7 +39,8 @@ int test_discrete() {
 
 	result.alpha = 0;
 	result.xmin = 2;
-	plfit_estimate_alpha_discrete_fast(data, n, result.xmin, 0, &result);
+	options.alpha_method = PLFIT_PRETEND_CONTINUOUS;
+	plfit_estimate_alpha_discrete(data, n, result.xmin, &options, &result);
 	ASSERT_ALMOST_EQUAL(result.alpha, 2.43, 1e-1);
 
 	result.alpha = 0;
@@ -45,7 +49,11 @@ int test_discrete() {
 	ASSERT_ALMOST_EQUAL(result.alpha, 2.58, 1e-1);
 
 	result.alpha = result.xmin = result.L = 0;
-	plfit_discrete_in_range(data, n, 1.01, 5.0, 0.01, 0, &result);
+	options.alpha_method = PLFIT_LINEAR_SCAN;
+	options.alpha.min = 1.01;
+	options.alpha.max = 5.0;
+	options.alpha.step = 0.01;
+	plfit_discrete(data, n, &options, &result);
 	ASSERT_ALMOST_EQUAL(result.alpha, 2.58, 1e-1);
 	ASSERT_EQUAL(result.xmin, 2);
 	ASSERT_ALMOST_EQUAL(result.L, -9155.62809, 1e-4);

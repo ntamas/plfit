@@ -142,6 +142,8 @@ void process_file(FILE* f, const char* fname) {
     double* data;
     size_t n = 0, nalloc = 100;
     unsigned short int warned = 0, discrete = opts.force_continuous ? 0 : 1;
+	plfit_continuous_options_t plfit_continuous_options;
+	plfit_discrete_options_t plfit_discrete_options;
     plfit_result_t result;
 
     /* allocate memory for 100 samples */
@@ -185,42 +187,39 @@ void process_file(FILE* f, const char* fname) {
         return;
     }
 
+	/* construct the plfit options */
+	plfit_continuous_options_init(&plfit_continuous_options);
+	plfit_discrete_options_init(&plfit_discrete_options);
+	plfit_continuous_options.finite_size_correction = opts.finite_size_correction;
+	plfit_discrete_options.finite_size_correction = opts.finite_size_correction;
+
     /* fit the power-law distribution */
     if (discrete) {
         if (opts.alpha_step > 0) {
             /* Old estimation based on brute-force search */
-            if (opts.xmin < 0) {
-                /* Estimate xmin and alpha */
-                plfit_discrete_in_range(data, n,
-                        opts.alpha_min, opts.alpha_max, opts.alpha_step,
-                        opts.finite_size_correction, &result);
-            } else {
-                /* Estimate alpha only */
-                plfit_estimate_alpha_discrete_old(data, n, opts.xmin,
-                        opts.alpha_min, opts.alpha_max, opts.alpha_step,
-                        opts.finite_size_correction, &result);
-            }
+			plfit_discrete_options.alpha_method = PLFIT_LINEAR_SCAN;
+			plfit_discrete_options.alpha.min = opts.alpha_min;
+			plfit_discrete_options.alpha.max = opts.alpha_max;
+			plfit_discrete_options.alpha.step = opts.alpha_step;
         } else {
-            /* New estimation with the L-BFGS algorithm */
-            if (opts.xmin < 0) {
-                /* Estimate xmin and alpha */
-                plfit_discrete(data, n,
-                        opts.finite_size_correction, &result);
-            } else {
-                /* Estimate alpha only */
-                plfit_estimate_alpha_discrete(data, n, opts.xmin,
-                        opts.finite_size_correction, &result);
-            }
-        }
+			plfit_discrete_options.alpha_method = PLFIT_LBFGS;
+		}
+		if (opts.xmin < 0) {
+			/* Estimate xmin and alpha */
+			plfit_discrete(data, n, &plfit_discrete_options, &result);
+		} else {
+			/* Estimate alpha only */
+			plfit_estimate_alpha_discrete(data, n, opts.xmin,
+					&plfit_discrete_options, &result);
+		}
     } else {
         if (opts.xmin < 0) {
             /* Estimate xmin and alpha */
-            plfit_continuous(data, n,
-                    opts.finite_size_correction, &result);
+            plfit_continuous(data, n, &plfit_continuous_options, &result);
         } else {
             /* Estimate alpha only */
             plfit_estimate_alpha_continuous(data, n, opts.xmin,
-                    opts.finite_size_correction, &result);
+                    &plfit_continuous_options, &result);
         }
     }
 
