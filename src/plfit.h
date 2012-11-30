@@ -99,8 +99,6 @@ int plfit_continuous(double* xs, size_t n,
 
 int plfit_estimate_alpha_discrete(double* xs, size_t n, double xmin,
         const plfit_discrete_options_t* options, plfit_result_t *result);
-int plfit_estimate_alpha_discrete_fast(double* xs, size_t n, double xmin,
-        const plfit_discrete_options_t* options, plfit_result_t *result);
 int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha, double xmin, double* l);
 int plfit_discrete(double* xs, size_t n, const plfit_discrete_options_t* options,
 		plfit_result_t* result);

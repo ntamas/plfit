@@ -52,6 +52,19 @@ static PyObject* l_output_helper(PyObject* target, PyObject* o) {
 /* Data types */
 typedef unsigned short int plfit_bool_t;
 
+typedef enum {
+    PLFIT_GSS_OR_LINEAR,
+    PLFIT_LINEAR_ONLY,
+    PLFIT_DEFAULT_CONTINUOUS_METHOD = PLFIT_GSS_OR_LINEAR
+} plfit_continuous_method_t;
+
+typedef enum {
+    PLFIT_LBFGS,
+    PLFIT_LINEAR_SCAN,
+    PLFIT_PRETEND_CONTINUOUS,
+    PLFIT_DEFAULT_DISCRETE_METHOD = PLFIT_LBFGS
+} plfit_discrete_method_t;
+
 typedef struct _plfit_result_t {
     double alpha;
     double xmin;
@@ -68,6 +81,55 @@ typedef struct _plfit_result_t {
         }
     }
 } plfit_result_t;
+
+typedef struct _plfit_continuous_options_t {
+    plfit_bool_t finite_size_correction;
+    plfit_continuous_method_t xmin_method;
+
+    %extend {
+        _plfit_continuous_options_t() {
+            plfit_continuous_options_t* obj = (plfit_continuous_options_t*)
+                malloc(sizeof(plfit_continuous_options_t));
+            plfit_continuous_options_init(obj);
+            return obj;
+        }
+
+        char *__str__() {
+            static char temp[512];
+            sprintf(temp, "finite_size_correction = %d, xmin_method = %d",
+                $self->finite_size_correction, $self->xmin_method);
+            return temp;
+        }
+    }
+} plfit_continuous_options_t;
+
+typedef struct _plfit_discrete_options_t {
+    plfit_bool_t finite_size_correction;
+    plfit_discrete_method_t alpha_method;
+    struct {
+        double min;
+        double max;
+        double step;
+    } alpha;
+
+    %extend {
+        _plfit_discrete_options_t() {
+            plfit_discrete_options_t* obj = (plfit_discrete_options_t*)
+                malloc(sizeof(plfit_discrete_options_t));
+            plfit_discrete_options_init(obj);
+            return obj;
+        }
+
+        char *__str__() {
+            static char temp[512];
+            sprintf(temp, "finite_size_correction = %d, alpha_method = %d, "
+                "alpha.min = %lg, alpha.step = %lg, alpha.max = %lg",
+                $self->finite_size_correction, $self->alpha_method,
+                $self->alpha.min, $self->alpha.step, $self->alpha.max);
+            return temp;
+        }
+    }
+} plfit_discrete_options_t;
 
 /* Typemap for incoming samples */
 %typemap(in) (double* xs, size_t n) {
@@ -130,27 +192,21 @@ typedef struct _plfit_result_t {
 
 /********** continuous power law distribution fitting **********/
 
-int plfit_log_likelihood_continuous(double* xs, size_t n, double alpha, double xmin, double* OUTPUT);
-int plfit_estimate_alpha_continuous(double* xs, size_t n, double xmin, plfit_bool_t finite_size_correction = 0, plfit_result_t* OUTPUT);
-int plfit_continuous(double* xs, size_t n, plfit_bool_t finite_size_correction = 0, plfit_result_t* OUTPUT);
+int plfit_log_likelihood_continuous(double* xs, size_t n, double alpha,
+        double xmin, double* OUTPUT);
+int plfit_estimate_alpha_continuous(double* xs, size_t n, double xmin,
+        const plfit_continuous_options_t* options=0, plfit_result_t* OUTPUT);
+int plfit_continuous(double* xs, size_t n,
+        const plfit_continuous_options_t* options=0, plfit_result_t* OUTPUT);
 
 /********** discrete power law distribution fitting **********/
 
 int plfit_estimate_alpha_discrete(double* xs, size_t n, double xmin,
-        plfit_bool_t finite_size_correction = 0, plfit_result_t* OUTPUT);
-int plfit_estimate_alpha_discrete_old(double* xs, size_t n, double xmin,
-        double alpha_min = 1.5, double alpha_max = 3.5, double alpha_step = 0.01,
-        plfit_bool_t finite_size_correction = 0, plfit_result_t* OUTPUT);
-int plfit_estimate_alpha_discrete_fast(double* xs, size_t n, double xmin,
-        plfit_bool_t finite_size_correction = 0, plfit_result_t* OUTPUT);
+        const plfit_discrete_options_t* options=0, plfit_result_t* OUTPUT);
 int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha,
         double xmin, double* OUTPUT);
 int plfit_discrete(double* xs, size_t n,
-        plfit_bool_t finite_size_correction = 0,
-        plfit_result_t* OUTPUT);
-int plfit_discrete_in_range(double* xs, size_t n, double alpha_min = 1.5,
-        double alpha_max = 3.5, double alpha_step = 0.01,
-        unsigned short int finite_size_correction = 0,
+        const plfit_discrete_options_t* options=0,
         plfit_result_t* OUTPUT);
 
 %exception;
