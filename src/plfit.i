@@ -49,6 +49,10 @@ static PyObject* l_output_helper(PyObject* target, PyObject* o) {
 }
 %}
 
+#define PLFIT_VERSION_MAJOR 0
+#define PLFIT_VERSION_MINOR 6
+#define PLFIT_VERSION_STRING "0.6"
+
 /* Data types */
 typedef unsigned short int plfit_bool_t;
 
@@ -210,3 +214,7 @@ int plfit_discrete(double* xs, size_t n,
         plfit_result_t* OUTPUT);
 
 %exception;
+
+%pythoncode %{
+__version__ = PLFIT_VERSION_STRING
+%}
