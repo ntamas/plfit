@@ -213,6 +213,11 @@ int plfit_discrete(double* xs, size_t n,
         const plfit_discrete_options_t* options=0,
         plfit_result_t* OUTPUT);
 
+/********** calculating descriptive statistics **********/
+
+int plfit_moments(double* xs, size_t n, double* OUTPUT, double* OUTPUT,
+        double* OUTPUT, double* OUTPUT);
+
 %exception;
 
 %pythoncode %{

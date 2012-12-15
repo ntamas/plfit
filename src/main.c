@@ -1,3 +1,4 @@
+/* vim:set ts=4 sw=4 sts=4 et: */
 /* main.c
  *
  * Copyright (C) 2010-2012 Tamas Nepusz
@@ -31,6 +32,7 @@ typedef struct _cmd_options_t {
     unsigned short int brief_mode;
     unsigned short int finite_size_correction;
     unsigned short int force_continuous;
+    unsigned short int print_moments;
     double xmin;
 } cmd_options_t;
 
@@ -67,6 +69,9 @@ void usage(char* argv[]) {
             "    -f        use finite-size correction\n"
             "    -m XMIN   use XMIN as the minimum value for x instead of searching\n"
             "              for the optimal value\n"
+            "    -M        print the first four central moments (i.e. mean, variance,\n"
+            "              skewness and kurtosis) of the input data to help\n"
+            "              assessing the shape of the pdf it may have come from.\n"
     );
     return;
 }
@@ -80,11 +85,12 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
     opts->brief_mode = 0;
     opts->finite_size_correction = 0;
     opts->force_continuous = 0;
+    opts->print_moments = 0;
     opts->xmin = -1;
 
     opterr = 0;
 
-    while ((c = getopt(argc, argv, "a:bcfhm:tv")) != -1) {
+    while ((c = getopt(argc, argv, "a:bcfhm:Mtv")) != -1) {
         switch (c) {
             case 'a':
                 if (sscanf(optarg, "%lf:%lf:%lf", &opts->alpha_min,
@@ -117,6 +123,10 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
                 }
                 break;
 
+            case 'M':           /* print the moments of the distribution */
+                opts->print_moments = 1;
+                break;
+
             case 'v':           /* version information */
                 show_version(stdout);
                 return 0;
@@ -145,6 +155,12 @@ void process_file(FILE* f, const char* fname) {
 	plfit_continuous_options_t plfit_continuous_options;
 	plfit_discrete_options_t plfit_discrete_options;
     plfit_result_t result;
+    struct {
+        double mean;
+        double variance;
+        double skewness;
+        double kurtosis;
+    } moments;
 
     /* allocate memory for 100 samples */
     data = (double*)calloc(nalloc, sizeof(double));
@@ -223,14 +239,35 @@ void process_file(FILE* f, const char* fname) {
         }
     }
 
+    /* calculate the moments if needed */
+    if (opts.print_moments) {
+        plfit_moments(data, n, &moments.mean, &moments.variance,
+                &moments.skewness, &moments.kurtosis);
+    }
+
     /* print the results */
     if (opts.brief_mode) {
+        if (opts.print_moments) {
+            printf("%s: S %lg %lg %lg %lg\n", fname, moments.mean, moments.variance,
+                    moments.skewness, moments.kurtosis);
+        }
         printf("%s: %c %lg %lg %lg %lg %lg\n", fname, discrete ? 'D' : 'C',
                 result.alpha, result.xmin, result.L, result.D, result.p);
     } else {
         printf("%s:\n", fname);
         if (!opts.finite_size_correction && n < 50)
             printf("\tWARNING: finite size bias may be present\n\n");
+
+        if (opts.print_moments) {
+            printf("\tCentral moments\n");
+            printf("\tmean     = %12.5lf\n", moments.mean);
+            printf("\tvariance = %12.5lf\n", moments.variance);
+            printf("\tstd.dev. = %12.5lf\n", sqrt(moments.variance));
+            printf("\tskewness = %12.5lf\n", moments.skewness);
+            printf("\tkurtosis = %12.5lf\n", moments.kurtosis);
+            printf("\tex.kurt. = %12.5lf\n", moments.kurtosis-3);
+            printf("\n");
+        }
 
         printf("\t%s MLE", discrete ? "Discrete" : "Continuous");
         if (opts.finite_size_correction)

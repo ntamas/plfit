@@ -103,6 +103,11 @@ int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha, double xmi
 int plfit_discrete(double* xs, size_t n, const plfit_discrete_options_t* options,
 		plfit_result_t* result);
 
+/********** calculating descriptive statistics **********/
+
+int plfit_moments(double* data, size_t n, double* mean, double* variance,
+        double* skewness, double* kurtosis);
+
 __END_DECLS
 
 #endif /* __PLFIT_H__ */

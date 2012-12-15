@@ -112,6 +112,45 @@ The ``-h`` switch gives you a nice help message::
 
     $ ./plfit -h
 
+You may also ask ``plfit`` to calculate the first four moments of the input
+data (besides doing a regular power law fitting) using the ``-M`` switch. You
+can then use the values of the moments to decide whether the distribution is
+skewed and fat-tailed enough to be considered a "real" power-law.
+
+``plfit`` has two output modes: a human-readable and a brief (but easily
+parseable) format. By default, the results are printed in human-readable
+format, which looks like this::
+
+    input.txt:
+            Central moments
+            mean     =      2.71550
+            variance =     43.36610
+            std.dev. =      6.58529
+            skewness =     23.30801
+            kurtosis =    798.21995
+            ex.kurt. =    795.21995
+
+            Discrete MLE
+            alpha =      2.58306
+            xmin  =      2.00000
+            L     =  -9155.61707
+            D     =      0.00428
+            p     =      0.99996
+
+The moments are printed only if ``-M`` is given in the command line. The output
+of the brief mode (when ``-b`` is given) looks like this::
+
+    input.txt: M 2.7155 43.3661 23.308 798.22
+    input.txt: D 2.58306 2 -9155.62 0.00428253 0.999965
+
+where the line containing ``M`` (i.e. the first one) lists the first four
+central moments (mean, variance, skewness, kurtosis) and the line containing
+``D`` (for discrete data) or ``C`` (for continuous data) contains the fitted
+exponent, minimum X value, log-likelihood (L), Kolmogorov-Smirnov statistic (D)
+and p-value (p). Note that the ``M`` line does not list the standard deviation
+(which is simply the square root of the variance) and the excess kurtosis
+(which is simply the kurtosis minus 3).
+
 From Python
 ^^^^^^^^^^^
 
