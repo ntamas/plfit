@@ -32,6 +32,7 @@ typedef struct _cmd_options_t {
     double gamma;
     double kappa;
     double offset;
+    double xmin;
 
     plfit_bool_t continuous;
 
@@ -65,6 +66,7 @@ void usage(char* argv[]) {
             "    -k KAPPA   use exponential cutoff with kappa = KAPPA\n"
             "    -o OFFSET  add OFFSET to each generated sample\n"
             "    -s SEED    use SEED to seed the random number generator\n"
+            "    -x XMIN    generate a power-law distribution that starts at XMIN\n"
     );
     return;
 }
@@ -77,10 +79,11 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
     opts->kappa = -1;
     opts->seed = 0;
     opts->use_seed = 0;
+    opts->xmin = 1;
 
     opterr = 0;
 
-    while ((c = getopt(argc, argv, "chk:o:s:v")) != -1) {
+    while ((c = getopt(argc, argv, "chk:o:s:vx:")) != -1) {
         switch (c) {
             case 'c':           /* use continuous samples */
                 opts->continuous = 1;
@@ -116,6 +119,18 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
                 show_version(stdout);
                 return 0;
 
+            case 'x':           /* specify xmin explicitly */
+                if (!sscanf(optarg, "%lg", &opts->xmin)) {
+                    fprintf(stderr, "Invalid value for option `-%c'\n", optopt);
+                    return 1;
+                }
+                if (opts->xmin <= 0) {
+                    fprintf(stderr, "Value of option `-%c' must be positive\n",
+                            optopt);
+                    return 1;
+                }
+                break;
+
             case '?':           /* unknown option */
                 if (optopt == 'o' || optopt == 's' || optopt == 'k')
                     fprintf(stderr, "Option `-%c' requires an argument\n", optopt);
@@ -128,6 +143,11 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
             default:
                 abort();
         }
+    }
+
+    if (!opts->continuous && ceil(opts->xmin) != opts->xmin) {
+        fprintf(stderr, "WARNING: xmin is rounded up to the nearest integer\n");
+        opts->xmin = ceil(opts->xmin);
     }
 
     return -1;
@@ -152,16 +172,15 @@ int sample_discrete() {
         return 7;
     }
 
-    probs[0] = 0;
     if (opts.kappa > 0) {
         /* Power law with exponential cutoff */
-        for (i = 1; i < num_probs; i++) {
-            probs[i] = exp(-i / opts.kappa) * pow(i, -opts.gamma);
+        for (i = 0; i < num_probs; i++) {
+            probs[i] = exp(-i / opts.kappa) * pow((i + opts.xmin) / opts.xmin, -opts.gamma);
         }
     } else {
         /* Pure power law */
-        for (i = 1; i < num_probs; i++) {
-            probs[i] = pow(i, -opts.gamma);
+        for (i = 0; i < num_probs; i++) {
+            probs[i] = pow((i + opts.xmin) / opts.xmin, -opts.gamma);
         }
     }
 
@@ -181,7 +200,7 @@ int sample_discrete() {
         plfit_walker_alias_sampler_sample(&sampler, samples, n, &rng);
 
         for (i = 0; i < n; i++) {
-            printf("%ld\n", (long int)(samples[i] + opts.offset));
+            printf("%ld\n", (long int)(samples[i] + opts.offset + opts.xmin));
         }
 
         opts.num_samples -= n;
@@ -205,7 +224,7 @@ int sample_continuous() {
 
     for (i = 0; i < opts.num_samples; i++) {
         u = mt_uniform_01(&rng);
-        printf("%.8f\n", pow(u, gamma) + opts.offset);
+        printf("%.8f\n", pow(u, gamma) * opts.xmin + opts.offset);
     }
 
     return 0;
