@@ -174,11 +174,17 @@ int sample_discrete() {
 
     if (opts.kappa > 0) {
         /* Power law with exponential cutoff */
+        #ifdef _OPENMP
+        #  pragma omp parallel for private(i)
+        #endif
         for (i = 0; i < num_probs; i++) {
             probs[i] = exp(-i / opts.kappa) * pow((i + opts.xmin) / opts.xmin, -opts.gamma);
         }
     } else {
         /* Pure power law */
+        #ifdef _OPENMP
+        #  pragma omp parallel for private(i)
+        #endif
         for (i = 0; i < num_probs; i++) {
             probs[i] = pow((i + opts.xmin) / opts.xmin, -opts.gamma);
         }
