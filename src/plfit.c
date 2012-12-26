@@ -307,7 +307,8 @@ int plfit_continuous(double* xs, size_t n, const plfit_continuous_options_t* opt
 	plfit_continuous_xmin_opt_data_t opt_data;
 	plfit_result_t best_result;
 	int success;
-	size_t i, best_n, num_uniques;
+	long int i;
+	size_t best_n, num_uniques;
     double x, *px;
 
     DATA_POINTS_CHECK;
@@ -358,14 +359,54 @@ int plfit_continuous(double* xs, size_t n, const plfit_continuous_options_t* opt
 		best_result.D = DBL_MAX;
 		best_result.xmin = 0;
 		best_result.alpha = 0;
-		
-		for (i = 0; i < num_uniques-1; i++) {
-			plfit_i_continuous_xmin_opt_evaluate(&opt_data, i);
-			if (opt_data.last.D < best_result.D) {
-				best_result = opt_data.last;
-				best_n = opt_data.end - opt_data.uniques[i] + 1;
-			}
-		}
+
+        /* Due to the OpenMP parallelization, we do things as follows. Each
+         * OpenMP thread will search for the best D-score on its own and store
+         * the result in a private local_best_result variable. The end of the
+         * parallel block contains a critical section that threads will enter
+         * one by one and compare their private local_best_result with a global
+         * best_result that is shared among the threads.
+         */
+#ifdef _OPENMP
+#pragma omp parallel shared(best_result,best_n) private(i) firstprivate(opt_data)
+#endif
+        {
+            /* These variables are private since they are declared within the
+             * parallel block */
+            plfit_result_t local_best_result;
+            size_t local_best_n;
+
+            /* Initialize the local_best_result and local_best_n variables */
+            local_best_n = 0;
+            local_best_result.D = DBL_MAX;
+            local_best_result.xmin = 0;
+            local_best_result.alpha = 0;
+
+            /* The range of the for loop below is divided among the threads.
+             * nowait means that there will be no implicit barrier at the end
+             * of the loop so threads that get there earlier can enter the
+             * critical section without waiting for the others */
+#ifdef _OPENMP
+#pragma omp for nowait schedule(dynamic,10)
+#endif
+            for (i = 0; i < num_uniques-1; i++) {
+                plfit_i_continuous_xmin_opt_evaluate(&opt_data, i);
+                if (opt_data.last.D < local_best_result.D) {
+                    local_best_result = opt_data.last;
+                    local_best_n = opt_data.end - opt_data.uniques[i] + 1;
+                }
+            }
+
+            /* Critical section that finds the global best result from the
+             * local ones collected by each thread */
+#ifdef _OPENMP
+#pragma omp critical
+#endif
+            if (local_best_result.D < best_result.D) {
+                best_result = local_best_result;
+                best_n = local_best_n;
+            }
+        }
 	}
 
     /* Get rid of the uniques array, we don't need it any more */
