@@ -345,7 +345,11 @@ void process_file(FILE* f, const char* fname) {
         printf("\txmin  = %12.5lf\n", result.xmin );
         printf("\tL     = %12.5lf\n", result.L    );
         printf("\tD     = %12.5lf\n", result.D    );
-        printf("\tp     = %12.5lf\n", result.p    );
+        if (!isnan(result.p)) {
+            printf("\tp     = %12.5lf%s\n", result.p,
+                    opts.p_value_method == PLFIT_P_VALUE_APPROXIMATE ?
+                    " (approximation)" : "");
+        }
         printf("\n");
     }
 

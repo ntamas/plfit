@@ -168,6 +168,31 @@ You can also invoke ``dir(plfit)`` to examine the namespace of the
 ``plfit`` module, listing all the functions and data types.
 There's also a test script in ``test/test_python_module.py``.
 
+Using multiple CPU cores when fitting power-laws
+------------------------------------------------
+
+``plfit`` has experimental support for parallel computation on multi-core
+machines. This is not tested thoroughly yet, but I am using it regularly on my
+machine so it should be okay in general.
+
+The default compilation settings of ``plfit`` compile the executable in
+sequential mode, therefore ``plfit`` will use only a single core of your machine.
+However, some parts of the calculation may be speeded up by distributing the
+work among multiple CPU cores. If you want to enable parallelized computing,
+launch ``ccmake .`` in the build directory, set the ``PLFIT_USE_OPENMP``
+option to ``ON``, and recompile everything by calling ``make``. If you are
+compiling ``plfit`` without CMake, add the necessary compiler switch to enable
+OpenMP in the compiler. For ``gcc``, you should add the ``-fopenmp`` switch, so
+the compiler invocation should start with ``gcc -fopenmp``.
+
+Theoretically, the results provided by ``plfit`` in parallelized mode should be
+exactly the same as the results provided in sequential mode (apart from the
+exact p-values of course, which tend to fluctuate between runs). If you have
+a dataset for which this does not hold, please file a bug report for ``plfit``
+on GitHub_.
+
+.. _GitHub: http://github.com/ntamas/plfit
+
 References
 ----------
 

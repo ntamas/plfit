@@ -57,9 +57,10 @@ static PyObject* l_output_helper(PyObject* target, PyObject* o) {
 typedef unsigned short int plfit_bool_t;
 
 typedef enum {
-    PLFIT_GSS_OR_LINEAR,
     PLFIT_LINEAR_ONLY,
-    PLFIT_DEFAULT_CONTINUOUS_METHOD = PLFIT_GSS_OR_LINEAR
+    PLFIT_STRATIFIED_SAMPLING,
+    PLFIT_GSS_OR_LINEAR,
+    PLFIT_DEFAULT_CONTINUOUS_METHOD = PLFIT_STRATIFIED_SAMPLING
 } plfit_continuous_method_t;
 
 typedef enum {
@@ -68,6 +69,13 @@ typedef enum {
     PLFIT_PRETEND_CONTINUOUS,
     PLFIT_DEFAULT_DISCRETE_METHOD = PLFIT_LBFGS
 } plfit_discrete_method_t;
+
+typedef enum {
+    PLFIT_P_VALUE_SKIP,
+    PLFIT_P_VALUE_APPROXIMATE,
+    PLFIT_P_VALUE_EXACT,
+    PLFIT_DEFAULT_P_VALUE_METHOD = PLFIT_P_VALUE_EXACT
+} plfit_p_value_method_t;
 
 typedef struct _plfit_result_t {
     double alpha;
@@ -89,6 +97,8 @@ typedef struct _plfit_result_t {
 typedef struct _plfit_continuous_options_t {
     plfit_bool_t finite_size_correction;
     plfit_continuous_method_t xmin_method;
+    plfit_p_value_method_t p_value_method;
+    mt_rng_t* rng;
 
     %extend {
         _plfit_continuous_options_t() {
@@ -100,8 +110,10 @@ typedef struct _plfit_continuous_options_t {
 
         char *__str__() {
             static char temp[512];
-            sprintf(temp, "finite_size_correction = %d, xmin_method = %d",
-                $self->finite_size_correction, $self->xmin_method);
+            sprintf(temp, "finite_size_correction = %d, xmin_method = %d, "
+                "p_value_method = %d",
+                $self->finite_size_correction, $self->xmin_method,
+                $self->p_value_method);
             return temp;
         }
     }
@@ -115,6 +127,8 @@ typedef struct _plfit_discrete_options_t {
         double max;
         double step;
     } alpha;
+    plfit_p_value_method_t p_value_method;
+    mt_rng_t* rng;
 
     %extend {
         _plfit_discrete_options_t() {
@@ -127,9 +141,11 @@ typedef struct _plfit_discrete_options_t {
         char *__str__() {
             static char temp[512];
             sprintf(temp, "finite_size_correction = %d, alpha_method = %d, "
-                "alpha.min = %lg, alpha.step = %lg, alpha.max = %lg",
+                "alpha.min = %lg, alpha.step = %lg, alpha.max = %lg, "
+                "p_value_method = %d",
                 $self->finite_size_correction, $self->alpha_method,
-                $self->alpha.min, $self->alpha.step, $self->alpha.max);
+                $self->alpha.min, $self->alpha.step, $self->alpha.max,
+                $self->p_value_method);
             return temp;
         }
     }
