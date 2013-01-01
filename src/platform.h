@@ -36,7 +36,9 @@ __BEGIN_DECLS
 
 #ifdef _MSC_VER
 #define snprintf sprintf_s
+#define inline  __inline
 #define isnan(x) _isnan(x)
+#define isfinite(x) _finite(x)
 #ifndef INFINITY
 #  define INFINITY (DBL_MAX+DBL_MAX)
 #endif

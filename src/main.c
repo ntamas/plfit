@@ -22,6 +22,8 @@
 #include <math.h>
 #include <stdio.h>
 #include <stdlib.h>
+#include <string.h>
+#include <time.h>
 #include "getopt.h"
 #include "plfit.h"
 
@@ -29,14 +31,19 @@ typedef struct _cmd_options_t {
     double alpha_min;
     double alpha_step;
     double alpha_max;
-    unsigned short int brief_mode;
-    unsigned short int finite_size_correction;
-    unsigned short int force_continuous;
-    unsigned short int print_moments;
+    plfit_bool_t brief_mode;
+    double divisor;
+    plfit_bool_t finite_size_correction;
+    plfit_bool_t force_continuous;
+    plfit_bool_t print_moments;
+    plfit_p_value_method_t p_value_method;
+    unsigned long seed;
+    plfit_bool_t use_seed;
     double xmin;
 } cmd_options_t;
 
 cmd_options_t opts;
+mt_rng_t rng;
 
 void show_version(FILE* f) {
     fprintf(f, "plfit " PLFIT_VERSION_STRING "\n");
@@ -66,12 +73,17 @@ void usage(char* argv[]) {
             "    -b        brief (but easily parseable) output format\n"
             "    -c        force continuous fitting even when every sample\n"
             "              is an integer\n"
+            "    -D VALUE  divide each sample in the input data by VALUE to prevent\n"
+            "              underflows when fitting discrete power-law distribution\n"
             "    -f        use finite-size correction\n"
             "    -m XMIN   use XMIN as the minimum value for x instead of searching\n"
             "              for the optimal value\n"
             "    -M        print the first four central moments (i.e. mean, variance,\n"
             "              skewness and kurtosis) of the input data to help\n"
             "              assessing the shape of the pdf it may have come from.\n"
+            "    -p METHOD use METHOD to calculate the p-value. Must be one of\n"
+            "              skip, approximate or exact. Default is exact.\n"
+            "    -s SEED   use SEED to seed the random number generator\n"
     );
     return;
 }
@@ -83,14 +95,18 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
     opts->alpha_step = 0;
     opts->alpha_max  = 3.5;
     opts->brief_mode = 0;
+    opts->divisor = 1;
     opts->finite_size_correction = 0;
     opts->force_continuous = 0;
     opts->print_moments = 0;
+    opts->p_value_method = PLFIT_P_VALUE_EXACT;
+    opts->seed = 0;
+    opts->use_seed = 0;
     opts->xmin = -1;
 
     opterr = 0;
 
-    while ((c = getopt(argc, argv, "a:bcfhm:Mtv")) != -1) {
+    while ((c = getopt(argc, argv, "a:bcD:fhm:Mp:ts:v")) != -1) {
         switch (c) {
             case 'a':
                 if (sscanf(optarg, "%lf:%lf:%lf", &opts->alpha_min,
@@ -106,6 +122,13 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
 
             case 'c':           /* force continuous fitting */
                 opts->force_continuous = 1;
+                break;
+
+            case 'D':           /* divide the input data */
+                if (!sscanf(optarg, "%lg", &opts->divisor) || opts->divisor <= 0) {
+                    fprintf(stderr, "Invalid value for option `-%c'\n", optopt);
+                    return 1;
+                }
                 break;
 
             case 'f':           /* finite size correction */
@@ -125,6 +148,28 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
 
             case 'M':           /* print the moments of the distribution */
                 opts->print_moments = 1;
+                break;
+
+            case 'p':           /* p-value method */
+                if (!strcmp(optarg, "none") || !strcmp(optarg, "skip")) {
+                    opts->p_value_method = PLFIT_P_VALUE_SKIP;
+                } else if (!strcmp(optarg, "approximate") || !strcmp(optarg, "approx")) {
+                    opts->p_value_method = PLFIT_P_VALUE_APPROXIMATE;
+                } else if (!strcmp(optarg, "exact")) {
+                    opts->p_value_method = PLFIT_P_VALUE_EXACT;
+                } else {
+                    fprintf(stderr, "Invalid value for option `-%c': %s\n", optopt,
+                            optarg);
+                    return 1;
+                }
+                break;
+
+            case 's':           /* set random seed */
+                if (!sscanf(optarg, "%lu", &opts->seed)) {
+                    fprintf(stderr, "Invalid value for option `-%c'\n", optopt);
+                    return 1;
+                }
+                opts->use_seed = 1;
                 break;
 
             case 'v':           /* version information */
@@ -151,6 +196,7 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
 void process_file(FILE* f, const char* fname) {
     double* data;
     size_t n = 0, nalloc = 100;
+    long int i;
     unsigned short int warned = 0, discrete = opts.force_continuous ? 0 : 1;
 	plfit_continuous_options_t plfit_continuous_options;
 	plfit_discrete_options_t plfit_discrete_options;
@@ -203,11 +249,33 @@ void process_file(FILE* f, const char* fname) {
         return;
     }
 
+    /* apply the divisor if needed */
+    if (opts.divisor != 1) {
+#ifdef _OPENMP
+#pragma omp parallel for private(i)
+#endif
+        for (i = 0; i < n; i++) {
+            data[i] /= opts.divisor;
+        }
+        if (discrete) {
+#ifdef _OPENMP
+#pragma omp parallel for private(i)
+#endif
+            for (i = 0; i < n; i++) {
+                data[i] = round(data[i]);
+            }
+        }
+    }
+
 	/* construct the plfit options */
 	plfit_continuous_options_init(&plfit_continuous_options);
 	plfit_discrete_options_init(&plfit_discrete_options);
 	plfit_continuous_options.finite_size_correction = opts.finite_size_correction;
 	plfit_discrete_options.finite_size_correction = opts.finite_size_correction;
+    plfit_continuous_options.p_value_method = opts.p_value_method;
+    plfit_discrete_options.p_value_method = opts.p_value_method;
+    plfit_continuous_options.rng = &rng;
+    plfit_discrete_options.rng = &rng;
 
     /* fit the power-law distribution */
     if (discrete) {
@@ -291,6 +359,9 @@ int main(int argc, char* argv[]) {
 
     if (result != -1)
         return result;
+
+    srand(opts.use_seed ? opts.seed : time(0));
+    mt_init(&rng);
 
     retval = 0;
     if (optind == argc) {

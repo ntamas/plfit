@@ -1,3 +1,4 @@
+/* vim:set ts=4 sw=2 sts=2 et: */
 /* specfunc/zeta.c
  * 
  * Copyright (C) 1996, 1997, 1998, 1999, 2000, 2004 Gerard Jungman
@@ -87,17 +88,17 @@ static int gsl_sf_hzeta_e(const double s, const double q, gsl_sf_result * result
   /* CHECK_POINTER(result) */
 
   if(s <= 1.0 || q <= 0.0) {
-	PLFIT_ERROR("s must be larger than 1.0 and q must be larger than zero", PLFIT_EINVAL);
+    PLFIT_ERROR("s must be larger than 1.0 and q must be larger than zero", PLFIT_EINVAL);
   }
   else {
     const double max_bits = 54.0;
     const double ln_term0 = -s * log(q);  
 
     if(ln_term0 < GSL_LOG_DBL_MIN + 1.0) {
-	  PLFIT_ERROR("underflow", PLFIT_UNDRFLOW);
+      PLFIT_ERROR("underflow", PLFIT_UNDRFLOW);
     }
     else if(ln_term0 > GSL_LOG_DBL_MAX - 1.0) {
-	  PLFIT_ERROR("overflow", PLFIT_OVERFLOW);
+      PLFIT_ERROR("overflow", PLFIT_OVERFLOW);
     }
     else if((s > max_bits && q < 1.0) || (s > 0.5*max_bits && q < 0.25)) {
       result->val = pow(q, -s);

@@ -36,6 +36,101 @@
 __BEGIN_DECLS
 
 /**
+ * Draws a sample from a binomial distribution with the given count and
+ * probability values.
+ *
+ * This function is borrowed from R; see the corresponding license in
+ * \c rbinom.c. The return value is always an integer.
+ *
+ * The function is \em not thread-safe.
+ *
+ * \param  n    the number of trials
+ * \param  p    the success probability of each trial
+ * \param  rng  the Mersenne Twister random number generator to use
+ * \return the value drawn from the given binomial distribution.
+ */
+double plfit_rbinom(double n, double p, mt_rng_t* rng);
+
+/**
+ * Draws a sample from a Pareto distribution with the given minimum value and
+ * power-law exponent.
+ *
+ * \param  xmin    the minimum value of the distribution. Must be positive.
+ * \param  alpha   the exponent. Must be positive
+ * \param  rng     the Mersenne Twister random number generator to use
+ *
+ * \return the sample or NaN if one of the parameters is invalid
+ */
+double plfit_rpareto(double xmin, double alpha, mt_rng_t* rng);
+
+/**
+ * Draws a given number of samples from a Pareto distribution with the given
+ * minimum value and power-law exponent.
+ *
+ * \param  xmin    the minimum value of the distribution. Must be positive.
+ * \param  alpha   the exponent. Must be positive
+ * \param  n       the number of samples to draw
+ * \param  rng     the Mersenne Twister random number generator to use
+ * \param  result  the array where the result should be written. It must
+ *                 have enough space to store n items
+ *
+ * \return \c PLFIT_EINVAL if one of the parameters is invalid, zero otherwise
+ */
+int plfit_rpareto_array(double xmin, double alpha, size_t n, mt_rng_t* rng,
+        double* result);
+
+/**
+ * Draws a sample from a zeta distribution with the given minimum value and
+ * power-law exponent.
+ *
+ * \param  xmin    the minimum value of the distribution. Must be positive.
+ * \param  alpha   the exponent. Must be positive
+ * \param  rng     the Mersenne Twister random number generator to use
+ *
+ * \return the sample or NaN if one of the parameters is invalid
+ */
+double plfit_rzeta(double xmin, double alpha, mt_rng_t* rng);
+
+/**
+ * Draws a given number of samples from a zeta distribution with the given
+ * minimum value and power-law exponent.
+ *
+ * \param  xmin    the minimum value of the distribution. Must be positive.
+ * \param  alpha   the exponent. Must be positive
+ * \param  n       the number of samples to draw
+ * \param  rng     the Mersenne Twister random number generator to use
+ * \param  result  the array where the result should be written. It must
+ *                 have enough space to store n items
+ *
+ * \return \c PLFIT_EINVAL if one of the parameters is invalid, zero otherwise
+ */
+int plfit_rzeta_array(double xmin, double alpha, size_t n, mt_rng_t* rng,
+        double* result);
+
+/**
+ * Draws a sample from a uniform distribution with the given lower and
+ * upper bounds.
+ *
+ * The lower bound is inclusive, the uppoer bound is not.
+ *
+ * \param  lo   the lower bound
+ * \param  hi   the upper bound
+ * \param  rng  the Mersenne Twister random number generator to use
+ * \return the value drawn from the given uniform distribution.
+ */
+double plfit_runif(double lo, double hi, mt_rng_t* rng);
+
+/**
+ * Draws a sample from a uniform distribution over the [0; 1) interval.
+ *
+ * The interval is closed from the left and open from the right.
+ *
+ * \param  rng  the Mersenne Twister random number generator to use
+ * \return the value drawn from the given uniform distribution.
+ */
+double plfit_runif_01(mt_rng_t* rng);
+
+/**
  * Random sampler using Walker's alias method.
  */
 typedef struct {

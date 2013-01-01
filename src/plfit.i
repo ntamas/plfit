@@ -213,7 +213,14 @@ int plfit_discrete(double* xs, size_t n,
         const plfit_discrete_options_t* options=0,
         plfit_result_t* OUTPUT);
 
-/********** calculating descriptive statistics **********/
+/***** resampling routines to generate synthetic replicates ****/
+
+int plfit_resample_continuous(double* xs, size_t n, double alpha, double xmin,
+        size_t num_samples, mt_rng_t* rng, double* OUTPUT);
+int plfit_resample_discrete(double* xs, size_t n, double alpha, double xmin,
+        size_t num_samples, mt_rng_t* rng, double* OUTPUT);
+
+/************* calculating descriptive statistics **************/
 
 int plfit_moments(double* xs, size_t n, double* OUTPUT, double* OUTPUT,
         double* OUTPUT, double* OUTPUT);

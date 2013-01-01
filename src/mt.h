@@ -62,6 +62,21 @@ typedef struct {
 void mt_init(mt_rng_t* rng);
 
 /**
+ * \brief Initializes a Mersenne Twister random number generator, seeding it
+ *        from another one.
+ *
+ * The random number generator is seeded with random 32-bit numbers obtained
+ * from another, initialized Mersenne Twister random number generator.
+ *
+ * \param  rng     the random number generator to initialize
+ * \param  seeder  the random number generator that will seed the one being
+ *                 initialized. When null, the random number generator will
+ *                 be initialized from the built-in RNG as if \ref mt_init()
+ *                 was called.
+ */
+void mt_init_from_rng(mt_rng_t* rng, mt_rng_t* seeder);
+
+/**
  * \brief Returns the next 32-bit random number from the given Mersenne Twister
  * random number generator.
  *

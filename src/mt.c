@@ -15,12 +15,24 @@
 #include "mt.h"
 
 void mt_init(mt_rng_t* rng) {
+    mt_init_from_rng(rng, 0);
+}
+
+void mt_init_from_rng(mt_rng_t* rng, mt_rng_t* seeder) {
     int i;
-    for (i = 0; i < MT_LEN; i++) {
-        /* RAND_MAX is guaranteed to be at least 32767, so we can use two
-         * calls to rand() to produce a random 32-bit number */
-        rng->mt_buffer[i] = (rand() << 16) + rand();
+
+    if (seeder == 0) {
+        for (i = 0; i < MT_LEN; i++) {
+            /* RAND_MAX is guaranteed to be at least 32767, so we can use two
+             * calls to rand() to produce a random 32-bit number */
+            rng->mt_buffer[i] = (rand() << 16) + rand();
+        }
+    } else {
+        for (i = 0; i < MT_LEN; i++) {
+            rng->mt_buffer[i] = mt_random(seeder);
+        }
     }
+
     rng->mt_index = 0;
 }
 
@@ -72,4 +84,5 @@ uint32_t mt_random(mt_rng_t* rng) {
 double mt_uniform_01(mt_rng_t* rng) {
     return ((double)mt_random(rng)) / MT_RAND_MAX;
 }
+
 

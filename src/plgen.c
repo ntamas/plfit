@@ -160,68 +160,67 @@ int sample_discrete() {
     size_t num_probs;
     plfit_walker_alias_sampler_t sampler;
     long int i, n;
+    double u;
 
     if (opts.num_samples <= 0)
         return 0;
 
-    /* Construct probability array */
-    num_probs = 100000;
-    probs = (double*)calloc(num_probs, sizeof(double));
-    if (probs == 0) {
-        fprintf(stderr, "Not enough memory\n");
-        return 7;
-    }
-
     if (opts.kappa > 0) {
-        /* Power law with exponential cutoff */
-        #ifdef _OPENMP
-        #  pragma omp parallel for private(i)
-        #endif
+        /* Power law with exponential cutoff. We use Walker's algorithm here. */
+
+        /* Construct probability array */
+        num_probs = 100000;
+        probs = (double*)calloc(num_probs, sizeof(double));
+        if (probs == 0) {
+            fprintf(stderr, "Not enough memory\n");
+            return 7;
+        }
+
+#ifdef _OPENMP
+#pragma omp parallel for private(i)
+#endif
         for (i = 0; i < num_probs; i++) {
             probs[i] = exp(-i / opts.kappa) * pow((i + opts.xmin) / opts.xmin, -opts.gamma);
         }
+
+        /* Initialize sampler */
+        if (plfit_walker_alias_sampler_init(&sampler, probs, num_probs)) {
+            fprintf(stderr, "Error while initializing sampler\n");
+            free(probs);
+            return 9;
+        }
+
+        /* Free "probs" array */
+        free(probs);
+
+        /* Sampling */
+        while (opts.num_samples > 0) {
+            n = opts.num_samples > BLOCK_SIZE ? BLOCK_SIZE : opts.num_samples;
+            plfit_walker_alias_sampler_sample(&sampler, samples, n, &rng);
+
+            for (i = 0; i < n; i++) {
+                printf("%ld\n", (long int)(samples[i] + opts.offset + opts.xmin));
+            }
+
+            opts.num_samples -= n;
+        }
+
+        /* Destroy sampler */
+        plfit_walker_alias_sampler_destroy(&sampler);
+
     } else {
         /* Pure power law */
-        #ifdef _OPENMP
-        #  pragma omp parallel for private(i)
-        #endif
-        for (i = 0; i < num_probs; i++) {
-            probs[i] = pow((i + opts.xmin) / opts.xmin, -opts.gamma);
+        for (i = 0; i < opts.num_samples; i++) {
+            u = plfit_rzeta(opts.xmin, opts.gamma, &rng) + opts.offset;
+            printf("%.8f\n", u);
         }
     }
-
-    /* Initialize sampler */
-    if (plfit_walker_alias_sampler_init(&sampler, probs, num_probs)) {
-        fprintf(stderr, "Error while initializing sampler\n");
-        free(probs);
-        return 9;
-    }
-
-    /* Free "probs" array */
-    free(probs);
-
-    /* Sampling */
-    while (opts.num_samples > 0) {
-        n = opts.num_samples > BLOCK_SIZE ? BLOCK_SIZE : opts.num_samples;
-        plfit_walker_alias_sampler_sample(&sampler, samples, n, &rng);
-
-        for (i = 0; i < n; i++) {
-            printf("%ld\n", (long int)(samples[i] + opts.offset + opts.xmin));
-        }
-
-        opts.num_samples -= n;
-    }
-
-    /* Destroy sampler */
-    plfit_walker_alias_sampler_destroy(&sampler);
-
     return 0;
 }
 
 int sample_continuous() {
     long int i;
     double u;
-    double gamma = 1.0 / (1 - opts.gamma);
 
     if (opts.kappa > 0) {
         fprintf(stderr, "Exponential cutoff not supported for continuous sampling, sorry.\n");
@@ -229,8 +228,8 @@ int sample_continuous() {
     }
 
     for (i = 0; i < opts.num_samples; i++) {
-        u = mt_uniform_01(&rng);
-        printf("%.8f\n", pow(u, gamma) * opts.xmin + opts.offset);
+        u = plfit_rpareto(opts.xmin, opts.gamma-1, &rng) + opts.offset;
+        printf("%.8f\n", u);
     }
 
     return 0;
