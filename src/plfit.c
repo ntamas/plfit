@@ -293,7 +293,9 @@ static int plfit_i_calculate_p_value_continuous(double* xs, size_t n,
          * we are compiling without OpenMP, there is only one thread and it uses
          * the master RNG. This section must be critical to ensure that only one
          * thread is using the master RNG at the same time. */
+#ifdef _OPENMP
         mt_rng_t private_rng;
+#endif
         mt_rng_t *p_rng;
         double *ys;
         long int i;
@@ -596,7 +598,7 @@ int plfit_continuous(double* xs, size_t n, const plfit_continuous_options_t* opt
                 opt_data.num_probes = num_strata;
                 plfit_i_continuous_xmin_opt_linear_scan(&opt_data, &best_result, &best_n);
 
-                opt_data.num_probes = -1;
+                opt_data.num_probes = 0;
                 for (i = 0; i < num_strata; i++) {
                     if (*strata[i] == best_result.xmin) {
                         /* Okay, scan more thoroughly from strata[i-1] to strata[i+1],
@@ -613,7 +615,7 @@ int plfit_continuous(double* xs, size_t n, const plfit_continuous_options_t* opt
                 }
 
                 free(strata);
-                if (opt_data.num_probes >= 0) {
+                if (opt_data.num_probes > 0) {
                     /* Do a strict linear scan in the subrange determined above */
                     plfit_i_continuous_xmin_opt_linear_scan(&opt_data,
                             &best_result, &best_n);
@@ -948,7 +950,9 @@ static int plfit_i_calculate_p_value_discrete(double* xs, size_t n,
          * we are compiling without OpenMP, there is only one thread and it uses
          * the master RNG. This section must be critical to ensure that only one
          * thread is using the master RNG at the same time. */
+#ifdef _OPENMP
         mt_rng_t private_rng;
+#endif
         mt_rng_t *p_rng;
         double *ys;
         long int i;
