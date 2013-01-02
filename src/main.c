@@ -82,7 +82,7 @@ void usage(char* argv[]) {
             "              skewness and kurtosis) of the input data to help\n"
             "              assessing the shape of the pdf it may have come from.\n"
             "    -p METHOD use METHOD to calculate the p-value. Must be one of\n"
-            "              skip, approximate or exact. Default is exact.\n"
+            "              skip, approximate or exact. Default is skip.\n"
             "    -s SEED   use SEED to seed the random number generator\n"
     );
     return;
@@ -99,7 +99,7 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
     opts->finite_size_correction = 0;
     opts->force_continuous = 0;
     opts->print_moments = 0;
-    opts->p_value_method = PLFIT_P_VALUE_EXACT;
+    opts->p_value_method = PLFIT_P_VALUE_SKIP;
     opts->seed = 0;
     opts->use_seed = 0;
     opts->xmin = -1;
