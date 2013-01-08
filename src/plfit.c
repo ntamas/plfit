@@ -258,7 +258,6 @@ static int plfit_i_ks_test_continuous(double* xs, double* xs_end,
 static int plfit_i_calculate_p_value_continuous(double* xs, size_t n,
         const plfit_continuous_options_t *options, plfit_bool_t xmin_fixed,
         plfit_result_t *result) {
-    static const double epsilon = 0.01;
     long int num_trials;
     long int successes = 0;
     double *xs_head;
@@ -277,7 +276,10 @@ static int plfit_i_calculate_p_value_continuous(double* xs, size_t n,
     }
 
     options_no_p_value.p_value_method = PLFIT_P_VALUE_SKIP;
-    num_trials = 0.25 / epsilon / epsilon;
+    num_trials = 0.25 / options->p_value_precision / options->p_value_precision;
+    if (num_trials <= 0) {
+        PLFIT_ERROR("invalid p-value precision", PLFIT_EINVAL);
+    }
 
     /* Extract the head of xs that contains elements smaller than xmin */
     xs_head = extract_smaller(xs, xs+n, result->xmin, &num_smaller);
@@ -913,7 +915,6 @@ static int plfit_i_ks_test_discrete(double* xs, double* xs_end, const double alp
 static int plfit_i_calculate_p_value_discrete(double* xs, size_t n,
         const plfit_discrete_options_t* options, plfit_bool_t xmin_fixed,
         plfit_result_t *result) {
-    static const double epsilon = 0.01;
     long int num_trials;
     long int successes = 0;
     double *xs_head;
@@ -934,7 +935,10 @@ static int plfit_i_calculate_p_value_discrete(double* xs, size_t n,
     }
 
     options_no_p_value.p_value_method = PLFIT_P_VALUE_SKIP;
-    num_trials = 0.25 / epsilon / epsilon;
+    num_trials = 0.25 / options->p_value_precision / options->p_value_precision;
+    if (num_trials <= 0) {
+        PLFIT_ERROR("invalid p-value precision", PLFIT_EINVAL);
+    }
 
     /* Extract the head of xs that contains elements smaller than xmin */
     xs_head = extract_smaller(xs, xs+n, result->xmin, &num_smaller);

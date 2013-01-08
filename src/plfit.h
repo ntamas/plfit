@@ -77,6 +77,7 @@ typedef struct _plfit_continuous_options_t {
     plfit_bool_t finite_size_correction;
     plfit_continuous_method_t xmin_method;
     plfit_p_value_method_t p_value_method;
+    double p_value_precision;
     mt_rng_t* rng;
 } plfit_continuous_options_t;
 
@@ -89,6 +90,7 @@ typedef struct _plfit_discrete_options_t {
         double step;
     } alpha;
     plfit_p_value_method_t p_value_method;
+    double p_value_precision;
     mt_rng_t* rng;
 } plfit_discrete_options_t;
 
