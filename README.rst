@@ -229,6 +229,19 @@ but the first two decimal digits should be stable. If you want to make the proce
 fully deterministic, you have to pre-seed the random number generator with an
 arbitrary integer using the ``-s`` switch.
 
+I want more accurate p-values!
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Sure, if you have plenty of time, ``plfit`` will allow you to do that. Just use
+the ``-e`` switch with your required precision (e.g., 0.01 will give you
+a p-value that is accurate up to the second decimal digit), and of course don't
+forget to add ``-p exact``, otherwise ``-e`` will not do anything at all. For a
+given precision *eps*, ``plfit`` will use ``1 / (4 * eps^2)`` iterations, so
+be prepared for a long wait when *eps* is small. When multiple CPU cores are
+available and ``plfit`` was compiled with OpenMP (see `Using multiple CPU cores
+when fitting power-laws`_), the calculation will be parallelized, but it will
+still take quite a bit of time.
+
 References
 ----------
 

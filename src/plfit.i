@@ -98,6 +98,7 @@ typedef struct _plfit_continuous_options_t {
     plfit_bool_t finite_size_correction;
     plfit_continuous_method_t xmin_method;
     plfit_p_value_method_t p_value_method;
+    double p_value_precision;
     mt_rng_t* rng;
 
     %extend {
@@ -111,9 +112,9 @@ typedef struct _plfit_continuous_options_t {
         char *__str__() {
             static char temp[512];
             sprintf(temp, "finite_size_correction = %d, xmin_method = %d, "
-                "p_value_method = %d",
+                "p_value_method = %d, p_value_precision = %lg",
                 $self->finite_size_correction, $self->xmin_method,
-                $self->p_value_method);
+                $self->p_value_method, $self->p_value_precision);
             return temp;
         }
     }
@@ -128,6 +129,7 @@ typedef struct _plfit_discrete_options_t {
         double step;
     } alpha;
     plfit_p_value_method_t p_value_method;
+    double p_value_precision;
     mt_rng_t* rng;
 
     %extend {
@@ -142,10 +144,10 @@ typedef struct _plfit_discrete_options_t {
             static char temp[512];
             sprintf(temp, "finite_size_correction = %d, alpha_method = %d, "
                 "alpha.min = %lg, alpha.step = %lg, alpha.max = %lg, "
-                "p_value_method = %d",
+                "p_value_method = %d, p_value_precision = %lg",
                 $self->finite_size_correction, $self->alpha_method,
                 $self->alpha.min, $self->alpha.step, $self->alpha.max,
-                $self->p_value_method);
+                $self->p_value_method, $self->p_value_precision);
             return temp;
         }
     }
@@ -235,6 +237,15 @@ int plfit_resample_continuous(double* xs, size_t n, double alpha, double xmin,
         size_t num_samples, mt_rng_t* rng, double* OUTPUT);
 int plfit_resample_discrete(double* xs, size_t n, double alpha, double xmin,
         size_t num_samples, mt_rng_t* rng, double* OUTPUT);
+
+/******** calculating the p-value of a fitted model only *******/
+
+int plfit_calculate_p_value_continuous(double* xs, size_t n,
+        const plfit_continuous_options_t* options, plfit_bool_t xmin_fixed,
+        plfit_result_t *OUTPUT);
+int plfit_calculate_p_value_discrete(double* xs, size_t n,
+        const plfit_discrete_options_t* options, plfit_bool_t xmin_fixed,
+        plfit_result_t *OUTPUT);
 
 /************* calculating descriptive statistics **************/
 

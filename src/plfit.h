@@ -124,6 +124,15 @@ int plfit_resample_continuous(double* xs, size_t n, double alpha, double xmin,
 int plfit_resample_discrete(double* xs, size_t n, double alpha, double xmin,
         size_t num_samples, mt_rng_t* rng, double* result);
 
+/******** calculating the p-value of a fitted model only *******/
+
+int plfit_calculate_p_value_continuous(double* xs, size_t n,
+        const plfit_continuous_options_t* options, plfit_bool_t xmin_fixed,
+        plfit_result_t *result);
+int plfit_calculate_p_value_discrete(double* xs, size_t n,
+        const plfit_discrete_options_t* options, plfit_bool_t xmin_fixed,
+        plfit_result_t *result);
+
 /************* calculating descriptive statistics **************/
 
 int plfit_moments(double* data, size_t n, double* mean, double* variance,
