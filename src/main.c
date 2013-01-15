@@ -37,6 +37,7 @@ typedef struct _cmd_options_t {
     plfit_bool_t force_continuous;
     plfit_bool_t print_moments;
     plfit_p_value_method_t p_value_method;
+    double p_value_precision;
     unsigned long seed;
     plfit_bool_t use_seed;
     double xmin;
@@ -75,6 +76,9 @@ void usage(char* argv[]) {
             "              is an integer\n"
             "    -D VALUE  divide each sample in the input data by VALUE to prevent\n"
             "              underflows when fitting discrete power-law distribution\n"
+            "    -e EPS    try to provide a p-value with a precision of EPS when\n"
+            "              the p-value is calculated using the exact method. The\n"
+            "              default is 0.01.\n"
             "    -f        use finite-size correction\n"
             "    -m XMIN   use XMIN as the minimum value for x instead of searching\n"
             "              for the optimal value\n"
@@ -82,7 +86,7 @@ void usage(char* argv[]) {
             "              skewness and kurtosis) of the input data to help\n"
             "              assessing the shape of the pdf it may have come from.\n"
             "    -p METHOD use METHOD to calculate the p-value. Must be one of\n"
-            "              skip, approximate or exact. Default is exact.\n"
+            "              skip, approximate or exact. Default is skip.\n"
             "    -s SEED   use SEED to seed the random number generator\n"
     );
     return;
@@ -99,14 +103,15 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
     opts->finite_size_correction = 0;
     opts->force_continuous = 0;
     opts->print_moments = 0;
-    opts->p_value_method = PLFIT_P_VALUE_EXACT;
+    opts->p_value_method = PLFIT_P_VALUE_SKIP;
+    opts->p_value_precision = 0.01;
     opts->seed = 0;
     opts->use_seed = 0;
     opts->xmin = -1;
 
     opterr = 0;
 
-    while ((c = getopt(argc, argv, "a:bcD:fhm:Mp:ts:v")) != -1) {
+    while ((c = getopt(argc, argv, "a:bcD:e:fhm:Mp:ts:v")) != -1) {
         switch (c) {
             case 'a':
                 if (sscanf(optarg, "%lf:%lf:%lf", &opts->alpha_min,
@@ -126,6 +131,14 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
 
             case 'D':           /* divide the input data */
                 if (!sscanf(optarg, "%lg", &opts->divisor) || opts->divisor <= 0) {
+                    fprintf(stderr, "Invalid value for option `-%c'\n", optopt);
+                    return 1;
+                }
+                break;
+
+            case 'e':           /* specify the precision for p-value calculations */
+                if (!sscanf(optarg, "%lg", &opts->p_value_precision) ||
+                        opts->p_value_precision <= 0) {
                     fprintf(stderr, "Invalid value for option `-%c'\n", optopt);
                     return 1;
                 }
@@ -274,6 +287,8 @@ void process_file(FILE* f, const char* fname) {
 	plfit_discrete_options.finite_size_correction = opts.finite_size_correction;
     plfit_continuous_options.p_value_method = opts.p_value_method;
     plfit_discrete_options.p_value_method = opts.p_value_method;
+    plfit_continuous_options.p_value_precision = opts.p_value_precision;
+    plfit_discrete_options.p_value_precision = opts.p_value_precision;
     plfit_continuous_options.rng = &rng;
     plfit_discrete_options.rng = &rng;
 

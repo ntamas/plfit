@@ -61,6 +61,18 @@ static int double_comparator(const void *a, const void *b) {
     return (*da > *db) - (*da < *db);
 }
 
+static int plfit_i_copy_and_sort(double* xs, size_t n, double** result) {
+    *result = (double*)malloc(sizeof(double) * n);
+    if (*result == 0) {
+        PLFIT_ERROR("cannot create sorted copy of input data", PLFIT_ENOMEM);
+    }
+
+    memcpy(*result, xs, sizeof(double) * n);
+    qsort(*result, n, sizeof(double), double_comparator);
+
+    return PLFIT_SUCCESS;
+}
+
 /**
  * Given an unsorted array of doubles, return another array that contains the
  * elements that are smaller than a given value
@@ -74,7 +86,7 @@ static int double_comparator(const void *a, const void *b) {
  * \return pointer to the head of the new array or 0 if there is not enough
  * memory
  */
-double* extract_smaller(double* begin, double* end, double xmin,
+static double* extract_smaller(double* begin, double* end, double xmin,
         size_t* result_length) {
     size_t counter = 0;
     double *p, *result;
@@ -258,7 +270,6 @@ static int plfit_i_ks_test_continuous(double* xs, double* xs_end,
 static int plfit_i_calculate_p_value_continuous(double* xs, size_t n,
         const plfit_continuous_options_t *options, plfit_bool_t xmin_fixed,
         plfit_result_t *result) {
-    static const double epsilon = 0.01;
     long int num_trials;
     long int successes = 0;
     double *xs_head;
@@ -277,7 +288,10 @@ static int plfit_i_calculate_p_value_continuous(double* xs, size_t n,
     }
 
     options_no_p_value.p_value_method = PLFIT_P_VALUE_SKIP;
-    num_trials = 0.25 / epsilon / epsilon;
+    num_trials = 0.25 / options->p_value_precision / options->p_value_precision;
+    if (num_trials <= 0) {
+        PLFIT_ERROR("invalid p-value precision", PLFIT_EINVAL);
+    }
 
     /* Extract the head of xs that contains elements smaller than xmin */
     xs_head = extract_smaller(xs, xs+n, result->xmin, &num_smaller);
@@ -401,14 +415,9 @@ int plfit_estimate_alpha_continuous(double* xs, size_t n, double xmin,
     if (!options)
         options = &plfit_continuous_default_options;
 
-    /* Make a copy of xs and sort it */
-    xs_copy = (double*)malloc(sizeof(double) * n);
-    memcpy(xs_copy, xs, sizeof(double) * n);
-    qsort(xs_copy, n, sizeof(double), double_comparator);
-
+    PLFIT_CHECK(plfit_i_copy_and_sort(xs, n, &xs_copy));
     PLFIT_CHECK(plfit_estimate_alpha_continuous_sorted(xs_copy, n, xmin,
                 options, result));
-
     free(xs_copy);
 
     return PLFIT_SUCCESS;
@@ -546,9 +555,7 @@ int plfit_continuous(double* xs, size_t n, const plfit_continuous_options_t* opt
         options = &plfit_continuous_default_options;
 
     /* Make a copy of xs and sort it */
-    opt_data.begin = (double*)malloc(sizeof(double) * n);
-    memcpy(opt_data.begin, xs, sizeof(double) * n);
-    qsort(opt_data.begin, n, sizeof(double), double_comparator);
+    PLFIT_CHECK(plfit_i_copy_and_sort(xs, n, &opt_data.begin));
     opt_data.end = opt_data.begin + n;
 
     /* Create an array containing pointers to the unique elements of the input. From
@@ -913,7 +920,6 @@ static int plfit_i_ks_test_discrete(double* xs, double* xs_end, const double alp
 static int plfit_i_calculate_p_value_discrete(double* xs, size_t n,
         const plfit_discrete_options_t* options, plfit_bool_t xmin_fixed,
         plfit_result_t *result) {
-    static const double epsilon = 0.01;
     long int num_trials;
     long int successes = 0;
     double *xs_head;
@@ -934,7 +940,10 @@ static int plfit_i_calculate_p_value_discrete(double* xs, size_t n,
     }
 
     options_no_p_value.p_value_method = PLFIT_P_VALUE_SKIP;
-    num_trials = 0.25 / epsilon / epsilon;
+    num_trials = 0.25 / options->p_value_precision / options->p_value_precision;
+    if (num_trials <= 0) {
+        PLFIT_ERROR("invalid p-value precision", PLFIT_EINVAL);
+    }
 
     /* Extract the head of xs that contains elements smaller than xmin */
     xs_head = extract_smaller(xs, xs+n, result->xmin, &num_smaller);
@@ -1045,10 +1054,7 @@ int plfit_estimate_alpha_discrete(double* xs, size_t n, double xmin,
         }
     }
 
-    /* Make a copy of xs and sort it */
-    xs_copy = (double*)malloc(sizeof(double) * n);
-    memcpy(xs_copy, xs, sizeof(double) * n);
-    qsort(xs_copy, n, sizeof(double), double_comparator);
+    PLFIT_CHECK(plfit_i_copy_and_sort(xs, n, &xs_copy));
 
     begin = xs_copy; end = xs_copy + n;
     while (begin < end && *begin < xmin)
@@ -1096,10 +1102,7 @@ int plfit_discrete(double* xs, size_t n, const plfit_discrete_options_t* options
         }
     }
 
-    /* Make a copy of xs and sort it */
-    xs_copy = (double*)malloc(sizeof(double) * n);
-    memcpy(xs_copy, xs, sizeof(double) * n);
-    qsort(xs_copy, n, sizeof(double), double_comparator);
+    PLFIT_CHECK(plfit_i_copy_and_sort(xs, n, &xs_copy));
 
     best_result.D = DBL_MAX;
     best_result.xmin = 1;
@@ -1231,5 +1234,33 @@ int plfit_resample_discrete(double* xs, size_t n, double alpha, double xmin,
     free(xs_head);
 
     return retval;
+}
+
+/******** calculating the p-value of a fitted model only *******/
+
+int plfit_calculate_p_value_continuous(double* xs, size_t n,
+        const plfit_continuous_options_t* options, plfit_bool_t xmin_fixed,
+        plfit_result_t *result) {
+    double* xs_copy;
+
+    PLFIT_CHECK(plfit_i_copy_and_sort(xs, n, &xs_copy));
+    PLFIT_CHECK(plfit_i_calculate_p_value_continuous(xs_copy, n, options,
+                xmin_fixed, result));
+    free(xs_copy);
+
+    return PLFIT_SUCCESS;
+}
+
+int plfit_calculate_p_value_discrete(double* xs, size_t n,
+        const plfit_discrete_options_t* options, plfit_bool_t xmin_fixed,
+        plfit_result_t *result) {
+    double* xs_copy;
+
+    PLFIT_CHECK(plfit_i_copy_and_sort(xs, n, &xs_copy));
+    PLFIT_CHECK(plfit_i_calculate_p_value_discrete(xs_copy, n, options,
+                xmin_fixed, result));
+    free(xs_copy);
+
+    return PLFIT_SUCCESS;
 }
 

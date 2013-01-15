@@ -194,6 +194,54 @@ on GitHub_.
 
 .. _GitHub: http://github.com/ntamas/plfit
 
+Frequently asked questions
+--------------------------
+
+Where did the p-values go?
+^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Before version 0.7, ``plfit`` used an approximation algorithm to calculate the
+p-value. The approximation was really fast, but unfortunately its results did not
+match the ones reported in the original paper [1]_, and this has been the source of
+some confusion. From version 0.7, ``plfit`` is able to perform the same p-value
+estimation procedure from [1]_, but it is quite time-consuming, especially for
+continuous data where there are a lot of possible lower cutoff thresholds to try,
+since ``plfit`` has to fit power-laws to about 2500 additional synthetic datasets in
+order to get a reasonable estimate on the p-value that is more or less accurate
+to the second decimal digit. So, the bottom line is that the approximation is fast
+but inaccurate, and the exact calculation is slow. Since I still want to pretend
+that ``plfit`` is snappy, I decided not to calculate the p-value by default. If
+you want the p-value, you have to add ``-p exact`` or ``-p approximate`` to the
+command line options of ``plfit``, depending on whether you prefer the exact value
+or the approximation that was used in ``plfit`` 0.6 or earlier.
+
+I am getting different p-values every time I run the algorithm
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+I assume that you are calculating the exact p-value (i.e. you use ``-p exact``).
+This is normal; the algorithm simply generates 2500 synthetic data sets with the
+fitted exponent and cutoff, repeats the whole fitting procedure on the synthetic
+data, and counts how many times the synthetic D-score is above the D-score of the
+original fit. The fraction of the synthetic datasets with a D-score higher than the
+D-score of the original fit then gives us the p-value. Of course there is quite a
+bit of randomness involved, so the estimated p-value will be different every time,
+but the first two decimal digits should be stable. If you want to make the procedure
+fully deterministic, you have to pre-seed the random number generator with an
+arbitrary integer using the ``-s`` switch.
+
+I want more accurate p-values!
+^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+
+Sure, if you have plenty of time, ``plfit`` will allow you to do that. Just use
+the ``-e`` switch with your required precision (e.g., 0.01 will give you
+a p-value that is accurate up to the second decimal digit), and of course don't
+forget to add ``-p exact``, otherwise ``-e`` will not do anything at all. For a
+given precision *eps*, ``plfit`` will use ``1 / (4 * eps^2)`` iterations, so
+be prepared for a long wait when *eps* is small. When multiple CPU cores are
+available and ``plfit`` was compiled with OpenMP (see `Using multiple CPU cores
+when fitting power-laws`_), the calculation will be parallelized, but it will
+still take quite a bit of time.
+
 References
 ----------
 

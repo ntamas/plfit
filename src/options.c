@@ -21,21 +21,23 @@
 #include "plfit.h"
 
 const plfit_continuous_options_t plfit_continuous_default_options = {
-	/* .finite_size_correction = */ 0,
-	/* .xmin_method = */ PLFIT_DEFAULT_CONTINUOUS_METHOD,
+    /* .finite_size_correction = */ 0,
+    /* .xmin_method = */ PLFIT_DEFAULT_CONTINUOUS_METHOD,
     /* .p_value_method = */ PLFIT_DEFAULT_P_VALUE_METHOD,
+    /* .p_value_precision = */ 0.01,
     /* .rng = */ 0
 };
 
 const plfit_discrete_options_t plfit_discrete_default_options = {
-	/* .finite_size_correction = */ 0,
-	/* .alpha_method = */ PLFIT_DEFAULT_DISCRETE_METHOD,
-	/* .alpha = */ {
-		/* .min = */ 1.01,
-		/* .max = */ 5,
-		/* .step = */ 0.01
-	},
+    /* .finite_size_correction = */ 0,
+    /* .alpha_method = */ PLFIT_DEFAULT_DISCRETE_METHOD,
+    /* .alpha = */ {
+        /* .min = */ 1.01,
+        /* .max = */ 5,
+        /* .step = */ 0.01
+    },
     /* .p_value_method = */ PLFIT_DEFAULT_P_VALUE_METHOD,
+    /* .p_value_precision = */ 0.01,
     /* .rng = */ 0
 };
 

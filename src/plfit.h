@@ -77,6 +77,7 @@ typedef struct _plfit_continuous_options_t {
     plfit_bool_t finite_size_correction;
     plfit_continuous_method_t xmin_method;
     plfit_p_value_method_t p_value_method;
+    double p_value_precision;
     mt_rng_t* rng;
 } plfit_continuous_options_t;
 
@@ -89,6 +90,7 @@ typedef struct _plfit_discrete_options_t {
         double step;
     } alpha;
     plfit_p_value_method_t p_value_method;
+    double p_value_precision;
     mt_rng_t* rng;
 } plfit_discrete_options_t;
 
@@ -121,6 +123,15 @@ int plfit_resample_continuous(double* xs, size_t n, double alpha, double xmin,
         size_t num_samples, mt_rng_t* rng, double* result);
 int plfit_resample_discrete(double* xs, size_t n, double alpha, double xmin,
         size_t num_samples, mt_rng_t* rng, double* result);
+
+/******** calculating the p-value of a fitted model only *******/
+
+int plfit_calculate_p_value_continuous(double* xs, size_t n,
+        const plfit_continuous_options_t* options, plfit_bool_t xmin_fixed,
+        plfit_result_t *result);
+int plfit_calculate_p_value_discrete(double* xs, size_t n,
+        const plfit_discrete_options_t* options, plfit_bool_t xmin_fixed,
+        plfit_result_t *result);
 
 /************* calculating descriptive statistics **************/
 
