@@ -89,7 +89,7 @@ int plfit_rpareto_array(double xmin, double alpha, size_t n, mt_rng_t* rng,
  *
  * \return the sample or NaN if one of the parameters is invalid
  */
-double plfit_rzeta(double xmin, double alpha, mt_rng_t* rng);
+double plfit_rzeta(long int xmin, double alpha, mt_rng_t* rng);
 
 /**
  * Draws a given number of samples from a zeta distribution with the given
@@ -104,7 +104,7 @@ double plfit_rzeta(double xmin, double alpha, mt_rng_t* rng);
  *
  * \return \c PLFIT_EINVAL if one of the parameters is invalid, zero otherwise
  */
-int plfit_rzeta_array(double xmin, double alpha, size_t n, mt_rng_t* rng,
+int plfit_rzeta_array(long int xmin, double alpha, size_t n, mt_rng_t* rng,
         double* result);
 
 /**

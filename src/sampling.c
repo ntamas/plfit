@@ -66,8 +66,9 @@ int plfit_rpareto_array(double xmin, double alpha, size_t n, mt_rng_t* rng,
     return PLFIT_SUCCESS;
 }
 
-inline double plfit_rzeta(double xmin, double alpha, mt_rng_t* rng) {
-    double u, v, x, t;
+inline double plfit_rzeta(long int xmin, double alpha, mt_rng_t* rng) {
+    double u, v, t;
+    long int x;
     double alpha_minus_1 = alpha-1;
     double minus_1_over_alpha_minus_1 = -1.0 / (alpha-1);
     double b;
@@ -113,22 +114,23 @@ inline double plfit_rzeta(double xmin, double alpha, mt_rng_t* rng) {
     b = pow(1 + 1.0/xmin, alpha_minus_1);
     one_over_b_minus_1 = 1.0/(b-1);
     do {
-        u = plfit_runif_01(rng);
-        v = plfit_runif_01(rng);
-        /* 1-u is used in the base here because we want to avoid the case of
-         * having zero in x */
-        x = (long int) floor(pow(1-u, minus_1_over_alpha_minus_1) * xmin);
-        if (x < xmin)       /* handles overflow as well */
-            continue;
+        do {
+            u = plfit_runif_01(rng);
+            v = plfit_runif_01(rng);
+            /* 1-u is used in the base here because we want to avoid the case of
+             * having zero in x */
+            x = (long int) floor(pow(1-u, minus_1_over_alpha_minus_1) * xmin);
+        } while (x < xmin);
         t = pow((x+1.0)/x, alpha_minus_1);
     } while (v*x*(t-1)*one_over_b_minus_1*b > t*xmin);
 
     return x;
 }
 
-int plfit_rzeta_array(double xmin, double alpha, size_t n, mt_rng_t* rng,
+int plfit_rzeta_array(long int xmin, double alpha, size_t n, mt_rng_t* rng,
         double* result) {
-    double u, v, x, t;
+    double u, v, t;
+    long int x;
     double alpha_minus_1 = alpha-1;
     double minus_1_over_alpha_minus_1 = -1.0 / (alpha-1);
     double b, one_over_b_minus_1;
@@ -147,14 +149,17 @@ int plfit_rzeta_array(double xmin, double alpha, size_t n, mt_rng_t* rng,
 
     while (n > 0) {
         do {
-            u = plfit_runif_01(rng);
-            v = plfit_runif_01(rng);
-            x = (long int) floor(pow(1-u, minus_1_over_alpha_minus_1) * xmin);
-            if (x < xmin)       /* handles overflow as well */
-                continue;
+            do {
+                u = plfit_runif_01(rng);
+                v = plfit_runif_01(rng);
+                /* 1-u is used in the base here because we want to avoid the case of
+                 * having zero in x */
+                x = (long int) floor(pow(1-u, minus_1_over_alpha_minus_1) * xmin);
+            } while (x < xmin);     /* handles overflow as well */
             t = pow((x+1.0)/x, alpha_minus_1);
         } while (v*x*(t-1)*one_over_b_minus_1*b > t*xmin);
         *result = x;
+        if (x < 0) abort();
         result++; n--;
     }
 
