@@ -102,7 +102,7 @@ typedef struct _plfit_continuous_options_t {
     mt_rng_t* rng;
 
     %extend {
-        _plfit_continuous_options_t() {
+        plfit_continuous_options_t* _plfit_continuous_options_t() {
             plfit_continuous_options_t* obj = (plfit_continuous_options_t*)
                 malloc(sizeof(plfit_continuous_options_t));
             plfit_continuous_options_init(obj);
@@ -133,7 +133,7 @@ typedef struct _plfit_discrete_options_t {
     mt_rng_t* rng;
 
     %extend {
-        _plfit_discrete_options_t() {
+        plfit_discrete_options_t* _plfit_discrete_options_t() {
             plfit_discrete_options_t* obj = (plfit_discrete_options_t*)
                 malloc(sizeof(plfit_discrete_options_t));
             plfit_discrete_options_init(obj);
