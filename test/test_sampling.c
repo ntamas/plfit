@@ -26,7 +26,7 @@ int test_sampling() {
     const long int NUM_SAMPLES = 1000000;
     const int NUM_ITEMS = 26;
     double probs[NUM_ITEMS];
-    double prob_sum;
+    double prob_sum = 0.0;
     long int data[NUM_SAMPLES];
     long int hist[NUM_ITEMS];
     long int i, j, max_hist;
