@@ -39,14 +39,14 @@ __BEGIN_DECLS
 #define inline  __inline
 #define isnan(x) _isnan(x)
 #define isfinite(x) _finite(x)
+#endif
+
 #ifndef INFINITY
 #  define INFINITY (DBL_MAX+DBL_MAX)
 #endif
 
 #ifndef NAN
 #  define NAN (INFINITY-INFINITY)
-#endif
-
 #endif
 
 __END_DECLS
