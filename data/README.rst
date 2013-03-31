@@ -10,6 +10,13 @@ Input data
 
 Below is a description of the input data for the testsuite.
 
+* The data files ``discrete_data.txt`` and ``continuous_data.txt`` are the
+  original example files from Aaron Clauset's own implementation of the
+  power law fitting method. Fitting ``discrete_data.txt`` should result in
+  alpha = 2.58, xmin = 2 and a log-likelihood of -9155.63. Fitting
+  ``continuous_data.txt`` should yield alpha=2.53282, xmin=1.43628 and
+  a log-likelihood of -9276.42.
+
 * The data files ``celegans-indegree.dat``,
   ``celegans-outdegree.dat``, and ``celegans-totaldegree.dat`` contain
   the in-degree, out-degree, and total degree sequences, respectively,
