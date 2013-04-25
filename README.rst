@@ -201,19 +201,23 @@ Where did the p-values go?
 ^^^^^^^^^^^^^^^^^^^^^^^^^^
 
 Before version 0.7, ``plfit`` used an approximation algorithm to calculate the
-p-value. The approximation was really fast, but unfortunately its results did not
-match the ones reported in the original paper [1]_, and this has been the source of
-some confusion. From version 0.7, ``plfit`` is able to perform the same p-value
-estimation procedure from [1]_, but it is quite time-consuming, especially for
-continuous data where there are a lot of possible lower cutoff thresholds to try,
-since ``plfit`` has to fit power-laws to about 2500 additional synthetic datasets in
-order to get a reasonable estimate on the p-value that is more or less accurate
-to the second decimal digit. So, the bottom line is that the approximation is fast
-but inaccurate, and the exact calculation is slow. Since I still want to pretend
-that ``plfit`` is snappy, I decided not to calculate the p-value by default. If
-you want the p-value, you have to add ``-p exact`` or ``-p approximate`` to the
-command line options of ``plfit``, depending on whether you prefer the exact value
-or the approximation that was used in ``plfit`` 0.6 or earlier.
+p-value; this involved using the standard p-value formula of the
+Kolmogorov-Smirnov test with the D statistic obtained directly from comparing
+the fitted distribution with the empirical data. The approximation was really
+fast, but unfortunately its results did not match the ones based on the more
+exact resampling procedure reported in the original paper [1]_, and this has
+been the source of some confusion. From version 0.7, ``plfit`` is able to
+perform the same p-value estimation procedure from [1]_, but it is quite
+time-consuming, especially for continuous data where there are a lot of
+possible lower cutoff thresholds to try, since ``plfit`` has to fit power-laws
+to about 2500 additional synthetic datasets in order to get a reasonable
+estimate on the p-value that is more or less accurate to the second decimal
+digit. So, the bottom line is that the approximation is fast but inaccurate,
+and the exact calculation is slow. Since I still want to pretend that ``plfit``
+is snappy, I decided not to calculate the p-value by default. If you want the
+p-value, you have to add ``-p exact`` or ``-p approximate`` to the command line
+options of ``plfit``, depending on whether you prefer the exact value or the
+approximation that was used in ``plfit`` 0.6 or earlier.
 
 I am getting different p-values every time I run the algorithm
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
