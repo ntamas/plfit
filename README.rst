@@ -59,16 +59,29 @@ like this::
 Compiling without CMake or make
 ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
 
+CMake is the preferred way to build ``plfit``; however, those who do
+not want to install CMake may rest assured that it is possible to compile
+``plfit`` without CMake as well.
+
+``plfit`` consists of two separate executables: ``plfit`` itself, which
+implements the power-law fitting procedure, and ``plgen``, which generates
+random data according to some power-law distribution. The two executables
+are compiled nearly from the same source files; the only difference is
+that ``main.c`` is not needed for ``plgen`` and ``plgen.c`` is not needed
+for ``plfit``.
+
 I like to use a separate build folder for compiling stuff, so we start
 again by creating one::
 
     $ mkdir build
     $ cd build
 
-Now we simply compile all the C files into a single executable using
-``gcc``::
+Now we simply compile ``plfit`` and ``plgen`` using ``gcc``, making sure that
+``plgen.c`` is excluded when we compile ``plfit`` and ``main.c`` is excluded
+when we compile ``plgen``::
 
-    $ gcc -o plfit -I../src -lm ../src/*.c
+    $ gcc -o plfit -I../src -lm `ls ../src/*.c | grep -F -v plgen.c` ../src/main.c
+    $ gcc -o plgen -I../src -lm `ls ../src/*.c | grep -F -v main.c` ../src/plgen.c
 
 To build the Python interface as well, some extra legwork is needed
 with SWIG::
