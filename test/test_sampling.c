@@ -21,10 +21,11 @@
 #include "sampling.h"
 #include "test_common.h"
 
-int test_sampling() {
+#define NUM_SAMPLES 1000000
+#define NUM_ITEMS 26
+
+int test_sampling(void) {
     plfit_walker_alias_sampler_t sampler;
-    const long int NUM_SAMPLES = 1000000;
-    const int NUM_ITEMS = 26;
     double probs[NUM_ITEMS];
     double prob_sum = 0.0;
     long int data[NUM_SAMPLES];

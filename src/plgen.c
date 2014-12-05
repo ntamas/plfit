@@ -153,8 +153,9 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
     return -1;
 }
 
+#define BLOCK_SIZE 16384
+
 int sample_discrete() {
-    const long int BLOCK_SIZE = 16384;
     long int samples[BLOCK_SIZE];
     double* probs;
     size_t num_probs;
