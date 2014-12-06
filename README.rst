@@ -80,8 +80,8 @@ Now we simply compile ``plfit`` and ``plgen`` using ``gcc``, making sure that
 ``plgen.c`` is excluded when we compile ``plfit`` and ``main.c`` is excluded
 when we compile ``plgen``::
 
-    $ gcc -o plfit -I../src -lm `ls ../src/*.c | grep -F -v plgen.c` ../src/main.c
-    $ gcc -o plgen -I../src -lm `ls ../src/*.c | grep -F -v main.c` ../src/plgen.c
+    $ gcc -o plfit -I../src -lm `ls ../src/*.c | grep -F -v plgen.c`
+    $ gcc -o plgen -I../src -lm `ls ../src/*.c | grep -F -v main.c`
 
 To build the Python interface as well, some extra legwork is needed
 with SWIG::
