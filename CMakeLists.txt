@@ -18,7 +18,14 @@ include(CheckIncludeFiles)
 check_include_files(emmintrin.h HAVE_EMMINTRIN_H)
 check_include_files(malloc.h HAVE_MALLOC_H)
 
-add_definitions(-Wall -DHAVE_CONFIG_H)
+if(MSVC)
+	# /Wall is too much for MSVC; use /W4 instead.
+	# Don't produce C4100 warnings (unused formal parameter)
+	add_definitions(-W4 -wd4100 -DHAVE_CONFIG_H -D_CRT_SECURE_NO_DEPRECATE)
+else(MSVC)
+	# On Linux and Mac we are okay with -Wall
+	add_definitions(-Wall -DHAVE_CONFIG_H)
+endif(MSVC)
 
 if(PLFIT_USE_SSE)
 	message(STATUS "Using SSE/SSE2 optimizations if available")
@@ -40,6 +47,13 @@ if(PLFIT_USE_OPENMP)
 else(PLFIT_USE_OPENMP)
 	message(STATUS "OpenMP parallelization disabled")
 endif(PLFIT_USE_OPENMP)
+
+if(WIN32)
+	# No need to link to the m library on Windows
+	set(MATH_LIBRARY "")
+else(WIN32)
+	FIND_LIBRARY(MATH_LIBRARY NAMES m)
+endif(WIN32)
 
 add_subdirectory(src)
 add_subdirectory(test)

@@ -20,6 +20,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include "error.h"
+#include "platform.h"
 
 static char *plfit_i_error_strings[] = {
     "No error",
@@ -60,6 +61,6 @@ void plfit_error_handler_printignore(const char *reason, const char *file, int l
             plfit_strerror(plfit_errno));
 }
 
-void plfit_error_handler_ignore(const char *reason, const char *file, int line,
-        int plfit_errno) {
+void plfit_error_handler_ignore(const char* reason, const char* file, int line,
+		int plfit_errno) {
 }

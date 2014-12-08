@@ -288,7 +288,7 @@ static int plfit_i_calculate_p_value_continuous(double* xs, size_t n,
     }
 
     options_no_p_value.p_value_method = PLFIT_P_VALUE_SKIP;
-    num_trials = 0.25 / options->p_value_precision / options->p_value_precision;
+    num_trials = (long int)(0.25 / options->p_value_precision / options->p_value_precision);
     if (num_trials <= 0) {
         PLFIT_ERROR("invalid p-value precision", PLFIT_EINVAL);
     }
@@ -463,7 +463,7 @@ static int plfit_i_continuous_xmin_opt_progress(void* instance, double x, double
 static int plfit_i_continuous_xmin_opt_linear_scan(
         plfit_continuous_xmin_opt_data_t* opt_data, plfit_result_t* best_result,
         size_t* best_n) {
-    long int i;
+    size_t i;
     plfit_result_t global_best_result;
     size_t global_best_n;
 
@@ -544,13 +544,22 @@ int plfit_continuous(double* xs, size_t n, const plfit_continuous_options_t* opt
         plfit_result_t* result) {
     gss_parameter_t gss_param;
     plfit_continuous_xmin_opt_data_t opt_data;
-    plfit_result_t best_result;
+    plfit_result_t best_result = {
+        /* alpha = */ NAN,
+        /* xmin = */ NAN,
+        /* L = */ NAN,
+        /* D = */ NAN,
+        /* p = */ NAN
+    };
+
     int success;
     size_t i, best_n, num_uniques;
     double x, *px, **uniques;
 
     DATA_POINTS_CHECK;
 
+    /* Sane defaults */
+    best_n = n;
     if (!options)
         options = &plfit_continuous_default_options;
 
@@ -940,7 +949,7 @@ static int plfit_i_calculate_p_value_discrete(double* xs, size_t n,
     }
 
     options_no_p_value.p_value_method = PLFIT_P_VALUE_SKIP;
-    num_trials = 0.25 / options->p_value_precision / options->p_value_precision;
+    num_trials = (long int)(0.25 / options->p_value_precision / options->p_value_precision);
     if (num_trials <= 0) {
         PLFIT_ERROR("invalid p-value precision", PLFIT_EINVAL);
     }
@@ -1210,8 +1219,8 @@ static int plfit_i_resample_discrete(double* xs_head, size_t num_smaller, size_t
     }
 
     /* Draw the remaining samples from the fitted distribution */
-    PLFIT_CHECK(plfit_rzeta_array(xmin, alpha, num_samples-num_orig_samples, rng,
-            result));
+    PLFIT_CHECK(plfit_rzeta_array((long int)xmin, alpha,
+                num_samples-num_orig_samples, rng, result));
 
     return PLFIT_SUCCESS;
 }

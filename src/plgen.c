@@ -160,7 +160,7 @@ int sample_discrete() {
     double* probs;
     size_t num_probs;
     plfit_walker_alias_sampler_t sampler;
-    long int i, n;
+    size_t i, n;
     double u;
 
     if (opts.num_samples <= 0)
@@ -212,7 +212,7 @@ int sample_discrete() {
     } else {
         /* Pure power law */
         for (i = 0; i < opts.num_samples; i++) {
-            u = plfit_rzeta(opts.xmin, opts.gamma, &rng) + opts.offset;
+            u = plfit_rzeta((long int)opts.xmin, opts.gamma, &rng) + opts.offset;
             printf("%.8f\n", u);
         }
     }
@@ -256,7 +256,7 @@ int main(int argc, char* argv[]) {
             fprintf(stderr, "Format of gamma parameter is invalid.\n");
             retval = 4;
         } else {
-            srand(opts.use_seed ? opts.seed : time(0));
+            srand(opts.use_seed ? opts.seed : ((unsigned int)time(0)));
             mt_init(&rng);
             retval = opts.continuous ? sample_continuous() : sample_discrete();
         }

@@ -74,6 +74,7 @@ licence.
 #include <math.h>
 
 #include "lbfgs.h"
+#include "platform.h"
 
 #ifdef  _MSC_VER
 #define inline  __inline
@@ -497,7 +498,8 @@ int lbfgs(
 
         /* Report the progress. */
         if (cd.proc_progress) {
-            if ((ret = cd.proc_progress(cd.instance, x, g, fx, xnorm, gnorm, step, cd.n, k, ls))) {
+			ret = cd.proc_progress(cd.instance, x, g, fx, xnorm, gnorm, step, cd.n, k, ls);
+            if (ret) {
                 goto lbfgs_exit;
             }
         }
@@ -1004,7 +1006,9 @@ static int line_search_morethuente(
         }
     }
 
+#ifndef _MSC_VER
     return LBFGSERR_LOGICERROR;
+#endif
 }
 
 

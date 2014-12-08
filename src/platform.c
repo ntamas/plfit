@@ -1,6 +1,6 @@
-/* test_common.c
+/* platform.c
  *
- * Copyright (C) 2011 Tamas Nepusz
+ * Copyright (C) 2014 Tamas Nepusz
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,32 +17,22 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "test_common.h"
+#include "platform.h"
 
-size_t test_read_file(const char* fname, double* data, size_t max_n) {
-	size_t n = 0;
-	const char* prefixes[] = { "./", "../data/", "../../data/", 0 };
-	const char** prefix_ptr;
-	char fname_with_path[4096];
-	FILE* f = 0;
+#ifdef _MSC_VER
 
-	for (prefix_ptr = prefixes; *prefix_ptr && f == 0; prefix_ptr++) {
-		snprintf(fname_with_path, sizeof(fname_with_path), "%s%s",
-				*prefix_ptr, fname);
-		f = fopen(fname_with_path, "r");
-	}
-
-	if (!f)
-		return 0;
-
-	while (!feof(f) && n < max_n) {
-		if (fscanf(f, "%lf", data+n)) {
-			n++;
-		}
-	}
-
-	fclose(f);
-	return n;
+inline double _plfit_fmin(double a, double b) {
+	return (a < b) ? a : b;
 }
+
+inline double _plfit_round(double x) {
+	return floor(x+0.5);
+}
+
+#endif
+
+/* Dummy function to prevent a warning when compiling with Clang - the file
+ * would contain no symbols */
+void _plfit_i_unused() {}
 
 

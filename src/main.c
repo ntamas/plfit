@@ -25,6 +25,7 @@
 #include <string.h>
 #include <time.h>
 #include "getopt.h"
+#include "platform.h"
 #include "plfit.h"
 
 typedef struct _cmd_options_t {
@@ -208,8 +209,7 @@ int parse_cmd_options(int argc, char* argv[], cmd_options_t* opts) {
 
 void process_file(FILE* f, const char* fname) {
     double* data;
-    size_t n = 0, nalloc = 100;
-    long int i;
+    size_t i, n = 0, nalloc = 100;
     unsigned short int warned = 0, discrete = opts.force_continuous ? 0 : 1;
 	plfit_continuous_options_t plfit_continuous_options;
 	plfit_discrete_options_t plfit_discrete_options;
@@ -219,7 +219,7 @@ void process_file(FILE* f, const char* fname) {
         double variance;
         double skewness;
         double kurtosis;
-    } moments;
+    } moments = { 0, 0, 0, 0 };
 
     /* allocate memory for 100 samples */
     data = (double*)calloc(nalloc, sizeof(double));
@@ -229,7 +229,7 @@ void process_file(FILE* f, const char* fname) {
     }
 
     /* read the input file */
-    while (1) {
+    for (;;) {
         int nparsed = fscanf(f, "%lf", data+n);
         if (nparsed == EOF)  /* reached the end of file */
             break;
@@ -379,7 +379,7 @@ int main(int argc, char* argv[]) {
     if (result != -1)
         return result;
 
-    srand(opts.use_seed ? opts.seed : time(0));
+    srand(opts.use_seed ? opts.seed : ((unsigned int)time(0)));
     mt_init(&rng);
 
     retval = 0;

@@ -61,7 +61,7 @@ double plfit_rbinom(double n, double p, mt_rng_t* rng);
  *
  * \return the sample or NaN if one of the parameters is invalid
  */
-double plfit_rpareto(double xmin, double alpha, mt_rng_t* rng);
+extern double plfit_rpareto(double xmin, double alpha, mt_rng_t* rng);
 
 /**
  * Draws a given number of samples from a Pareto distribution with the given
@@ -89,7 +89,7 @@ int plfit_rpareto_array(double xmin, double alpha, size_t n, mt_rng_t* rng,
  *
  * \return the sample or NaN if one of the parameters is invalid
  */
-double plfit_rzeta(long int xmin, double alpha, mt_rng_t* rng);
+extern double plfit_rzeta(long int xmin, double alpha, mt_rng_t* rng);
 
 /**
  * Draws a given number of samples from a zeta distribution with the given
@@ -118,7 +118,7 @@ int plfit_rzeta_array(long int xmin, double alpha, size_t n, mt_rng_t* rng,
  * \param  rng  the Mersenne Twister random number generator to use
  * \return the value drawn from the given uniform distribution.
  */
-double plfit_runif(double lo, double hi, mt_rng_t* rng);
+extern double plfit_runif(double lo, double hi, mt_rng_t* rng);
 
 /**
  * Draws a sample from a uniform distribution over the [0; 1) interval.
@@ -128,7 +128,7 @@ double plfit_runif(double lo, double hi, mt_rng_t* rng);
  * \param  rng  the Mersenne Twister random number generator to use
  * \return the value drawn from the given uniform distribution.
  */
-double plfit_runif_01(mt_rng_t* rng);
+extern double plfit_runif_01(mt_rng_t* rng);
 
 /**
  * Random sampler using Walker's alias method.

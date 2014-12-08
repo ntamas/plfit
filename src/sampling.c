@@ -77,7 +77,7 @@ inline double plfit_rzeta(long int xmin, double alpha, mt_rng_t* rng) {
     if (alpha <= 0 || xmin < 1)
         return NAN;
 
-    xmin = round(xmin);
+    xmin = (long int) round(xmin);
 
     /* Rejection sampling for the win. We use Y=floor(U^{-1/alpha} * xmin) as the
      * envelope distribution, similarly to Chapter X.6 of Luc Devroye's book
@@ -143,7 +143,7 @@ int plfit_rzeta_array(long int xmin, double alpha, size_t n, mt_rng_t* rng,
 
     /* See the comments in plfit_rzeta for an explanation of the algorithm
      * below. */
-    xmin = round(xmin);
+    xmin = (long int) round(xmin);
     b = pow(1 + 1.0/xmin, alpha_minus_1);
     one_over_b_minus_1 = 1.0/(b-1);
 
@@ -172,7 +172,7 @@ int plfit_walker_alias_sampler_init(plfit_walker_alias_sampler_t* sampler,
     double sum;
     long int *short_sticks, *long_sticks;
     long int num_short_sticks, num_long_sticks;
-    long int i;
+    size_t i;
     
     sampler->num_bins = n;
 
