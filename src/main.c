@@ -27,6 +27,11 @@
 #include "getopt.h"
 #include "plfit.h"
 
+#ifdef _MSC_VER                            //If compiling using MS Visual Studio
+#pragma warning(disable: 4244 4018 4005)
+#define  _CRT_SECURE_NO_WARNINGS           //Disable Deprecation Warning
+#endif
+
 typedef struct _cmd_options_t {
     double alpha_min;
     double alpha_step;
