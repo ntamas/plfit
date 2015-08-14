@@ -213,7 +213,7 @@ int sample_discrete() {
         /* Pure power law */
         for (i = 0; i < opts.num_samples; i++) {
             u = plfit_rzeta((long int)opts.xmin, opts.gamma, &rng) + opts.offset;
-            printf("%.8f\n", u);
+            printf("%ld\n", (long int)u);
         }
     }
     return 0;
