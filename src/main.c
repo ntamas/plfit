@@ -235,9 +235,13 @@ void process_file(FILE* f, const char* fname) {
             break;
 
         if (nparsed < 1) {   /* parse error */
-            if (!warned) {
-                fprintf(stderr, "%s: parse error at byte %ld\n", fname, (long)ftell(f));
-                warned = 1;
+            int c = '\0';
+            if ((c = fgetc(f)) == '#') {
+                do { c = fgetc(f); } while (c != '\n');
+            } else {
+                if (warned++ < 16) {
+                    fprintf(stderr, "%s: parse error at byte %ld\n", fname, (long)ftell(f));
+                }
             }
             continue;
         }
@@ -257,6 +261,10 @@ void process_file(FILE* f, const char* fname) {
         }
     }
 
+    if (warned) {
+        fprintf(stderr, "%s: corrupted data points in file\n", fname);
+        return;
+    }
     if (n == 0) {
         fprintf(stderr, "%s: no data points in file\n", fname);
         return;
