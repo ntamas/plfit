@@ -1,0 +1,72 @@
+## karate-commented.dat data file
+## contains the (total) degree sequence of Zachary karate club network
+## as described in [Zachary1977]
+##
+## BibTeX entries
+##@article{Zachary1977,
+##	author  = {Wayne W. Zachary},
+##	title   = {An Information Flow Model for Conflict and Fission in Small Groups},
+##	journal = {Journal of Anthropological Research},
+##	volume  = {33},
+##	number  = {4},
+##	pages   = {452-473},
+##	year    = {1977},
+##	doi     = {10.1086/jar.33.4.3629752},
+##	eprint  = {https://doi.org/10.1086/jar.33.4.3629752},
+##	abstract = {
+##		Data from a voluntary association are used to construct a new
+##		formal model for a traditional anthropological problem, fission
+##		in small groups. The process leading to fission is viewed as an
+##		unequal flow of sentiments and information across the ties in a
+##		social network. This flow is unequal because it is uniquely
+##		constrained by the contextual range and sensitivity of each
+##		relationship in the network. The subsequent differential sharing
+##		of sentiments leads to the formation of subgroups with more internal
+##		stability than the group as a whole, and results in fission.
+##		The Ford-Fulkerson labeling algorithm allows an accurate prediction
+##		of membership in the subgroups and of the locus of the fission to be
+##		made from measurements of the potential for information flow across
+##		each edge in the network. Methods for measurement of potential
+##		information flow are discussed, and it is shown that all appropriate
+##		techniques will generate the same predictions.}
+##	}
+## End of BibTeX entries
+##
+16# first datum
+9 # second datum
+10
+6
+3
+## the next line is an empty line
+
+4
+4
+4
+5
+##FaultyDatum##1009
+2
+3
+1
+2
+## the next four lines are not corrupted
+	5
+ 2  
+    2	
+	 2
+2
+2
+5
+	## tabbed comment
+3
+## the seven next lines are corrupted
+/*2*/
+//3
+(*4*)
+!3
+-- 4
+C 4
+' 6
+12
+17 ## largest datum
+##
+## eof
