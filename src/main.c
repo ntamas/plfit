@@ -28,6 +28,11 @@
 #include "platform.h"
 #include "plfit.h"
 
+/* exit status code for incorrect input data as defined in sysexits.h (8.1) */
+#ifndef EX_DATAERR
+#define EX_DATAERR 65
+#endif
+
 typedef struct _cmd_options_t {
     double alpha_min;
     double alpha_step;
@@ -263,10 +268,12 @@ void process_file(FILE* f, const char* fname) {
 
     if (warned) {
         fprintf(stderr, "%s: corrupted data points in file\n", fname);
+        exit(EX_DATAERR);
         return;
     }
     if (n == 0) {
         fprintf(stderr, "%s: no data points in file\n", fname);
+        exit(EX_DATAERR);
         return;
     }
 
