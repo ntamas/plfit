@@ -35,7 +35,15 @@ Below is a description of the input data for the testsuite.
   assumptions.
 
 * The data file ``karate.dat`` contains the (total) degree sequence of
-  the Zachary karate club nework, as described in [Zachary1977]_.
+  the Zachary karate club network, as described in [Zachary1977]_.
+
+* The data files ``karate-commented.dat``, ``karate-commented_dos.dat``,
+	and ``karate-commented_corrupted.dat`` are *commented* version of the
+	data file ``karate.dat``. Inline comments with a single # (hash) as
+	left delimiter are supported: all the text from the ASCII character #
+	(35) to the end of the line is ignored. The first data file mainly
+	serves as illustration; the two others, with a self-explanatory
+	subscript, are mainly meant for testing.
 
 
 .. [Newman2001a]

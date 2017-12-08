@@ -110,11 +110,12 @@ degrees into the input file, one vertex per line. If you are interested
 in whether the magnitude of earthquakes follow a power-law, dump the
 magnitudes into the input file, one earthquake per line. There is no
 need to calculate the cumulative distribution function or the probability
-density function before, nor to normalize the input data. Then simply run::
+density function before, nor to normalize the input data. Futhermore,
+inline comments using # (hash) are supported. Then simply run::
 
     $ ./plfit input_data.txt
 
-For some inspiration, see the sample data files under the directory ``test``.
+For some inspiration, see the sample data files under the directory ``data``.
 The program will assume that the data is discrete when the file contains
 integers only; otherwise it will assume that the data is continuous. If your
 data file contains integers only but you know that they come from a continuous
