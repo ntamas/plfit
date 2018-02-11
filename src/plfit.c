@@ -738,13 +738,16 @@ static lbfgsfloatval_t plfit_i_estimate_alpha_discrete_lbfgs_evaluate(
         g[0] = (dx > 0) ? -huge : huge;
         return huge;
     }
-    if (x[0] + dx <= 1.0)
+    if (x[0] + dx <= 1.0) {
         g[0] = huge;
-    else
-        g[0] = data->logsum + data->m *
-            (log(gsl_sf_hzeta(x[0] + dx, data->xmin)) - log(gsl_sf_hzeta(x[0], data->xmin))) / dx;
-
-    result = x[0] * data->logsum + data->m * log(gsl_sf_hzeta(x[0], data->xmin));
+        result = x[0] * data->logsum + data->m * log(gsl_sf_hzeta(x[0], data->xmin));
+    }
+    else {
+        const double hzeta_x=gsl_sf_hzeta(x[0], data->xmin);
+        const double hzeta_deriv_x=hsl_sf_hzeta_deriv(x[0], data->xmin);
+        g[0] = data->logsum + data->m * (hzeta_deriv_x/hzeta_x);
+        result = x[0] * data->logsum + data->m * log(hzeta_x);
+    }
 
 #ifdef PLFIT_DEBUG
     printf("  - Gradient: %.4f\n", g[0]);
