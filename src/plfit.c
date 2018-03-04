@@ -30,7 +30,7 @@
 #include "plfit.h"
 #include "kolmogorov.h"
 #include "sampling.h"
-#include "zeta.h"
+#include "hzeta.h"
 
 /* #define PLFIT_DEBUG */
 
@@ -738,13 +738,17 @@ static lbfgsfloatval_t plfit_i_estimate_alpha_discrete_lbfgs_evaluate(
         g[0] = (dx > 0) ? -huge : huge;
         return huge;
     }
-    if (x[0] + dx <= 1.0)
+    if (x[0] + dx <= 1.0) {
         g[0] = huge;
-    else
-        g[0] = data->logsum + data->m *
-            (log(gsl_sf_hzeta(x[0] + dx, data->xmin)) - log(gsl_sf_hzeta(x[0], data->xmin))) / dx;
-
-    result = x[0] * data->logsum + data->m * log(gsl_sf_hzeta(x[0], data->xmin));
+        result = x[0] * data->logsum + data->m * hsl_sf_lnhzeta(x[0], data->xmin);
+    }
+    else {
+        double lnhzeta_x=NAN;
+        double lnhzeta_deriv_x=NAN;
+        hsl_sf_lnhzeta_deriv_tuple(x[0], data->xmin, &lnhzeta_x, &lnhzeta_deriv_x);
+        g[0] = data->logsum + data->m * (lnhzeta_deriv_x);
+        result = x[0] * data->logsum + data->m * lnhzeta_x;
+    }
 
 #ifdef PLFIT_DEBUG
     printf("  - Gradient: %.4f\n", g[0]);
@@ -790,7 +794,7 @@ static int plfit_i_estimate_alpha_discrete_linear_scan(double* xs, size_t n,
     best_alpha = options->alpha.min; L_max = -DBL_MAX;
     for (curr_alpha = options->alpha.min; curr_alpha <= options->alpha.max;
             curr_alpha += options->alpha.step) {
-        L = -curr_alpha * logsum - m * log(gsl_sf_hzeta(curr_alpha, xmin));
+        L = -curr_alpha * logsum - m * hsl_sf_lnhzeta(curr_alpha, xmin);
         if (L > L_max) {
             L_max = L;
             best_alpha = curr_alpha;
@@ -901,17 +905,17 @@ static int plfit_i_ks_test_discrete(double* xs, double* xs_end, const double alp
         const double xmin, double* D) {
     /* Assumption: xs is sorted and cut off at xmin so the first element is
      * always larger than or equal to xmin. */
-    double result = 0, n, hzeta, x;
+    double result = 0, n, lnhzeta, x;
     int m = 0;
 
     n = xs_end - xs;
-    hzeta = gsl_sf_hzeta(alpha, xmin);
+    lnhzeta = hsl_sf_lnhzeta(alpha, xmin);
 
     while (xs < xs_end) {
         double d;
 
         x = *xs;
-        d = fabs(1-(gsl_sf_hzeta(alpha, x) / hzeta) - m / n);
+        d = fabs( expm1( hsl_sf_lnhzeta(alpha, x) - lnhzeta ) + m / n);
 
         if (d > result)
             result = d;
@@ -1035,7 +1039,7 @@ int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha, double xmi
     XMIN_CHECK_ONE;
 
     plfit_i_logsum_less_than_discrete(xs, xs+n, xmin, &result, &m);
-    result = - alpha * result - m * log(gsl_sf_hzeta(alpha, xmin));
+    result = - alpha * result - m * hsl_sf_lnhzeta(alpha, xmin);
 
     *L = result;
 
