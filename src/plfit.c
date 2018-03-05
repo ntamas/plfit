@@ -714,6 +714,8 @@ static lbfgsfloatval_t plfit_i_estimate_alpha_discrete_lbfgs_evaluate(
     lbfgsfloatval_t result;
     double dx = step;
     double huge = 1e10;     /* pseudo-infinity; apparently DBL_MAX does not work */
+    double lnhzeta_x=NAN;
+    double lnhzeta_deriv_x=NAN;
 
     data = (plfit_i_estimate_alpha_discrete_data_t*)instance;
 
@@ -741,12 +743,9 @@ static lbfgsfloatval_t plfit_i_estimate_alpha_discrete_lbfgs_evaluate(
     if (x[0] + dx <= 1.0) {
         g[0] = huge;
         result = x[0] * data->logsum + data->m * hsl_sf_lnhzeta(x[0], data->xmin);
-    }
-    else {
-        double lnhzeta_x=NAN;
-        double lnhzeta_deriv_x=NAN;
+    } else {
         hsl_sf_lnhzeta_deriv_tuple(x[0], data->xmin, &lnhzeta_x, &lnhzeta_deriv_x);
-        g[0] = data->logsum + data->m * (lnhzeta_deriv_x);
+        g[0] = data->logsum + data->m * lnhzeta_deriv_x;
         result = x[0] * data->logsum + data->m * lnhzeta_x;
     }
 
