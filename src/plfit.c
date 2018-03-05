@@ -914,6 +914,18 @@ static int plfit_i_ks_test_discrete(double* xs, double* xs_end, const double alp
         double d;
 
         x = *xs;
+
+        /* Re the next line: this used to be the following:
+         *
+         * fabs( 1 - hzeta(alpha, x) / hzeta(alpha, xmin) - m / n)
+         *
+         * However, using the Hurwitz zeta directly sometimes yields
+         * underflows (see Github pull request #17 and related issues).
+         * hzeta(alpha, x) / hzeta(alpha, xmin) can be replaced with
+         * exp(lnhzeta(alpha, x) - lnhzeta(alpha, xmin)), but then
+         * we have 1 - exp(something), which is better to calculate
+         * with a dedicated expm1() function.
+         */
         d = fabs( expm1( hsl_sf_lnhzeta(alpha, x) - lnhzeta ) + m / n);
 
         if (d > result)
