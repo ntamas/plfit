@@ -42,6 +42,7 @@
 
 /* Author:  Jerome G. Benoit < jgmbenoit _at_ rezozer _dot_ net > */
 
+#include "config.h"
 #include <math.h>
 #include <stdio.h>
 #include "error.h"
