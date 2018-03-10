@@ -53,7 +53,7 @@ cmd_options_t opts;
 plfit_mt_rng_t rng;
 
 void show_version(FILE* f) {
-    fprintf(f, "plfit " PLFIT_VERSION_STRING "\n");
+    fprintf(f, "plfit %s\n", plfit_version);
     return;
 }
 
