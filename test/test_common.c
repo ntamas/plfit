@@ -21,7 +21,14 @@
 
 size_t test_read_file(const char* fname, double* data, size_t max_n) {
 	size_t n = 0;
-	const char* prefixes[] = { "./", "../data/", "../../data/", 0 };
+	const char* prefixes[] = {
+		"./",
+		"../data/",
+		"../../data/",
+#ifdef DATADIR
+		DATADIR "/" ,
+#endif
+		0 };
 	const char** prefix_ptr;
 	char fname_with_path[4096];
 	FILE* f = 0;
