@@ -31,9 +31,9 @@ int test_sampling(void) {
     long int data[NUM_SAMPLES];
     long int hist[NUM_ITEMS];
     long int i, j, max_hist;
-    mt_rng_t rng;
+    plfit_mt_rng_t rng;
 
-    mt_init(&rng);
+    plfit_mt_init(&rng);
 
     /* Create the sampler, sample, destroy */
     for (i = 0; i < NUM_ITEMS; i++) {

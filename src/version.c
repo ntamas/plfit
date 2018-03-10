@@ -1,6 +1,7 @@
-/* test_common.c
+/* vim:set ts=4 sw=4 sts=4 et: */
+/* version.c
  *
- * Copyright (C) 2011 Tamas Nepusz
+ * Copyright (C) 2018 Tamas Nepusz
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
@@ -17,39 +18,6 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include "test_common.h"
+#include "plfit.h"
 
-size_t test_read_file(const char* fname, double* data, size_t max_n) {
-	size_t n = 0;
-	const char* prefixes[] = {
-		"./",
-		"../data/",
-		"../../data/",
-#ifdef DATADIR
-		DATADIR "/" ,
-#endif
-		0 };
-	const char** prefix_ptr;
-	char fname_with_path[4096];
-	FILE* f = 0;
-
-	for (prefix_ptr = prefixes; *prefix_ptr && f == 0; prefix_ptr++) {
-		snprintf(fname_with_path, sizeof(fname_with_path), "%s%s",
-				*prefix_ptr, fname);
-		f = fopen(fname_with_path, "r");
-	}
-
-	if (!f)
-		return 0;
-
-	while (!feof(f) && n < max_n) {
-		if (fscanf(f, "%lf", data+n)) {
-			n++;
-		}
-	}
-
-	fclose(f);
-	return n;
-}
-
-
+const char* plfit_version = PLFIT_VERSION_STRING ;
