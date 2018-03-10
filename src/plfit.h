@@ -38,6 +38,7 @@ __BEGIN_DECLS
 
 #define PLFIT_VERSION_MAJOR 0
 #define PLFIT_VERSION_MINOR 7
+#define PLFIT_VERSION_MICRO 0
 #define PLFIT_VERSION_STRING "0.7"
 
 extern const char* plfit_version;
@@ -139,6 +140,13 @@ int plfit_calculate_p_value_discrete(double* xs, size_t n,
 
 int plfit_moments(double* data, size_t n, double* mean, double* variance,
         double* skewness, double* kurtosis);
+
+/************** library version check machinery ****************/
+
+void plfit_libversion_get_numbers(int* major, int* minor, int* micro);
+int plfit_libversion_check_numbers(int major, int minor, int micro);
+#define plfit_libversion_check() \
+    (plfit_libversion_check_numbers(PLFIT_VERSION_MAJOR,PLFIT_VERSION_MINOR,PLFIT_VERSION_MICRO))
 
 __END_DECLS
 
