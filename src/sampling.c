@@ -22,21 +22,21 @@
 #include "sampling.h"
 #include "platform.h"
 
-inline double plfit_runif(double lo, double hi, mt_rng_t* rng) {
+inline double plfit_runif(double lo, double hi, plfit_mt_rng_t* rng) {
     if (rng == 0) {
         return lo + rand() / ((double)RAND_MAX) * (hi-lo);
     }
-    return lo + mt_uniform_01(rng) * (hi-lo);
+    return lo + plfit_mt_uniform_01(rng) * (hi-lo);
 }
 
-inline double plfit_runif_01(mt_rng_t* rng) {
+inline double plfit_runif_01(plfit_mt_rng_t* rng) {
     if (rng == 0) {
         return rand() / ((double)RAND_MAX);
     }
-    return mt_uniform_01(rng);
+    return plfit_mt_uniform_01(rng);
 }
 
-inline double plfit_rpareto(double xmin, double alpha, mt_rng_t* rng) {
+inline double plfit_rpareto(double xmin, double alpha, plfit_mt_rng_t* rng) {
     if (alpha <= 0 || xmin <= 0)
         return NAN;
 
@@ -45,7 +45,7 @@ inline double plfit_rpareto(double xmin, double alpha, mt_rng_t* rng) {
     return pow(1-plfit_runif_01(rng), -1.0 / alpha) * xmin;
 }
 
-int plfit_rpareto_array(double xmin, double alpha, size_t n, mt_rng_t* rng,
+int plfit_rpareto_array(double xmin, double alpha, size_t n, plfit_mt_rng_t* rng,
         double* result) {
     double gamma;
 
@@ -66,7 +66,7 @@ int plfit_rpareto_array(double xmin, double alpha, size_t n, mt_rng_t* rng,
     return PLFIT_SUCCESS;
 }
 
-inline double plfit_rzeta(long int xmin, double alpha, mt_rng_t* rng) {
+inline double plfit_rzeta(long int xmin, double alpha, plfit_mt_rng_t* rng) {
     double u, v, t;
     long int x;
     double alpha_minus_1 = alpha-1;
@@ -127,7 +127,7 @@ inline double plfit_rzeta(long int xmin, double alpha, mt_rng_t* rng) {
     return x;
 }
 
-int plfit_rzeta_array(long int xmin, double alpha, size_t n, mt_rng_t* rng,
+int plfit_rzeta_array(long int xmin, double alpha, size_t n, plfit_mt_rng_t* rng,
         double* result) {
     double u, v, t;
     long int x;
@@ -272,7 +272,7 @@ void plfit_walker_alias_sampler_destroy(plfit_walker_alias_sampler_t* sampler) {
 
 
 int plfit_walker_alias_sampler_sample(const plfit_walker_alias_sampler_t* sampler,
-        long int *xs, size_t n, mt_rng_t* rng) {
+        long int *xs, size_t n, plfit_mt_rng_t* rng) {
     double u;
     long int j;
     long int *x;
@@ -290,8 +290,8 @@ int plfit_walker_alias_sampler_sample(const plfit_walker_alias_sampler_t* sample
     } else {
         /* Using Mersenne Twister */
         while (n > 0) {
-            u = mt_uniform_01(rng);
-            j = mt_random(rng) % sampler->num_bins;
+            u = plfit_mt_uniform_01(rng);
+            j = plfit_mt_random(rng) % sampler->num_bins;
             *x = (u < sampler->probs[j]) ? j : sampler->indexes[j];
             n--; x++;
         }

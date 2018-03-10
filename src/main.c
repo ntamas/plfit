@@ -50,7 +50,7 @@ typedef struct _cmd_options_t {
 } cmd_options_t;
 
 cmd_options_t opts;
-mt_rng_t rng;
+plfit_mt_rng_t rng;
 
 void show_version(FILE* f) {
     fprintf(f, "plfit " PLFIT_VERSION_STRING "\n");
@@ -395,7 +395,7 @@ int main(int argc, char* argv[]) {
         return result;
 
     srand(opts.use_seed ? opts.seed : ((unsigned int)time(0)));
-    mt_init(&rng);
+    plfit_mt_init(&rng);
 
     retval = 0;
     if (optind == argc) {
