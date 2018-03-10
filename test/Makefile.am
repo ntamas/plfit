@@ -38,8 +38,8 @@ LDADD = \
 
 test_continuous_SOURCES = test_continuous.c test_common.c
 test_discrete_SOURCES = test_discrete.c test_common.c
-test_gss_SOURCES = test_gss.c test_common.c
-test_kolmogorov_SOURCES = test_kolmogorov.c test_common.c
+test_gss_SOURCES = test_gss.c test_common.c $(top_srcdir)/src/gss.c
+test_kolmogorov_SOURCES = test_kolmogorov.c test_common.c $(top_srcdir)/src/kolmogorov.c
 test_real_SOURCES = test_real.c test_common.c
 test_sampling_SOURCES = test_sampling.c test_common.c
 test_underflow_handling_SOURCES = test_underflow_handling.c test_common.c

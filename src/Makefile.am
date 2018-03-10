@@ -20,6 +20,11 @@
 LT_INFORMATION = -release $(PLFIT_LT_RELEASE)
 #LT_INFORMATION = -version-info $(PLFIT_LT_VERSION)
 
+libplfit_la_LD_VERSION_SCRIPT =
+if HAVE_LD_VERSION_SCRIPT
+  libplfit_la_LD_VERSION_SCRIPT += -Wl,--version-script=$(top_srcdir)/src/plfit.map
+endif
+
 lib_LTLIBRARIES = libplfit.la
 
 bin_PROGRAMS = plfit plgen
@@ -58,7 +63,8 @@ libplfit_la_SOURCES = \
 	libversion.c
 
 libplfit_la_LDFLAGS = \
-	$(LT_INFORMATION)
+	$(LT_INFORMATION) \
+	$(libplfit_la_LD_VERSION_SCRIPT)
 
 libplfit_la_LIBADD = \
 	$(LIBM)
@@ -76,6 +82,9 @@ plgen_SOURCES = \
 plgen_LDADD = \
 	libplfit.la \
 	$(LIBM)
+
+
+EXTRA_DIST = plfit.map
 
 ##
 ## eos

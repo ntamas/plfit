@@ -57,6 +57,9 @@ AC_PROG_CC
 dnl LibTool setup:
 LT_INIT
 
+dnl Checks for linker script support:
+gl_LD_VERSION_SCRIPT
+
 dnl Checks for libraries:
 dnl Math library
 LT_LIB_M
