@@ -37,8 +37,8 @@
 __BEGIN_DECLS
 
 #define PLFIT_VERSION_MAJOR 0
-#define PLFIT_VERSION_MINOR 7
-#define PLFIT_VERSION_STRING "0.7"
+#define PLFIT_VERSION_MINOR 8
+#define PLFIT_VERSION_STRING "0.8"
 
 typedef unsigned short int plfit_bool_t;
 
