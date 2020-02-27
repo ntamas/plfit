@@ -5,14 +5,14 @@
  *
  * This program is free software; you can redistribute it and/or modify
  * it under the terms of the GNU General Public License as published by
- * the Free Software Foundation; either version 3 of the License, or (at
+ * the Free Software Foundation; either version 2 of the License, or (at
  * your option) any later version.
- * 
+ *
  * This program is distributed in the hope that it will be useful, but
  * WITHOUT ANY WARRANTY; without even the implied warranty of
  * MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
  * General Public License for more details.
- * 
+ *
  * You should have received a copy of the GNU General Public License
  * along with this program; if not, write to the Free Software
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
@@ -526,7 +526,7 @@ static int plfit_i_continuous_xmin_opt_linear_scan(
 #ifdef PLFIT_DEBUG
             printf("Found new global best at %g with D=%g\n", global_best_result.xmin,
                     global_best_result.D);
-#endif 
+#endif
         }
     }
 
@@ -848,7 +848,7 @@ static int plfit_i_estimate_alpha_discrete_lbfgs(double* xs, size_t n, double xm
         PLFIT_ERROR(buf, PLFIT_FAILURE);
     }
     *alpha = variables[0];
-    
+
     /* Deallocate the variable array */
     lbfgs_free(variables);
 
@@ -1287,4 +1287,3 @@ int plfit_calculate_p_value_discrete(double* xs, size_t n,
 
     return PLFIT_SUCCESS;
 }
-
