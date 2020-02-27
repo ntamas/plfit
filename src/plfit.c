@@ -74,6 +74,30 @@ static int plfit_i_copy_and_sort(double* xs, size_t n, double** result) {
 }
 
 /**
+ * Given an unsorted array of doubles, counts how many elements there are that
+ * are smaller than a given value.
+ *
+ * \param  begin          pointer to the beginning of the array
+ * \param  end            pointer to the first element after the end of the array
+ * \param  xmin           the threshold value
+ *
+ * \return the nubmer of elements in the array that are smaller than the given
+ *         value.
+ */
+static size_t count_smaller(double* begin, double* end, double xmin) {
+    double* p;
+    size_t counter = 0;
+
+    for (p = begin; p < end; p++) {
+        if (*p < xmin) {
+            counter++;
+        }
+    }
+
+    return counter;
+}
+
+/**
  * Given an unsorted array of doubles, return another array that contains the
  * elements that are smaller than a given value
  *
@@ -88,14 +112,8 @@ static int plfit_i_copy_and_sort(double* xs, size_t n, double** result) {
  */
 static double* extract_smaller(double* begin, double* end, double xmin,
         size_t* result_length) {
-    size_t counter = 0;
+    size_t counter = count_smaller(begin, end, xmin);
     double *p, *result;
-
-    for (p = begin; p < end; p++) {
-        if (*p < xmin) {
-            counter++;
-        }
-    }
 
     result = calloc(counter, sizeof(double));
     if (result == 0)
@@ -283,7 +301,8 @@ static int plfit_i_calculate_p_value_continuous(double* xs, size_t n,
     }
 
     if (options->p_value_method == PLFIT_P_VALUE_APPROXIMATE) {
-        result->p = plfit_ks_test_one_sample_p(result->D, n);
+        num_smaller = count_smaller(xs, xs + n, result->xmin);
+        result->p = plfit_ks_test_one_sample_p(result->D, n - num_smaller);
         return PLFIT_SUCCESS;
     }
 
@@ -959,7 +978,8 @@ static int plfit_i_calculate_p_value_discrete(double* xs, size_t n,
 
     if (options->p_value_method == PLFIT_P_VALUE_APPROXIMATE) {
         /* p-value approximation; most likely an upper bound */
-        result->p = plfit_ks_test_one_sample_p(result->D, n);
+        num_smaller = count_smaller(xs, xs + n, result->xmin);
+        result->p = plfit_ks_test_one_sample_p(result->D, n - num_smaller);
         return PLFIT_SUCCESS;
     }
 
