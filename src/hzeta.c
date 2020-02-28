@@ -42,14 +42,11 @@
 
 /* Author:  Jerome G. Benoit < jgmbenoit _at_ rezozer _dot_ net > */
 
-#if _MSC_VER
-#define _USE_MATH_DEFINES
-#endif
-
-#include <math.h>
-#include <stdio.h>
+#include "hzeta.h"
 #include "error.h"
 #include "platform.h"   /* because of NAN */
+#include <math.h>
+#include <stdio.h>
 
 /* imported from gsl_machine.h */
 

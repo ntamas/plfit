@@ -35,6 +35,7 @@
 __BEGIN_DECLS
 
 #ifdef _MSC_VER
+#define _USE_MATH_DEFINES
 #include <float.h>
 #include <math.h>
 
