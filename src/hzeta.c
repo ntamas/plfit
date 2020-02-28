@@ -42,6 +42,10 @@
 
 /* Author:  Jerome G. Benoit < jgmbenoit _at_ rezozer _dot_ net > */
 
+#if _MSC_VER
+#define _USE_MATH_DEFINES
+#endif
+
 #include <math.h>
 #include <stdio.h>
 #include "error.h"
