@@ -85,14 +85,14 @@ To build the Python interface as well, some extra legwork is needed
 with SWIG::
 
     $ swig -Wall -O -python -outcurrentdir ../src/plfit.i
-    $ gcc -shared -fPIC -o _plfit_python.so -I../src -I/usr/include/python3.8 \
+    $ gcc -shared -fPIC -o _plfit.so -I../src -I/usr/include/python3.8 \
       -lm plfit_wrap.c ../src/*.c
 
 where ``/usr/include/python3.8`` should be replaced with the directory
 where the ``Python.h`` file of your Python interpreter is.
 
 That's it. The Python interface itself consists of two files:
-``plfit.py`` and ``_plfit_python.so``. Both of them are to be found in the
+``plfit.py`` and ``_plfit.so``. Both of them are to be found in the
 ``build`` folder.
 
 Usage

@@ -51,7 +51,8 @@ static PyObject* l_output_helper(PyObject* target, PyObject* o) {
 
 #define PLFIT_VERSION_MAJOR 0
 #define PLFIT_VERSION_MINOR 8
-#define PLFIT_VERSION_STRING "0.8"
+#define PLFIT_VERSION_PATCH 2
+#define PLFIT_VERSION_STRING "0.8.2"
 
 /* Data types */
 typedef unsigned short int plfit_bool_t;

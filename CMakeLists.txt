@@ -1,5 +1,7 @@
-cmake_minimum_required(VERSION 3.14)
-cmake_policy(VERSION 3.14)
+cmake_minimum_required(VERSION 3.5)
+cmake_policy(VERSION 3.5)
+cmake_policy(SET CMP0078 OLD)   # UseSWIG: use legacy target names
+cmake_policy(SET CMP0086 OLD)   # UseSWIG: don't pass -module option
 
 project(plfit C CXX)
 enable_testing()
