@@ -1,5 +1,6 @@
 language: c
 
+os: linux
 dist: bionic
 
 compiler:
@@ -7,5 +8,3 @@ compiler:
   - gcc
 
 script: "cmake . && make && make test"
-
-sudo: false
