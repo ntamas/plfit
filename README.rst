@@ -51,9 +51,7 @@ like this::
 
     $ mkdir build
     $ cd build
-    $ cmake ..
-    $ ccmake .
-    [ccmake starts up; set the PLFIT_COMPILE_PYTHON_MODULE variable to ON]
+    $ cmake .. -DPLFIT_COMPILE_PYTHON_MODULE=ON
     $ make
 
 Compiling without CMake or make
@@ -87,14 +85,14 @@ To build the Python interface as well, some extra legwork is needed
 with SWIG::
 
     $ swig -Wall -O -python -outcurrentdir ../src/plfit.i
-    $ gcc -shared -fPIC -o _plfit.so -I../src -I/usr/include/python2.7 \
+    $ gcc -shared -fPIC -o _plfit_python.so -I../src -I/usr/include/python3.8 \
       -lm plfit_wrap.c ../src/*.c
 
-where ``/usr/include/python2.7`` should be replaced with the directory
+where ``/usr/include/python3.8`` should be replaced with the directory
 where the ``Python.h`` file of your Python interpreter is.
 
 That's it. The Python interface itself consists of two files:
-``plfit.py`` and ``_plfit.so``. Both of them are to be found in the
+``plfit.py`` and ``_plfit_python.so``. Both of them are to be found in the
 ``build`` folder.
 
 Usage
