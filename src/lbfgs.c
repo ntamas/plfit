@@ -74,7 +74,7 @@ licence.
 #include <math.h>
 
 #include "lbfgs.h"
-#include "platform.h"
+#include "paltform.h"
 
 #ifdef  _MSC_VER
 #define inline  __inline
@@ -237,7 +237,7 @@ lbfgsfloatval_t* lbfgs_malloc(int n)
 #if     defined(USE_SSE) && (defined(__SSE__) || defined(__SSE2__))
     n = round_out_variables(n);
 #endif/*defined(USE_SSE)*/
-    return (lbfgsfloatval_t*)vecalloc(sizeof(lbfgsfloatval_t) * n);
+    return (lbfgsfloatval_t*)vecalloc(sizeof(lbfgsfloatval_t) * (size_t) n);
 }
 
 void lbfgs_free(lbfgsfloatval_t *x)
@@ -372,11 +372,11 @@ int lbfgs(
     }
 
     /* Allocate working space. */
-    xp = (lbfgsfloatval_t*)vecalloc(n * sizeof(lbfgsfloatval_t));
-    g = (lbfgsfloatval_t*)vecalloc(n * sizeof(lbfgsfloatval_t));
-    gp = (lbfgsfloatval_t*)vecalloc(n * sizeof(lbfgsfloatval_t));
-    d = (lbfgsfloatval_t*)vecalloc(n * sizeof(lbfgsfloatval_t));
-    w = (lbfgsfloatval_t*)vecalloc(n * sizeof(lbfgsfloatval_t));
+    xp = (lbfgsfloatval_t*)vecalloc((size_t) n * sizeof(lbfgsfloatval_t));
+    g = (lbfgsfloatval_t*)vecalloc((size_t) n * sizeof(lbfgsfloatval_t));
+    gp = (lbfgsfloatval_t*)vecalloc((size_t) n * sizeof(lbfgsfloatval_t));
+    d = (lbfgsfloatval_t*)vecalloc((size_t) n * sizeof(lbfgsfloatval_t));
+    w = (lbfgsfloatval_t*)vecalloc((size_t) n * sizeof(lbfgsfloatval_t));
     if (xp == NULL || g == NULL || gp == NULL || d == NULL || w == NULL) {
         ret = LBFGSERR_OUTOFMEMORY;
         goto lbfgs_exit;
@@ -384,7 +384,7 @@ int lbfgs(
 
     if (param.orthantwise_c != 0.) {
         /* Allocate working space for OW-LQN. */
-        pg = (lbfgsfloatval_t*)vecalloc(n * sizeof(lbfgsfloatval_t));
+        pg = (lbfgsfloatval_t*)vecalloc((size_t) n * sizeof(lbfgsfloatval_t));
         if (pg == NULL) {
             ret = LBFGSERR_OUTOFMEMORY;
             goto lbfgs_exit;
@@ -392,7 +392,7 @@ int lbfgs(
     }
 
     /* Allocate limited memory storage. */
-    lm = (iteration_data_t*)vecalloc(m * sizeof(iteration_data_t));
+    lm = (iteration_data_t*)vecalloc((size_t) m * sizeof(iteration_data_t));
     if (lm == NULL) {
         ret = LBFGSERR_OUTOFMEMORY;
         goto lbfgs_exit;
@@ -403,8 +403,8 @@ int lbfgs(
         it = &lm[i];
         it->alpha = 0;
         it->ys = 0;
-        it->s = (lbfgsfloatval_t*)vecalloc(n * sizeof(lbfgsfloatval_t));
-        it->y = (lbfgsfloatval_t*)vecalloc(n * sizeof(lbfgsfloatval_t));
+        it->s = (lbfgsfloatval_t*)vecalloc((size_t) n * sizeof(lbfgsfloatval_t));
+        it->y = (lbfgsfloatval_t*)vecalloc((size_t) n * sizeof(lbfgsfloatval_t));
         if (it->s == NULL || it->y == NULL) {
             ret = LBFGSERR_OUTOFMEMORY;
             goto lbfgs_exit;
@@ -413,7 +413,7 @@ int lbfgs(
 
     /* Allocate an array for storing previous values of the objective function. */
     if (0 < param.past) {
-        pf = (lbfgsfloatval_t*)vecalloc(param.past * sizeof(lbfgsfloatval_t));
+        pf = (lbfgsfloatval_t*)vecalloc((size_t) param.past * sizeof(lbfgsfloatval_t));
     }
 
     /* Evaluate the function value and its gradient. */
@@ -498,8 +498,7 @@ int lbfgs(
 
         /* Report the progress. */
         if (cd.proc_progress) {
-			ret = cd.proc_progress(cd.instance, x, g, fx, xnorm, gnorm, step, cd.n, k, ls);
-            if (ret) {
+            if ((ret = cd.proc_progress(cd.instance, x, g, fx, xnorm, gnorm, step, cd.n, k, ls))) {
                 goto lbfgs_exit;
             }
         }
@@ -1005,10 +1004,6 @@ static int line_search_morethuente(
             width = fabs(sty - stx);
         }
     }
-
-#ifndef _MSC_VER
-    return LBFGSERR_LOGICERROR;
-#endif
 }
 
 
