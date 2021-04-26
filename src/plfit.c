@@ -482,7 +482,10 @@ static int plfit_i_continuous_xmin_opt_progress(void* instance, double x, double
 static int plfit_i_continuous_xmin_opt_linear_scan(
         plfit_continuous_xmin_opt_data_t* opt_data, plfit_result_t* best_result,
         size_t* best_n) {
-    ssize_t i;
+    /* this must be signed because OpenMP with Windows MSVC needs signed for
+     * loop index variables. ssize_t will not work because that is a POSIX
+     * extension */
+    long int i;
     plfit_result_t global_best_result;
     size_t global_best_n;
 
