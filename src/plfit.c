@@ -21,6 +21,7 @@
 #include <stdio.h>
 #include <float.h>
 #include <math.h>
+#include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
 #include "error.h"
