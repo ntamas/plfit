@@ -485,7 +485,7 @@ static int plfit_i_continuous_xmin_opt_linear_scan(
     /* this must be signed because OpenMP with Windows MSVC needs signed for
      * loop index variables. ssize_t will not work because that is a POSIX
      * extension */
-    long int i;
+    ptrdiff_t i = 0; /* initialize to work around incorrect warning issued by Clang 9.0 */
     plfit_result_t global_best_result;
     size_t global_best_n;
 
