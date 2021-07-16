@@ -24,13 +24,13 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include "error.h"
+#include "plfit_error.h"
 #include "gss.h"
 #include "lbfgs.h"
 #include "platform.h"
 #include "plfit.h"
 #include "kolmogorov.h"
-#include "sampling.h"
+#include "plfit_sampling.h"
 #include "hzeta.h"
 
 /* #define PLFIT_DEBUG */
@@ -50,10 +50,10 @@
     }
 
 static int plfit_i_resample_continuous(double* xs_head, size_t num_smaller,
-        size_t n, double alpha, double xmin, size_t num_samples, mt_rng_t* rng,
+        size_t n, double alpha, double xmin, size_t num_samples, plfit_mt_rng_t* rng,
         double* result);
 static int plfit_i_resample_discrete(double* xs_head, size_t num_smaller,
-        size_t n, double alpha, double xmin, size_t num_samples, mt_rng_t* rng,
+        size_t n, double alpha, double xmin, size_t num_samples, plfit_mt_rng_t* rng,
         double* result);
 
 static int double_comparator(const void *a, const void *b) {
@@ -328,9 +328,9 @@ static int plfit_i_calculate_p_value_continuous(double* xs, size_t n,
          * the master RNG. This section must be critical to ensure that only one
          * thread is using the master RNG at the same time. */
 #ifdef _OPENMP
-        mt_rng_t private_rng;
+        plfit_mt_rng_t private_rng;
 #endif
-        mt_rng_t *p_rng;
+        plfit_mt_rng_t *p_rng;
         double *ys;
         long int i;
         plfit_result_t result_synthetic;
@@ -339,7 +339,7 @@ static int plfit_i_calculate_p_value_continuous(double* xs, size_t n,
 #pragma omp critical
         {
             p_rng = &private_rng;
-            mt_init_from_rng(p_rng, options->rng);
+            plfit_mt_init_from_rng(p_rng, options->rng);
         }
 #else
         p_rng = options->rng;
@@ -1008,9 +1008,9 @@ static int plfit_i_calculate_p_value_discrete(double* xs, size_t n,
          * the master RNG. This section must be critical to ensure that only one
          * thread is using the master RNG at the same time. */
 #ifdef _OPENMP
-        mt_rng_t private_rng;
+        plfit_mt_rng_t private_rng;
 #endif
-        mt_rng_t *p_rng;
+        plfit_mt_rng_t *p_rng;
         double *ys;
         long int i;
         plfit_result_t result_synthetic;
@@ -1019,7 +1019,7 @@ static int plfit_i_calculate_p_value_discrete(double* xs, size_t n,
 #pragma omp critical
         {
             p_rng = &private_rng;
-            mt_init_from_rng(p_rng, options->rng);
+            plfit_mt_init_from_rng(p_rng, options->rng);
         }
 #else
         p_rng = options->rng;
@@ -1203,7 +1203,7 @@ int plfit_discrete(double* xs, size_t n, const plfit_discrete_options_t* options
 /***** resampling routines to generate synthetic replicates ****/
 
 static int plfit_i_resample_continuous(double* xs_head, size_t num_smaller,
-        size_t n, double alpha, double xmin, size_t num_samples, mt_rng_t* rng,
+        size_t n, double alpha, double xmin, size_t num_samples, plfit_mt_rng_t* rng,
         double* result)
 {
     size_t num_orig_samples, i;
@@ -1224,7 +1224,7 @@ static int plfit_i_resample_continuous(double* xs_head, size_t num_smaller,
 }
 
 int plfit_resample_continuous(double* xs, size_t n, double alpha, double xmin,
-        size_t num_samples, mt_rng_t* rng, double* result) {
+        size_t num_samples, plfit_mt_rng_t* rng, double* result) {
     double *xs_head;
     size_t num_smaller = 0;
     int retval;
@@ -1244,7 +1244,7 @@ int plfit_resample_continuous(double* xs, size_t n, double alpha, double xmin,
 }
 
 static int plfit_i_resample_discrete(double* xs_head, size_t num_smaller, size_t n,
-        double alpha, double xmin, size_t num_samples, mt_rng_t* rng,
+        double alpha, double xmin, size_t num_samples, plfit_mt_rng_t* rng,
         double* result)
 {
     size_t num_orig_samples, i;
@@ -1265,7 +1265,7 @@ static int plfit_i_resample_discrete(double* xs_head, size_t num_smaller, size_t
 }
 
 int plfit_resample_discrete(double* xs, size_t n, double alpha, double xmin,
-        size_t num_samples, mt_rng_t* rng, double* result) {
+        size_t num_samples, plfit_mt_rng_t* rng, double* result) {
     double *xs_head;
     size_t num_smaller = 0;
     int retval;

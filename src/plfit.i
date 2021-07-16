@@ -23,7 +23,7 @@
 
 %{
 #include "plfit.h"
-#include "error.h"
+#include "plfit_error.h"
 %}
 
 /* Helper function for Python list output */
@@ -100,7 +100,7 @@ typedef struct _plfit_continuous_options_t {
     plfit_continuous_method_t xmin_method;
     plfit_p_value_method_t p_value_method;
     double p_value_precision;
-    mt_rng_t* rng;
+    plfit_mt_rng_t* rng;
 
     %extend {
         _plfit_continuous_options_t() {
@@ -131,7 +131,7 @@ typedef struct _plfit_discrete_options_t {
     } alpha;
     plfit_p_value_method_t p_value_method;
     double p_value_precision;
-    mt_rng_t* rng;
+    plfit_mt_rng_t* rng;
 
     %extend {
         _plfit_discrete_options_t() {
@@ -235,9 +235,9 @@ int plfit_discrete(double* xs, size_t n,
 /***** resampling routines to generate synthetic replicates ****/
 
 int plfit_resample_continuous(double* xs, size_t n, double alpha, double xmin,
-        size_t num_samples, mt_rng_t* rng, double* OUTPUT);
+        size_t num_samples, plfit_mt_rng_t* rng, double* OUTPUT);
 int plfit_resample_discrete(double* xs, size_t n, double alpha, double xmin,
-        size_t num_samples, mt_rng_t* rng, double* OUTPUT);
+        size_t num_samples, plfit_mt_rng_t* rng, double* OUTPUT);
 
 /******** calculating the p-value of a fitted model only *******/
 

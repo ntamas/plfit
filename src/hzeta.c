@@ -49,7 +49,7 @@
 #include <math.h>
 #include <stdio.h>
 #include "hzeta.h"
-#include "error.h"
+#include "plfit_error.h"
 #include "platform.h"   /* because of NAN */
 
 /* imported from gsl_machine.h */

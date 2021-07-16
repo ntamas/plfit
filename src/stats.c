@@ -19,7 +19,7 @@
 
 #include <math.h>
 #include <stdlib.h>
-#include "error.h"
+#include "plfit_error.h"
 
 int plfit_moments(double* xs, size_t n, double* mean, double* variance,
         double* skewness, double* kurtosis) {
