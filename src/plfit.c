@@ -24,7 +24,7 @@
 #include <stddef.h>
 #include <stdlib.h>
 #include <string.h>
-#include "error.h"
+#include "plfit_error.h"
 #include "gss.h"
 #include "lbfgs.h"
 #include "platform.h"

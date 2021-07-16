@@ -23,7 +23,7 @@
 
 %{
 #include "plfit.h"
-#include "error.h"
+#include "plfit_error.h"
 %}
 
 /* Helper function for Python list output */

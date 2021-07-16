@@ -18,7 +18,7 @@
  */
 
 #include <math.h>
-#include "error.h"
+#include "plfit_error.h"
 #include "plfit_sampling.h"
 #include "platform.h"
 
