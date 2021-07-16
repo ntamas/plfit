@@ -6,7 +6,6 @@ Fitting power-law distributions to empirical data
 -------------------------------------------------
 
 :Author: Tamas Nepusz
-:Build status: |travis_build_status|
 
 This program fits power-law distributions to empirical (discrete or
 continuous) data, according to the method of Clauset, Shalizi and
@@ -263,6 +262,3 @@ References
 
 .. [1] Clauset A, Shalizi CR and Newman MEJ: Power-law distributions
        in empirical data. SIAM Review 51, 661-703 (2009).
-
-.. |travis_build_status| image:: https://travis-ci.org/ntamas/plfit.png
-   :alt: Build status on Travis
