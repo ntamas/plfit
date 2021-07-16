@@ -9,7 +9,23 @@ if(POLICY CMP0086)
   cmake_policy(SET CMP0086 OLD)   # UseSWIG: don't pass -module option
 endif(POLICY CMP0086)
 
-project(plfit C CXX)
+file(READ "${CMAKE_SOURCE_DIR}/src/plfit.h" header_version)
+string(REGEX MATCH "PLFIT_VERSION_MAJOR ([0-9]*)" _ ${header_version})
+set(plfit_version_major ${CMAKE_MATCH_1})
+string(REGEX MATCH "PLFIT_VERSION_MINOR ([0-9]*)" _ ${header_version})
+set(plfit_version_minor ${CMAKE_MATCH_1})
+string(REGEX MATCH "PLFIT_VERSION_PATCH ([0-9]*)" _ ${header_version})
+set(plfit_version_patch ${CMAKE_MATCH_1})
+
+project(
+	plfit
+	VERSION ${plfit_version_major}.${plfit_version_minor}.${plfit_version_patch}
+	DESCRIPTION "Power-Law FIT C library"
+	HOMEPAGE_URL https://github.com/ntamas/plfit
+	LANGUAGES C CXX
+)
+message("version: ${PROJECT_VERSION}")
+
 enable_testing()
 
 option(PLFIT_COMPILE_PYTHON_MODULE
