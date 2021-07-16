@@ -39,8 +39,11 @@ size_t test_read_file(const char* fname, double* data, size_t max_n) {
 		f = fopen(fname_with_path, "r");
 	}
 
-	if (!f)
+	if (!f) {
+		fprintf(stderr, "error: cannot find data file %s\n", fname);
+		exit(1);
 		return 0;
+	}
 
 	while (!feof(f) && n < max_n) {
 		if (fscanf(f, "%lf", data+n)) {
