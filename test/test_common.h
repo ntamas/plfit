@@ -20,8 +20,6 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "platform.h"
-
 #define RUN_TEST_CASE(func, label) do { \
     int result; \
     fprintf(stderr, "Testing " label "...\n"); \
