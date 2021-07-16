@@ -33,7 +33,7 @@ size_t test_read_file(const char* fname, double* data, size_t max_n) {
 	}
 
 	if (!f) {
-		fprintf(stderr,"error: cannot find data file %s\n",fname);
+		fprintf(stderr, "error: cannot find data file %s\n", fname);
 		exit(1);
 		return 0;
 	}
