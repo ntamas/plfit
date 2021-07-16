@@ -14,6 +14,8 @@ include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(plfit ${PLFIT_CORE_SRCS})
 set_target_properties(plfit PROPERTIES SOVERSION 0)
+set_target_properties(plfit PROPERTIES LINK_FLAGS "-Wl,--version-script=${CMAKE_SOURCE_DIR}/src/plfit.map")
+set_target_properties(plfit PROPERTIES LINK_DEPENDS ${CMAKE_SOURCE_DIR}/src/plfit.map)
 configure_file(${CMAKE_SOURCE_DIR}/libplfit.pc.in ${CMAKE_BINARY_DIR}/libplfit.pc @ONLY)
 install(TARGETS plfit LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${CMAKE_SOURCE_DIR}/src/plfit.h ${CMAKE_SOURCE_DIR}/src/plfit_error.h ${CMAKE_SOURCE_DIR}/src/plfit_mt.h ${CMAKE_SOURCE_DIR}/src/plfit_sampling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
