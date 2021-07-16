@@ -22,7 +22,7 @@ project(
 	VERSION ${plfit_version_major}.${plfit_version_minor}.${plfit_version_patch}
 	DESCRIPTION "Power-Law FIT C library"
 	HOMEPAGE_URL https://github.com/ntamas/plfit
-	LANGUAGES C CXX
+	LANGUAGES C
 )
 message("version: ${PROJECT_VERSION}")
 
