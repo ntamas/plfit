@@ -1,0 +1,21 @@
+name: Build and run tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v2
+      - name: Prepare build folder
+        run: "mkdir build && cmake -Bbuild -H."
+      - name: Build project
+        run: cmake --build build --target all
+        env:
+          MAKEFLAGS: "-j2"
+      - name: Run tests
+        run: cmake --build build --target test
