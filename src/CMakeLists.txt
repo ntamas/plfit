@@ -2,14 +2,22 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/config.h.in ${CMAKE_CURRENT_BINARY_DI
 
 include(GNUInstallDirs)
 
+if(WIN32)
+  set(PKGCONFIG_LIBS_PRIVATE "")
+else()
+  set(PKGCONFIG_LIBS_PRIVATE "-lm")
+endif()
+
 set(PLFIT_CORE_SRCS error.c gss.c kolmogorov.c lbfgs.c mt.c platform.c plfit.c options.c rbinom.c sampling.c stats.c hzeta.c)
 
 include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
 
 add_library(plfit ${PLFIT_CORE_SRCS})
 set_target_properties(plfit PROPERTIES SOVERSION 0)
+configure_file(${CMAKE_SOURCE_DIR}/libplfit.pc.in ${CMAKE_BINARY_DIR}/libplfit.pc @ONLY)
 install(TARGETS plfit LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(FILES ${CMAKE_SOURCE_DIR}/src/plfit.h ${CMAKE_SOURCE_DIR}/src/plfit_error.h ${CMAKE_SOURCE_DIR}/src/plfit_mt.h ${CMAKE_SOURCE_DIR}/src/plfit_sampling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(FILES ${CMAKE_BINARY_DIR}/libplfit.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 add_executable(plfit-bin main.c getopt.c)
 target_link_libraries(plfit-bin plfit ${MATH_LIBRARY})
