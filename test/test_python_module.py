@@ -12,13 +12,13 @@ import plfit
 
 prefixes = [ "data", "../data", "../../data" ]
 if 'DATADIR' in os.environ:
-	prefixes.append(os.environ.get('DATADIR'))
+    prefixes.append(os.environ.get('DATADIR'))
 
 DATA_DIR=None
 for prefix in prefixes:
-	if os.path.isdir(prefix):
-		DATA_DIR=prefix
-		break
+    if os.path.isdir(prefix):
+        DATA_DIR=prefix
+        break
 
 if not os.path.isdir(DATA_DIR):
     print("Can't find the data directory!", file=sys.stderr)
