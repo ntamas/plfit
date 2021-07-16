@@ -24,7 +24,7 @@
 #include <time.h>
 #include "getopt.h"
 #include "plfit.h"
-#include "sampling.h"
+#include "plfit_sampling.h"
 
 typedef struct _cmd_options_t {
     long int num_samples;

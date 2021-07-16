@@ -1,4 +1,4 @@
-/* sampling.h
+/* plfit_sampling.h
  *
  * Copyright (C) 2012 Tamas Nepusz
  *

@@ -19,7 +19,7 @@
 
 #include <math.h>
 #include "error.h"
-#include "sampling.h"
+#include "plfit_sampling.h"
 #include "platform.h"
 
 inline double plfit_runif(double lo, double hi, plfit_mt_rng_t* rng) {

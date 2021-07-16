@@ -18,7 +18,7 @@
  */
 
 #include <math.h>
-#include "sampling.h"
+#include "plfit_sampling.h"
 #include "test_common.h"
 
 #define NUM_SAMPLES 1000000

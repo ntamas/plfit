@@ -30,7 +30,7 @@
 #include "platform.h"
 #include "plfit.h"
 #include "kolmogorov.h"
-#include "sampling.h"
+#include "plfit_sampling.h"
 #include "hzeta.h"
 
 /* #define PLFIT_DEBUG */
