@@ -1,0 +1,75 @@
+name: Build and run tests
+
+on:
+  push:
+    branches: [ master ]
+  pull_request:
+    branches: [ master ]
+
+jobs:
+  build:
+    name: ${{ matrix.config.name }}
+    runs-on: ${{ matrix.config.os }}
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - {
+            name: "Windows",
+            os: windows-latest,
+            build_type: "Release",
+            generators: "Visual Studio 16 2019"
+          }
+        - {
+            name: "Ubuntu Linux",
+            os: ubuntu-latest,
+            build_type: "Release",
+            generators: "Ninja"
+          }
+        - {
+            name: "macOS",
+            os: macos-latest,
+            build_type: "Release",
+            generators: "Ninja"
+          }
+
+    steps:
+      - uses: actions/checkout@v2
+
+      - name: Install dependencies on Windows
+        if: startsWith(matrix.config.os, 'windows')
+        run: choco install cmake ninja
+
+      - name: Install dependencies on Linux
+        if: startsWith(matrix.config.os, 'ubuntu')
+        run: |
+          sudo apt-get update
+          sudo apt-get install ninja-build cmake
+
+      - name: Install dependencies on macOS
+        if: startsWith(matrix.config.os, 'macos')
+        run: brew install cmake ninja
+
+      - name: Prepare build folder
+        shell: bash
+        run: |
+          mkdir build
+          cmake \
+            -S . \
+            -B build \
+            -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} \
+            -G "${{ matrix.config.generators }}" \
+            -DCMAKE_INSTALL_PREFIX:PATH=instdir
+
+      - name: Build project
+        shell: bash
+        run: cmake --build build --config ${{ matrix.config.build_type }} --target all
+
+      - name: Run tests
+        shell: bash
+        run: cmake --build build --config ${{ matrix.config.build_type }} --target test
+
+      - name: Install and strip
+        shell: bash
+        run: cmake --install build --strip

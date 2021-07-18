@@ -20,14 +20,12 @@
 #include <stdio.h>
 #include <stdlib.h>
 
-#include "platform.h"
-
 #define RUN_TEST_CASE(func, label) do { \
     int result; \
     fprintf(stderr, "Testing " label "...\n"); \
     result = func(); \
     if (result != 0) return result; \
-} while (0,0)
+} while (0)
 #define ASSERT_ALMOST_EQUAL(obs, exp, eps) do { \
     double diff = (obs) - (exp); \
     if (isnan(diff) || diff < -eps || diff > eps) { \
@@ -35,14 +33,14 @@
                 __FILE__, __LINE__, (double)exp, (double)obs, diff); \
         return 1; \
     } \
-} while (0,0)
+} while (0)
 #define ASSERT_EQUAL(obs, exp) do { \
     if (obs != exp) { \
         fprintf(stderr, "%s:%d : expected %.8f, got %.8f\n", \
                 __FILE__, __LINE__, (double)exp, (double)obs); \
         return 1; \
     } \
-} while (0,0)
+} while (0)
 #define ASSERT_NONZERO(obs) do { \
     double __retval = obs; \
     if (__retval == 0) { \
@@ -50,7 +48,7 @@
                 __FILE__, __LINE__, __retval); \
         return 1; \
     } \
-} while (0,0)
+} while (0)
 #define ASSERT_SUCCESSFUL(obs) do { \
     int __retval = obs; \
     if (__retval) { \
@@ -58,14 +56,14 @@
                 __FILE__, __LINE__, __retval); \
         return 1; \
     } \
-} while (0,0)
+} while (0)
 #define ASSERT_WITHIN_RANGE(obs, lo, hi) do { \
     if (obs < lo || obs > hi) { \
         fprintf(stderr, "%s:%d : expected in [%.8f; %.8f], got %.8f\n", \
                 __FILE__, __LINE__, (double)lo, (double)hi, (double)obs); \
         return 1; \
     } \
-} while (0,0)
+} while (0)
 #define ASSERT_ZERO(obs) do { \
     double __retval = obs; \
     if (__retval != 0) { \
@@ -73,6 +71,6 @@
                 __FILE__, __LINE__, __retval); \
         return 1; \
     } \
-} while (0,0)
+} while (0)
 
 size_t test_read_file(const char* fname, double* data, size_t max_n);

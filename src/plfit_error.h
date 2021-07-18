@@ -55,13 +55,13 @@ enum {
 		if (PLFIT_UNLIKELY(plfit_i_ret != PLFIT_SUCCESS)) {\
 			return plfit_i_ret; \
 		} \
-	} while(0,0)
+	} while (0)
 
 #define PLFIT_ERROR(reason,plfit_errno) \
 	do {\
 		plfit_error (reason, __FILE__, __LINE__, plfit_errno) ; \
 		return plfit_errno ; \
-	} while (0,0)
+	} while (0)
 
 typedef void plfit_error_handler_t(const char*, const char*, int, int);
 
