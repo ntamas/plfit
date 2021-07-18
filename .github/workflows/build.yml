@@ -8,14 +8,49 @@ on:
 
 jobs:
   build:
+    name: ${{ matrix.config.name }}
     runs-on: ubuntu-latest
+
+    strategy:
+      fail-fast: false
+      matrix:
+        config:
+        - {
+            name: "Ubuntu Linux",
+            os: ubuntu-latest,
+            build_type: "Release",
+            generators: "Ninja"
+          }
+
     steps:
       - uses: actions/checkout@v2
+
+      - name: Install dependencies
+        if: startsWith(matrix.config.name, "Ubuntu")
+        run: |
+          sudo apt-get update
+          sudo apt-get install ninja-build cmake
+
       - name: Prepare build folder
-        run: "mkdir build && cmake -Bbuild -H."
+        shell: bash
+        run: |
+          mkdir build
+          cmake \
+            -S . \
+            -B build \
+            -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} \
+            -G "${{ matrix.config.generators }}" \
+            -DCMAKE_INSTALL_PREFIX:PATH=instdir
+
       - name: Build project
-        run: cmake --build build --target all
-        env:
-          MAKEFLAGS: "-j2"
+        shell: bash
+        run: cmake --build build --config ${{ matrix.config.build_type }} --target all
+
       - name: Run tests
-        run: cmake --build build --target test
+        shell: bash
+        run: cmake --build build --config ${{ matrix.config.build_type }} --target test
+
+      - name: Install and strip
+        shell: bash
+        run: cmake --install build --strip
+
