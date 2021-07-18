@@ -16,6 +16,12 @@ jobs:
       matrix:
         config:
         - {
+            name: "Windows",
+            os: windows-latest,
+            build_type: "Release",
+            generators: "Visual Studio 16 2019"
+          }
+        - {
             name: "Ubuntu Linux",
             os: ubuntu-latest,
             build_type: "Release",
@@ -31,13 +37,18 @@ jobs:
     steps:
       - uses: actions/checkout@v2
 
-      - name: Install dependencies
+      - name: Install dependencies on Windows
+        if: startsWith(matrix.config.os, 'windows')
+        run: |
+          choco install ninja cmake
+
+      - name: Install dependencies on Linux
         if: startsWith(matrix.config.os, 'ubuntu')
         run: |
           sudo apt-get update
           sudo apt-get install ninja-build cmake
 
-      - name: Install dependencies
+      - name: Install dependencies on macOS
         if: startsWith(matrix.config.os, 'macos')
         run: brew install cmake ninja
 
@@ -63,4 +74,3 @@ jobs:
       - name: Install and strip
         shell: bash
         run: cmake --install build --strip
-
