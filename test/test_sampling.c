@@ -28,10 +28,12 @@ int test_sampling(void) {
     plfit_walker_alias_sampler_t sampler;
     double probs[NUM_ITEMS];
     double prob_sum = 0.0;
-    long int data[NUM_SAMPLES];
+    long int* data;
     long int hist[NUM_ITEMS];
     long int i, j, max_hist;
     plfit_mt_rng_t rng;
+
+    data = calloc(NUM_SAMPLES, sizeof(long int));
 
     plfit_mt_init(&rng);
 
@@ -75,6 +77,9 @@ int test_sampling(void) {
                 (probs[i]/prob_sum - 0.05) * NUM_SAMPLES,
                 (probs[i]/prob_sum + 0.05) * NUM_SAMPLES);
     }
+
+    free(data);
+    data = 0;
 
     return 0;
 }
