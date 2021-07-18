@@ -9,7 +9,12 @@ if(POLICY CMP0086)
   cmake_policy(SET CMP0086 OLD)   # UseSWIG: don't pass -module option
 endif(POLICY CMP0086)
 
-project(plfit C CXX)
+project(
+  plfit
+  DESCRIPTION "Library to fitt power-law distributions to empirical data"
+  HOMEPAGE_URL "https://github.com/ntamas/plfit"
+  LANGUAGES C CXX
+)
 enable_testing()
 
 option(PLFIT_COMPILE_PYTHON_MODULE
