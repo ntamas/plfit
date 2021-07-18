@@ -9,7 +9,7 @@ on:
 jobs:
   build:
     name: ${{ matrix.config.name }}
-    runs-on: ubuntu-latest
+    runs-on: ${{ matrix.config.os }}
 
     strategy:
       fail-fast: false
@@ -39,8 +39,7 @@ jobs:
 
       - name: Install dependencies on Windows
         if: startsWith(matrix.config.os, 'windows')
-        run: |
-          choco install ninja cmake
+        run: choco install cmake ninja
 
       - name: Install dependencies on Linux
         if: startsWith(matrix.config.os, 'ubuntu')
