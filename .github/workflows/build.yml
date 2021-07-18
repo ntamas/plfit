@@ -21,15 +21,25 @@ jobs:
             build_type: "Release",
             generators: "Ninja"
           }
+        - {
+            name: "macOS",
+            os: macos-latest,
+            build_type: "Release",
+            generators: "Ninja"
+          }
 
     steps:
       - uses: actions/checkout@v2
 
       - name: Install dependencies
-        if: startsWith(matrix.config.name, "Ubuntu")
+        if: startsWith(matrix.config.os, 'ubuntu')
         run: |
           sudo apt-get update
           sudo apt-get install ninja-build cmake
+
+      - name: Install dependencies
+        if: startsWith(matrix.config.os, 'macos')
+        run: brew install cmake ninja
 
       - name: Prepare build folder
         shell: bash
