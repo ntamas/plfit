@@ -23,6 +23,7 @@
 
 #include <stdlib.h>
 #include <plfit_mt.h>
+#include <plfit_version.h>
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -35,11 +36,6 @@
 #endif
 
 __BEGIN_DECLS
-
-#define PLFIT_VERSION_MAJOR 0
-#define PLFIT_VERSION_MINOR 8
-#define PLFIT_VERSION_PATCH 2
-#define PLFIT_VERSION_STRING "0.8.2"
 
 typedef unsigned short int plfit_bool_t;
 

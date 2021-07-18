@@ -10,9 +10,8 @@ endif()
 
 set(PLFIT_CORE_SRCS error.c gss.c kolmogorov.c lbfgs.c mt.c platform.c plfit.c options.c rbinom.c sampling.c stats.c hzeta.c)
 
-include_directories(${CMAKE_CURRENT_SOURCE_DIR} ${CMAKE_CURRENT_BINARY_DIR})
-
 add_library(plfit ${PLFIT_CORE_SRCS})
+target_include_directories(plfit PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 set_target_properties(plfit PROPERTIES SOVERSION 0)
 if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
   set_target_properties(plfit PROPERTIES LINK_FLAGS "-Wl,--version-script=${PROJECT_SOURCE_DIR}/src/plfit.map")
@@ -22,7 +21,15 @@ endif()
 configure_file(${PROJECT_SOURCE_DIR}/libplfit.pc.in ${PROJECT_BINARY_DIR}/libplfit.pc @ONLY)
 
 install(TARGETS plfit LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
-install(FILES ${PROJECT_SOURCE_DIR}/src/plfit.h ${PROJECT_SOURCE_DIR}/src/plfit_error.h ${PROJECT_SOURCE_DIR}/src/plfit_mt.h ${PROJECT_SOURCE_DIR}/src/plfit_sampling.h DESTINATION ${CMAKE_INSTALL_INCLUDEDIR})
+install(
+	FILES
+	${PROJECT_SOURCE_DIR}/src/plfit.h
+	${PROJECT_SOURCE_DIR}/src/plfit_error.h
+	${PROJECT_SOURCE_DIR}/src/plfit_mt.h
+	${PROJECT_SOURCE_DIR}/src/plfit_sampling.h
+	${PROJECT_BINARY_DIR}/src/plfit_version.h
+	DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+)
 install(FILES ${PROJECT_BINARY_DIR}/libplfit.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
 
 add_executable(plfit-bin main.c getopt.c)

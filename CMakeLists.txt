@@ -11,6 +11,7 @@ endif(POLICY CMP0086)
 
 project(
   plfit
+  VERSION 0.8.2
   DESCRIPTION "Library to fitt power-law distributions to empirical data"
   HOMEPAGE_URL "https://github.com/ntamas/plfit"
   LANGUAGES C CXX
@@ -68,6 +69,12 @@ if(WIN32)
 else(WIN32)
 	FIND_LIBRARY(MATH_LIBRARY NAMES m)
 endif(WIN32)
+
+# Add version information
+configure_file(
+	${CMAKE_CURRENT_SOURCE_DIR}/src/plfit_version.h.in
+	${CMAKE_CURRENT_BINARY_DIR}/src/plfit_version.h
+)
 
 add_subdirectory(src)
 add_subdirectory(test)
