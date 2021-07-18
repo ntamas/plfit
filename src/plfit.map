@@ -1,0 +1,63 @@
+## plfit/src/plfit -- version-script file
+## plfit - fitting power-law distributions to empirical data
+## Copyright (C) 2021 Tamas Nepusz
+##
+## This program is free software; you can redistribute it and/or modify
+## it under the terms of the GNU General Public License as published by
+## the Free Software Foundation; either version 3 of the License, or (at
+## your option) any later version.
+##
+## This program is distributed in the hope that it will be useful, but
+## WITHOUT ANY WARRANTY; without even the implied warranty of
+## MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+## General Public License for more details.
+##
+## You should have received a copy of the GNU General Public License
+## along with this program; if not, write to the Free Software
+## Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
+##
+## cproto -I. -X 1 -f 0  plfit.h plfit_error.h plfit_mt.h plfit_sampling.h | grep plfit | \
+## sed '/^\/\*/d;s/()//g;s/\[.*\]//g;s/\*//g' | rev | cut -d ' ' -f1 | rev | \
+## sort -u
+##
+LIBPLFIT_0.8.2 {
+global:
+plfit_calculate_p_value_continuous;
+plfit_calculate_p_value_discrete;
+plfit_continuous;
+plfit_continuous_default_options;
+plfit_continuous_options_init;
+plfit_discrete;
+plfit_discrete_default_options;
+plfit_discrete_options_init;
+plfit_error;
+plfit_error_handler_abort;
+plfit_error_handler_ignore;
+plfit_error_handler_printignore;
+plfit_estimate_alpha_continuous;
+plfit_estimate_alpha_discrete;
+plfit_log_likelihood_continuous;
+plfit_log_likelihood_discrete;
+plfit_moments;
+plfit_mt_init;
+plfit_mt_init_from_rng;
+plfit_mt_random;
+plfit_mt_uniform_01;
+plfit_rbinom;
+plfit_resample_continuous;
+plfit_resample_discrete;
+plfit_rpareto;
+plfit_rpareto_array;
+plfit_runif;
+plfit_runif_01;
+plfit_rzeta;
+plfit_rzeta_array;
+plfit_set_error_handler;
+plfit_strerror;
+plfit_walker_alias_sampler_destroy;
+plfit_walker_alias_sampler_init;
+plfit_walker_alias_sampler_sample;
+local: *;
+};
+##
+## eom
