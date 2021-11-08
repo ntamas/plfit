@@ -68,6 +68,8 @@ jobs:
 
       - name: Run tests
         shell: bash
+        env:
+          CTEST_OUTPUT_ON_FAILURE: 1
         run: |
           cd build
           ctest
