@@ -17,7 +17,9 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
+#include <limits.h>
 #include <math.h>
+
 #include "plfit_error.h"
 #include "plfit_sampling.h"
 #include "platform.h"
@@ -172,9 +174,13 @@ int plfit_walker_alias_sampler_init(plfit_walker_alias_sampler_t* sampler,
     double sum;
     long int *short_sticks, *long_sticks;
     long int num_short_sticks, num_long_sticks;
-    size_t i;
+    long int i;
 
-    sampler->num_bins = n;
+    if (n > LONG_MAX) {
+        return PLFIT_EINVAL;
+    }
+
+    sampler->num_bins = (long int) n;
 
     ps_end = ps + n;
 
