@@ -61,7 +61,6 @@ int test_sampling(void) {
 
     printf("Destroying sampler...\n");
     plfit_walker_alias_sampler_destroy(&sampler);
-    return 0;
 
     /* Calculate histogram */
     printf("Calculating histogram...\n");
@@ -77,6 +76,7 @@ int test_sampling(void) {
         }
     }
     printf("\n");
+    return 0;
 
     /* Print and test histogram */
     for (i = 0; i < NUM_ITEMS; i++) {
