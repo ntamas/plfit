@@ -80,20 +80,16 @@ int test_sampling(void) {
     /* Print and test histogram */
     for (i = 0; i < NUM_ITEMS; i++) {
         printf("%3d: ", (int)i);
-		/*
         j = (int)(hist[i] / ((double)max_hist) * 70);
         while (j > 0) {
-            printf("#");
+            putchar('#');
             j--;
         }
-		*/
         printf("\n");
 
-		/*
         ASSERT_WITHIN_RANGE(hist[i],
                 (probs[i]/prob_sum - 0.05) * NUM_SAMPLES,
                 (probs[i]/prob_sum + 0.05) * NUM_SAMPLES);
-		*/
     }
 
     free(data);
