@@ -34,6 +34,9 @@ int test_sampling(void) {
     plfit_mt_rng_t rng;
 
     data = calloc(NUM_SAMPLES, sizeof(long int));
+    if (data == 0) {
+        return 3;
+    }
 
     plfit_mt_init(&rng);
 
