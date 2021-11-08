@@ -58,10 +58,10 @@ int test_sampling(void) {
     if (plfit_walker_alias_sampler_sample(&sampler, data, NUM_SAMPLES, &rng)) {
         return 2;
     }
-    return 0;
 
     printf("Destroying sampler...\n");
     plfit_walker_alias_sampler_destroy(&sampler);
+    return 0;
 
     /* Calculate histogram */
     printf("Calculating histogram...\n");
