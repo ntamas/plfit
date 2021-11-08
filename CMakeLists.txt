@@ -11,7 +11,7 @@ endif(POLICY CMP0086)
 
 project(
   plfit
-  VERSION 0.8.2
+  VERSION 0.8.3
   DESCRIPTION "Library to fitt power-law distributions to empirical data"
   HOMEPAGE_URL "https://github.com/ntamas/plfit"
   LANGUAGES C CXX
