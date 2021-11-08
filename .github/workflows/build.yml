@@ -75,11 +75,12 @@ jobs:
         run: |
           cd build
           ctest --output-junit report.xml
-      - name: Publish test report
-        uses: mikepenz/action-junit-report@v2
-        if: always()
+
+      - name: Archive unit test results
+        uses: actions/upload-artifact@v2
         with:
-          report_paths: '**/build/report.xml'
+          name: unit-test-results
+          path: build/report.xml
 
       - name: Install and strip
         shell: bash
