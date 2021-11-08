@@ -261,6 +261,9 @@ int plfit_walker_alias_sampler_init(plfit_walker_alias_sampler_t* sampler,
         sampler->probs[i] = 1;
     }
 
+    free(short_sticks);
+    free(long_sticks);
+
     return PLFIT_SUCCESS;
 }
 
