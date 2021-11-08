@@ -50,10 +50,10 @@ int test_sampling(void) {
         probs[i] = i;
         prob_sum += probs[i];
     }
-    return 0;
     if (plfit_walker_alias_sampler_init(&sampler, probs, NUM_ITEMS)) {
         return 1;
     }
+    return 0;
 
     printf("Running sampler...\n");
     if (plfit_walker_alias_sampler_sample(&sampler, data, NUM_SAMPLES, &rng)) {
