@@ -63,6 +63,7 @@ int test_sampling(void) {
     for (i = 0; i < NUM_SAMPLES; i++) {
         if (data[i] < 0 || data[i] >= NUM_ITEMS) {
 			printf("Sampled item #%ld out of range: %ld\n", i, data[i]);
+			return 3;
 		}
         hist[data[i]]++;
     }
