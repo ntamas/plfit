@@ -33,14 +33,18 @@ int test_sampling(void) {
     long int i, j, max_hist;
     plfit_mt_rng_t rng;
 
+    printf("Allocating memory...\n");
     data = calloc(NUM_SAMPLES, sizeof(long int));
     if (data == 0) {
         return 3;
     }
 
+    printf("Initializing RNG...\n");
     plfit_mt_init(&rng);
 
     /* Create the sampler, sample, destroy */
+
+    printf("Creating sampler...\n");
     for (i = 0; i < NUM_ITEMS; i++) {
         probs[i] = i;
         prob_sum += probs[i];
@@ -48,12 +52,17 @@ int test_sampling(void) {
     if (plfit_walker_alias_sampler_init(&sampler, probs, NUM_ITEMS)) {
         return 1;
     }
+
+    printf("Running sampler...\n");
     if (plfit_walker_alias_sampler_sample(&sampler, data, NUM_SAMPLES, &rng)) {
         return 2;
     }
+
+    printf("Destroying sampler...\n");
     plfit_walker_alias_sampler_destroy(&sampler);
 
     /* Calculate histogram */
+    printf("Calculating histogram...\n");
     for (i = 0; i < NUM_ITEMS; i++) {
         hist[i] = 0;
     }
@@ -65,6 +74,7 @@ int test_sampling(void) {
             max_hist = hist[i];
         }
     }
+    printf("\n");
 
     /* Print and test histogram */
     for (i = 0; i < NUM_ITEMS; i++) {

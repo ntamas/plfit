@@ -25,7 +25,7 @@ void plfit_mt_init_from_rng(plfit_mt_rng_t* rng, plfit_mt_rng_t* seeder) {
         for (i = 0; i < PLFIT_MT_LEN; i++) {
             /* RAND_MAX is guaranteed to be at least 32767, so we can use two
              * calls to rand() to produce a random 32-bit number */
-            rng->mt_buffer[i] = (rand() << 16) + rand();
+            rng->mt_buffer[i] = (((uint32_t) rand()) << 16) + rand();
         }
     } else {
         for (i = 0; i < PLFIT_MT_LEN; i++) {
