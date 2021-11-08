@@ -76,7 +76,6 @@ int test_sampling(void) {
         }
     }
     printf("\n");
-    return 0;
 
     /* Print and test histogram */
     for (i = 0; i < NUM_ITEMS; i++) {
@@ -92,6 +91,7 @@ int test_sampling(void) {
                 (probs[i]/prob_sum - 0.05) * NUM_SAMPLES,
                 (probs[i]/prob_sum + 0.05) * NUM_SAMPLES);
     }
+    return 0;
 
     free(data);
     data = 0;
