@@ -34,7 +34,6 @@ int test_sampling(void) {
     plfit_mt_rng_t rng;
 
     printf("Allocating memory...\n");
-    return 0;
 
     data = calloc(NUM_SAMPLES, sizeof(long int));
     if (data == 0) {
@@ -51,6 +50,7 @@ int test_sampling(void) {
         probs[i] = i;
         prob_sum += probs[i];
     }
+    return 0;
     if (plfit_walker_alias_sampler_init(&sampler, probs, NUM_ITEMS)) {
         return 1;
     }
