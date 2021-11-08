@@ -44,6 +44,8 @@ jobs:
       - name: Install dependencies on Linux
         if: startsWith(matrix.config.os, 'ubuntu')
         run: |
+          wget -O - https://apt.kitware.com/keys/kitware-archive-latest.asc 2>/dev/null | gpg --dearmor - | sudo tee /usr/share/keyrings/kitware-archive-keyring.gpg >/dev/null
+          echo 'deb [signed-by=/usr/share/keyrings/kitware-archive-keyring.gpg] https://apt.kitware.com/ubuntu/ focal main' | sudo tee /etc/apt/sources.list.d/kitware.list >/dev/null
           sudo apt-get update
           sudo apt-get install ninja-build cmake
 
@@ -72,7 +74,12 @@ jobs:
           CTEST_OUTPUT_ON_FAILURE: 1
         run: |
           cd build
-          ctest
+          ctest --output-junit report.xml
+      - name: Publish test report
+        uses: mikepenz/action-junit-report@v2
+        if: always()
+        with:
+          report_paths: '**/build/report.xml'
 
       - name: Install and strip
         shell: bash
