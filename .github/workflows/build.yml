@@ -1,10 +1,6 @@
 name: Build and run tests
 
-on:
-  push:
-    branches: [ master ]
-  pull_request:
-    branches: [ master ]
+on: [push, pull_request]
 
 jobs:
   build:
@@ -85,4 +81,4 @@ jobs:
 
       - name: Install and strip
         shell: bash
-        run: cmake --install build --strip
+        run: cmake --install build --config ${{ matrix.config.build_type }} --strip
