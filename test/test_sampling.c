@@ -80,11 +80,13 @@ int test_sampling(void) {
     /* Print and test histogram */
     for (i = 0; i < NUM_ITEMS; i++) {
         printf("%3d: ", (int)i);
+		/*
         j = (int)(hist[i] / ((double)max_hist) * 70);
         while (j > 0) {
             printf("#");
             j--;
         }
+		*/
         printf("\n");
 
 		/*
