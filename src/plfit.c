@@ -141,7 +141,8 @@ static double* extract_smaller(double* begin, double* end, double xmin,
  * \param  begin          pointer to the beginning of the array
  * \param  end            pointer to the first element after the end of the array
  * \param  result_length  if not \c NULL, the number of unique elements in the
- *                        given array is returned here
+ *                        given array is returned here. It is left unchanged if
+ *                        the function returns with an error.
  *
  * \return pointer to the head of the new array or 0 if there is not enough
  * memory
@@ -158,6 +159,9 @@ static double** unique_element_pointers(double* begin, double* end, size_t* resu
         result = calloc(1, sizeof(double*));
         if (result != 0) {
             result[0] = 0;
+            if (result_length != 0) {
+                *result_length = 0;
+            }
         }
         return result;
     }
@@ -518,6 +522,8 @@ static int plfit_i_continuous_xmin_opt_linear_scan(
         local_best_result.D = DBL_MAX;
         local_best_result.xmin = 0;
         local_best_result.alpha = 0;
+        local_best_result.p = NAN;
+        local_best_result.L = NAN;
 
         /* The range of the for loop below is divided among the threads.
          * nowait means that there will be no implicit barrier at the end
@@ -576,7 +582,7 @@ int plfit_continuous(double* xs, size_t n, const plfit_continuous_options_t* opt
     };
 
     int success;
-    size_t i, best_n, num_uniques;
+    size_t i, best_n, num_uniques = 0;
     double x, *px, **uniques;
 
     DATA_POINTS_CHECK;
