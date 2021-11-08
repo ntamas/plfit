@@ -53,12 +53,12 @@ int test_sampling(void) {
     if (plfit_walker_alias_sampler_init(&sampler, probs, NUM_ITEMS)) {
         return 1;
     }
-    return 0;
 
     printf("Running sampler...\n");
     if (plfit_walker_alias_sampler_sample(&sampler, data, NUM_SAMPLES, &rng)) {
         return 2;
     }
+    return 0;
 
     printf("Destroying sampler...\n");
     plfit_walker_alias_sampler_destroy(&sampler);
