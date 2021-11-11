@@ -17,7 +17,7 @@ project(
   VERSION 0.9.0
   DESCRIPTION "Library to fitt power-law distributions to empirical data"
   HOMEPAGE_URL "https://github.com/ntamas/plfit"
-  LANGUAGES C CXX
+  LANGUAGES C
 )
 enable_testing()
 
