@@ -1,5 +1,13 @@
 # plfit library changelog
 
+## [0.9.1]
+
+### Fixed
+
+* Fixed a bug in `plfit_discrete()` that returned a misleading error message
+  when some of the samples in `xs` was less than 1 and the remaining samples
+  did not contain at least 3 unique values.
+
 ## [0.9.0]
 
 ### Added
@@ -23,7 +31,8 @@
 
 First version with a changelog entry.
 
-[Unreleased]: https://github.com/ntamas/plfit/compare/0.9.0..HEAD
+[Unreleased]: https://github.com/ntamas/plfit/compare/0.9.1..HEAD
+[0.9.1]: https://github.com/ntamas/plfit/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/ntamas/plfit/compare/0.8.2...0.9.0
 [0.8.2]: https://github.com/ntamas/plfit/releases/tag/0.8.2
 
