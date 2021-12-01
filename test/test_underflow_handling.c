@@ -1,4 +1,4 @@
-/* test_discrete.c
+/* test_underflow_handling.c
  *
  * Copyright (C) 2011 Tamas Nepusz
  *
