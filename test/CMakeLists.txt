@@ -1,7 +1,7 @@
 include_directories(${CMAKE_CURRENT_SOURCE_DIR}/../src)
 add_definitions(-DDATADIR=\"${CMAKE_CURRENT_SOURCE_DIR}/../data\")
 
-set(TEST_CASES discrete continuous real sampling underflow_handling)
+set(TEST_CASES discrete continuous real sampling underflow_handling xmin_too_low)
 set(TEST_CASES_INTERNAL kolmogorov gss)
 
 foreach(test ${TEST_CASES})
