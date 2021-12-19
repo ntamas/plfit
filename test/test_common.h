@@ -22,7 +22,7 @@
 
 #define RUN_TEST_CASE(func, label) do { \
     int result; \
-    fprintf(stderr, "Testing " label "...\n"); \
+    fprintf(stdout, "Testing " label "...\n"); \
     result = func(); \
     if (result != 0) return result; \
 } while (0)
