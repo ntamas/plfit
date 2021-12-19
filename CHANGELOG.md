@@ -1,5 +1,18 @@
 # plfit library changelog
 
+## [Unreleased]
+
+## [1.0.0]
+
+### Changed
+
+* Header files are now installed in the `plfit` subfolder of the designated
+  include directory.
+
+### Fixed
+
+* Expected output from tests cases is now printed on `stdout`, not `stderr`
+
 ## [0.9.1]
 
 ### Fixed
@@ -31,7 +44,8 @@
 
 First version with a changelog entry.
 
-[Unreleased]: https://github.com/ntamas/plfit/compare/0.9.1..HEAD
+[Unreleased]: https://github.com/ntamas/plfit/compare/1.0.0..HEAD
+[0.9.1]: https://github.com/ntamas/plfit/compare/0.9.1...1.0.0
 [0.9.1]: https://github.com/ntamas/plfit/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/ntamas/plfit/compare/0.8.2...0.9.0
 [0.8.2]: https://github.com/ntamas/plfit/releases/tag/0.8.2

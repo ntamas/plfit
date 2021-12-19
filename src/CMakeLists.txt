@@ -33,9 +33,12 @@ install(
     ${PROJECT_SOURCE_DIR}/src/plfit_mt.h
     ${PROJECT_SOURCE_DIR}/src/plfit_sampling.h
     ${PROJECT_BINARY_DIR}/src/plfit_version.h
-    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}
+    DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/plfit
 )
-install(FILES ${PROJECT_BINARY_DIR}/libplfit.pc DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig)
+install(
+    FILES ${PROJECT_BINARY_DIR}/libplfit.pc
+    DESTINATION ${CMAKE_INSTALL_LIBDIR}/pkgconfig
+)
 
 add_executable(plfit-bin main.c getopt.c)
 target_link_libraries(plfit-bin plfit ${MATH_LIBRARY})
