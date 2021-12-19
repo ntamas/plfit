@@ -1,0 +1,22 @@
+[version]
+current = "0.9.1"
+regex = '''
+  (?P<major>\d+)
+  \.
+  (?P<minor>\d+)
+  \.
+  (?P<patch>\d+)
+  '''
+
+[git]
+message_template = "chore: bumped version to {new_version}"
+tag_template = "{new_version}"
+
+[[file]]
+src = "CMakeLists.txt"
+search = 'VERSION {current_version}'
+
+[[before_commit]]
+name = "Run tests"
+cmd = "mkdir -p build && cmake -S . -B build && cmake --build build && ctest --test-dir build"
+
