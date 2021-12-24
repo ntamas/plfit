@@ -9,4 +9,4 @@ Version: @PROJECT_VERSION@
 URL: @PROJECT_HOMEPAGE_URL@
 Libs: -L${libdir} -lplfit
 Libs.private: @PKGCONFIG_LIBS_PRIVATE@
-Cflags: -I${includedir}
+Cflags: -I${includedir}/plfit

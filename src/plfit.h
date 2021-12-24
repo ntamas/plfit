@@ -22,8 +22,8 @@
 #define __PLFIT_H__
 
 #include <stdlib.h>
-#include <plfit_mt.h>
-#include <plfit_version.h>
+#include "plfit_mt.h"
+#include "plfit_version.h"
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
