@@ -38,4 +38,3 @@ result = plfit.plfit_discrete(data)
 print("alpha =", result.alpha)
 print("xmin =", result.xmin)
 print("L =", result.L)
-

@@ -671,7 +671,7 @@ int plfit_continuous(double* xs, size_t n, const plfit_continuous_options_t* opt
                         plfit_i_continuous_xmin_opt_linear_scan(
                             &opt_data, &best_result, &best_n
                         )
-                    ); 
+                    );
                     success = 1;
                 } else {
                     /* This should not happen, but we handle it anyway */

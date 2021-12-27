@@ -57,4 +57,3 @@ First version with a changelog entry.
 [0.9.1]: https://github.com/ntamas/plfit/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/ntamas/plfit/compare/0.8.2...0.9.0
 [0.8.2]: https://github.com/ntamas/plfit/releases/tag/0.8.2
-

@@ -99,5 +99,3 @@ double plfit_mt_uniform_01(plfit_mt_rng_t* rng);
 __END_DECLS
 
 #endif
-
-

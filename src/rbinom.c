@@ -206,4 +206,3 @@ double plfit_rbinom(double nin, double pp, plfit_mt_rng_t* rng)
 	 ix = n - ix;
   return (double)ix;
 }
-

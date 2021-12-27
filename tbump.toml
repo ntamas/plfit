@@ -19,4 +19,3 @@ search = 'VERSION {current_version}'
 [[before_commit]]
 name = "Run tests"
 cmd = "mkdir -p build && cmake -S . -B build && cmake --build build && ctest --test-dir build"
-

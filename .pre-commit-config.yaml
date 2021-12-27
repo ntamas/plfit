@@ -1,0 +1,15 @@
+fail_fast: true
+exclude: "(^vendor/|\\.patch$)"
+
+repos:
+  - repo: https://github.com/pre-commit/pre-commit-hooks
+    rev: v3.4.0
+    hooks:
+      - id: mixed-line-ending
+        args: ["--fix=lf"]
+        exclude: "data/"
+      - id: end-of-file-fixer
+      - id: trailing-whitespace
+        exclude: "data/"
+      - id: check-merge-conflict
+      - id: fix-byte-order-marker
