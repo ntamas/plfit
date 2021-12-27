@@ -2,6 +2,13 @@
 
 ## [Unreleased]
 
+## [0.9.3]
+
+### Fixed
+
+* Fixed `pkg-config` configuration file to take into account the recent move of
+  the headers to `${prefix}/include/plfit`.
+
 ## [0.9.2]
 
 ### Changed
@@ -44,7 +51,8 @@
 
 First version with a changelog entry.
 
-[Unreleased]: https://github.com/ntamas/plfit/compare/0.9.2..HEAD
+[Unreleased]: https://github.com/ntamas/plfit/compare/0.9.3..HEAD
+[0.9.3]: https://github.com/ntamas/plfit/compare/0.9.2...0.9.3
 [0.9.2]: https://github.com/ntamas/plfit/compare/0.9.1...0.9.2
 [0.9.1]: https://github.com/ntamas/plfit/compare/0.9.0...0.9.1
 [0.9.0]: https://github.com/ntamas/plfit/compare/0.8.2...0.9.0
