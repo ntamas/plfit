@@ -38,7 +38,8 @@ enum {
 	PLFIT_EINVAL   = 2,
 	PLFIT_UNDRFLOW = 3,
 	PLFIT_OVERFLOW = 4,
-	PLFIT_ENOMEM   = 5
+	PLFIT_ENOMEM   = 5,
+	PLFIT_EMAXITER = 6
 };
 
 #if (defined(__GNUC__) && GCC_VERSION_MAJOR >= 3)
