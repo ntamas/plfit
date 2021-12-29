@@ -2,6 +2,9 @@
 
 ## [Unreleased]
 
+* Fixed a logical out-of-bounds access in the calculation of the Hurwitz zeta
+  function, thanks to @jgmbenoit (#40)
+
 ## [0.9.3]
 
 ### Fixed
