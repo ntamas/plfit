@@ -43,6 +43,10 @@ jobs:
     - name: "Linux s390x"
       os: linux
       arch: s390x
+      # Do not enable ASAN; not supported on this platform.
+      before_script:
+         - mkdir build && cd build
+         - cmake .. -DCMAKE_BUILD_TYPE=Debug
 
 notifications:
   email:
