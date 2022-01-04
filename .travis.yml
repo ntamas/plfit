@@ -5,9 +5,10 @@ dist: xenial
 
 env:
   global:
-    - CMAKE_GENERATOR=Ninja   # build with ninja instead of make
-    - CTEST_PARALLEL_LEVEL=2  # run tests in parallel
-    - PATH="/snap/bin:$PATH"  # needed in order to run the cmake installed with snap
+    - CMAKE_BUILD_TYPE=Release  # use release build
+    - CMAKE_GENERATOR=Ninja     # build with ninja instead of make
+    - CTEST_PARALLEL_LEVEL=2    # run tests in parallel
+    - PATH="/snap/bin:$PATH"    # needed in order to run the cmake installed with snap
 
 addons:
   apt:
@@ -23,7 +24,7 @@ addons:
 # if this phase fails, the build stops immediately
 before_script:
   - mkdir build && cd build
-  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DUSE_SANITIZER=Address\;Undefined
+  - cmake .. -DBUILD_SHARED_LIBS=ON -DUSE_SANITIZER=Address\;Undefined
 
 # building and testing is in script
 # use && to ensure that ctest is not run if the build failed
@@ -46,7 +47,7 @@ jobs:
       # Do not enable ASAN; not supported on this platform.
       before_script:
          - mkdir build && cd build
-         - cmake .. -DCMAKE_BUILD_TYPE=Debug
+         - cmake .. -DBUILD_SHARED_LIBS=ON
 
 notifications:
   email:
