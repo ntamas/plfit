@@ -1,0 +1,50 @@
+language: c
+cache: ccache
+os: linux
+dist: xenial
+
+env:
+  global:
+    - CMAKE_GENERATOR=Ninja   # build with ninja instead of make
+    - CTEST_PARALLEL_LEVEL=2  # run tests in parallel
+    - PATH="/snap/bin:$PATH"  # needed in order to run the cmake installed with snap
+
+addons:
+  apt:
+    packages:
+      - ninja-build
+      - git
+      - colordiff
+  snaps:
+    - name: cmake
+      confinement: classic
+
+# configuration (running cmake) is in before_script
+# if this phase fails, the build stops immediately
+before_script:
+  - mkdir build && cd build
+  - cmake .. -DCMAKE_BUILD_TYPE=Debug -DUSE_SANITIZER=Address\;Undefined
+
+# building and testing is in script
+# use && to ensure that ctest is not run if the build failed
+script:
+  - cmake --build . && ctest --output-on-failure
+
+jobs:
+  include:
+    - name: "Linux arm64"
+      os: linux
+      arch: arm64-graviton2 # faster than arm64
+
+    - name: "Linux ppc64"
+      os: linux
+      arch: ppc64le
+
+    - name: "Linux s390x"
+      os: linux
+      arch: s390x
+
+notifications:
+  email:
+    on_success: change
+    on_failure: always
