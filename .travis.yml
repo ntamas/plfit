@@ -40,6 +40,10 @@ jobs:
     - name: "Linux ppc64"
       os: linux
       arch: ppc64le
+      # Do not enable ASAN; segfaults on this platform with an empty stack.
+      before_script:
+         - mkdir build && cd build
+         - cmake .. -DBUILD_SHARED_LIBS=ON
 
     - name: "Linux s390x"
       os: linux
