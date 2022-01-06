@@ -1088,6 +1088,14 @@ int plfit_log_likelihood_discrete(double* xs, size_t n, double alpha, double xmi
     XMIN_CHECK_ONE;
 
     plfit_i_logsum_less_than_discrete(xs, xs+n, xmin, &result, &m);
+    printf(
+        "DEBUG: xmin = %.4f, alpha = %.4f, result = %.4f, m = %ld\n",
+        xmin, alpha, result, (long int) m
+    );
+    printf(
+        "DEBUG: hsl_sf_lnhzeta(alpha, xmin) = %.4f\n",
+        hsl_sf_lnhzeta(alpha, xmin)
+    );
     result = - alpha * result - m * hsl_sf_lnhzeta(alpha, xmin);
 
     *L = result;
