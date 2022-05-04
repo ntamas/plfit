@@ -5,6 +5,9 @@
 * Fixed a logical out-of-bounds access in the calculation of the Hurwitz zeta
   function, thanks to @jgmbenoit (#40)
 
+* Fixed the generation of `libplfit.pc` when `CMAKE_INSTALL_<dir>` is an
+  absolute path.
+
 ## [0.9.3]
 
 ### Fixed
