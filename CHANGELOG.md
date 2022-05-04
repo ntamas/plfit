@@ -8,6 +8,10 @@
 * Fixed the generation of `libplfit.pc` when `CMAKE_INSTALL_<dir>` is an
   absolute path.
 
+* Fixed an off-by-one indexing error in continuous fitting when `x_min` was
+  selected using stratified sampling. This may have caused an out-of-bounds
+  read on the input array in rare cases.
+
 ## [0.9.3]
 
 ### Fixed
