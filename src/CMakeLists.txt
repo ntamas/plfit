@@ -23,6 +23,8 @@ if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
   set_target_properties(plfit PROPERTIES LINK_DEPENDS ${PROJECT_SOURCE_DIR}/src/plfit.map)
 endif()
 
+join_paths(libdir_for_pc_file "\${exec_prefix}" "${CMAKE_INSTALL_LIBDIR}")
+join_paths(includedir_for_pc_file "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 configure_file(${PROJECT_SOURCE_DIR}/libplfit.pc.in ${PROJECT_BINARY_DIR}/libplfit.pc @ONLY)
 
 install(TARGETS plfit LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})

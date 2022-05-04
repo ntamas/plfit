@@ -27,6 +27,7 @@ option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 # Add switches to use LTO and sanitizers if needed
 include(lto)
 include(sanitizers)
+include(JoinPaths)
 
 option(PLFIT_COMPILE_PYTHON_MODULE
        "Whether we want to compile the Python module (requires SWIG)"
