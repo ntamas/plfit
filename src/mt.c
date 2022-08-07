@@ -15,7 +15,7 @@
 #include "plfit_mt.h"
 
 static uint16_t get_random_uint16() {
-    return RNG_INTEGER(0, 0xffff);
+    return rand();
 }
 
 void plfit_mt_init(plfit_mt_rng_t* rng) {
