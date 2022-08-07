@@ -14,7 +14,7 @@ list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/etc/cmake)
 
 project(
   plfit
-  VERSION 0.9.3
+  VERSION 0.9.4
   DESCRIPTION "Library to fit power-law distributions to empirical data"
   HOMEPAGE_URL "https://github.com/ntamas/plfit"
   LANGUAGES C
