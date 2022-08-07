@@ -1,6 +1,8 @@
 # plfit library changelog
 
-## [Unreleased]
+## [0.9.4]
+
+### Fixed
 
 * Fixed a logical out-of-bounds access in the calculation of the Hurwitz zeta
   function, thanks to @jgmbenoit (#40)
@@ -11,6 +13,9 @@
 * Fixed an off-by-one indexing error in continuous fitting when `x_min` was
   selected using stratified sampling. This may have caused an out-of-bounds
   read on the input array in rare cases.
+
+* More rigorous memory cleanup in plfit_continuous() and plfit_discrete() in
+  case of errors.
 
 ## [0.9.3]
 
