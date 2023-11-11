@@ -182,10 +182,14 @@ static double** unique_element_pointers(double* begin, double* end, size_t* resu
         /* New block found */
         if (used_elts >= num_elts) {
             /* Array full; allocate a new chunk */
+            double** tmp;
             num_elts = num_elts*2 + 1;
-            result = realloc(result, sizeof(double*) * (num_elts+1));
-            if (result == 0)
-                return 0;
+            tmp = realloc(result, sizeof(double*) * (num_elts+1));
+            if (tmp == NULL) {
+                free(result);
+                return NULL;
+            }
+            result = tmp;
         }
 
         /* Store the new element */
