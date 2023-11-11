@@ -41,7 +41,6 @@
  * modifications as well.
  */
 
-#include <limits.h>
 #include <math.h>
 #include <stdlib.h>
 #include "plfit_sampling.h"
