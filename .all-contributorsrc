@@ -1,0 +1,50 @@
+{
+  "projectName": "plfit",
+  "projectOwner": "ntamas",
+  "repoType": "github",
+  "repoHost": "https://github.com",
+  "files": [
+    "CONTRIBUTORS.md"
+  ],
+  "imageSize": 100,
+  "commit": false,
+  "commitConvention": "none",
+  "contributors": [
+    {
+      "login": "ntamas",
+      "name": "Tamás Nepusz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/195637?v=4",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "szhorvat",
+      "name": "Szabolcs Horvát",
+      "avatar_url": "https://avatars.githubusercontent.com/u/1212871?v=4",
+      "profile": "http://szhorvat.net/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "jgmbenoit",
+      "name": "Jérôme Benoit",
+      "avatar_url": "https://avatars.githubusercontent.com/u/8476716?v=4",
+      "profile": "https://www.rezozer.net/",
+      "contributions": [
+        "code"
+      ]
+    },
+    {
+      "login": "dotlambda",
+      "name": "Robert Schütz",
+      "avatar_url": "https://avatars.githubusercontent.com/u/6806011?v=4",
+      "profile": "https://github.com/dotlambda",
+      "contributions": [
+        "code"
+      ]
+    }
+  ],
+  "contributorsPerLine": 7
+}

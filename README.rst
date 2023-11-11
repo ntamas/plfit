@@ -11,6 +11,12 @@ This program fits power-law distributions to empirical (discrete or
 continuous) data, according to the method of Clauset, Shalizi and
 Newman [1]_.
 
+This program is a collaborative work of many people from all around the
+world - see the `list of contributors`_. If you would like to contribute
+yourself, send a PR or open an issue to discuss your proposal.
+
+.. _list of contributors: ./CONTRIBUTORS.md
+
 Requirements
 ------------
 
