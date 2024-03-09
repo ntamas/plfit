@@ -13,6 +13,7 @@ set(PLFIT_CORE_SRCS error.c gss.c kolmogorov.c lbfgs.c mt.c platform.c plfit.c o
 add_library(plfit ${PLFIT_CORE_SRCS})
 target_include_directories(plfit PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
 set_target_properties(plfit PROPERTIES SOVERSION 0)
+target_link_libraries(plfit ${MATH_LIBRARY})
 
 if(PLFIT_USE_OPENMP AND OPENMP_FOUND)
     target_link_libraries(plfit OpenMP::OpenMP_C)
