@@ -13,3 +13,11 @@ repos:
         exclude: "data/"
       - id: check-merge-conflict
       - id: fix-byte-order-marker
+
+  - repo: local
+    hooks:
+      - id: update-contributors-txt
+        name: Update CONTRIBUTORS.txt
+        language: python
+        entry: python3 etc/scripts/update_contributors_txt.py
+        pass_filenames: false

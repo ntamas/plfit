@@ -1,0 +1,14 @@
+Thanks goes to these wonderful people:
+
+Tamás Nepusz (@ntamas)
+Szabolcs Horvát (@szhorvat)
+Jérôme Benoit (@jgmbenoit)
+Robert Schütz (@dotlambda)
+Biswapriyo Nath (@Biswa96)
+Michael Orlitzky (@orlitzky)
+
+This project follows the [all-contributors][1] specification. Contributions of any kind welcome!
+
+This file is an automatically generated, plain-text version of CONTRIBUTORS.md.
+
+[1]: https://github.com/all-contributors/all-contributors
