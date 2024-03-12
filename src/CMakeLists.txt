@@ -56,32 +56,27 @@ if(PLFIT_COMPILE_PYTHON_MODULE)
     # Check whether we have SWIG and the Python libraries installed
     find_package(SWIG REQUIRED)
     include(${SWIG_USE_FILE})
-    find_package(PythonInterp REQUIRED)
-    find_package(PythonLibs REQUIRED)
-    include_directories(${PYTHON_INCLUDE_PATH})
 
-    # using distutils.
-    execute_process(
-        COMMAND
-        ${PYTHON_EXECUTABLE} -c "from distutils import sysconfig; print(sysconfig.get_python_lib(1,0,prefix='${CMAKE_INSTALL_PREFIX}'))"
-        OUTPUT_VARIABLE _python_instdir
-        OUTPUT_STRIP_TRAILING_WHITESPACE
-        )
-    set(PYTHON_INSTDIR "${_python_instdir}")
+    include(FindPython3)
+	find_package(Python3 REQUIRED COMPONENTS Interpreter Development)
 
     set(CMAKE_SWIG_FLAGS "")
     set_property(SOURCE plfit.i PROPERTY SWIG_MODULE_NAME plfit)
     if (NOT BUILD_SHARED_LIBS)
         swig_add_library(plfit_python LANGUAGE python SOURCES plfit.i ${PLFIT_CORE_SRCS})
-        target_link_libraries(plfit_python ${PYTHON_LIBRARIES} m)
+        target_link_libraries(plfit_python ${Python3_LIBRARIES} m)
     else()
         swig_add_library(plfit_python LANGUAGE python SOURCES plfit.i)
-        target_link_libraries(plfit_python ${PYTHON_LIBRARIES} plfit m)
+        target_link_libraries(plfit_python ${Python3_LIBRARIES} plfit m)
     endif()
 
-    target_include_directories(plfit_python PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+    target_include_directories(
+        plfit_python PUBLIC
+        ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
+        ${Python3_INCLUDE_DIRS}
+    )
 
-    install(TARGETS plfit_python DESTINATION ${PYTHON_INSTDIR})
-    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/plfit.py DESTINATION ${PYTHON_INSTDIR})
+    install(TARGETS plfit_python DESTINATION ${Python3_SITEARCH})
+	install(FILES ${CMAKE_CURRENT_BINARY_DIR}/plfit.py DESTINATION ${Python3_SITELIB})
 
 endif(PLFIT_COMPILE_PYTHON_MODULE)
