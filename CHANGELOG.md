@@ -1,5 +1,31 @@
 # plfit library changelog
 
+## [0.9.6]
+
+### Added
+
+* Contributors list is now provided both in Markdown and plain text format.
+
+### Fixed
+
+* Python 3.12 is now supported (#46)
+
+## [0.9.5]
+
+### Added
+
+* Added contributors list.
+
+### Fixed
+
+* Cross-platform compatibility improvements.
+
+* Improved const-correctness.
+
+* Fix compilation problems with MinGW toolchain.
+
+* Fix linking to math library, thanks to @orlitzky (#45).
+
 ## [0.9.4]
 
 ### Fixed
@@ -66,7 +92,9 @@
 
 First version with a changelog entry.
 
-[Unreleased]: https://github.com/ntamas/plfit/compare/0.9.4..HEAD
+[Unreleased]: https://github.com/ntamas/plfit/compare/0.9.6..HEAD
+[0.9.6]: https://github.com/ntamas/plfit/compare/0.9.5...0.9.6
+[0.9.5]: https://github.com/ntamas/plfit/compare/0.9.4...0.9.5
 [0.9.4]: https://github.com/ntamas/plfit/compare/0.9.3...0.9.4
 [0.9.3]: https://github.com/ntamas/plfit/compare/0.9.2...0.9.3
 [0.9.2]: https://github.com/ntamas/plfit/compare/0.9.1...0.9.2
