@@ -31,7 +31,7 @@ jobs:
           }
 
     steps:
-      - uses: actions/checkout@v2
+      - uses: actions/checkout@v4
 
       - name: Install dependencies on Windows
         if: startsWith(matrix.config.os, 'windows')
@@ -73,10 +73,10 @@ jobs:
           ctest --output-junit report.xml
 
       - name: Archive unit test results
-        uses: actions/upload-artifact@v2
+        uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: unit-test-results
+          name: unit-test-results-${{ matrix.config.os }}
           path: build/report.xml
 
       - name: Install and strip
