@@ -1,5 +1,13 @@
 # plfit library changelog
 
+### Changed
+
+* plfit now requires a compiler that supports the C99 standard.
+
+### Fixed
+
+* Worked around a broken (non-constant) `NAN` macro with recent Windows 11 SDK / MSVC versions.
+
 ## [0.9.6]
 
 ### Added
