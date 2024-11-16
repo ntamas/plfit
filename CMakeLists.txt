@@ -82,6 +82,9 @@ else()
     FIND_LIBRARY(MATH_LIBRARY NAMES m)
 endif()
 
+# Set default symbol visibility to hidden
+set(CMAKE_C_VISIBILITY_PRESET hidden)
+
 # Add version information
 configure_file(
     ${CMAKE_CURRENT_SOURCE_DIR}/src/plfit_version.h.in

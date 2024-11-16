@@ -30,4 +30,7 @@
     #define __END_DECLS /* empty */
 #endif
 
+/* Include the definition of macros controlling symbol visibility */
+#include "plfit_export.h"
+
 #endif /* PLFIT_DECLS_H */

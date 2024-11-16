@@ -20,12 +20,13 @@
 #include <math.h>
 #include <stdlib.h>
 #include "plfit_error.h"
+#include "plfit.h"
 
-int plfit_moments(double* xs, size_t n, double* mean, double* variance,
+int plfit_moments(const double* xs, size_t n, double* mean, double* variance,
         double* skewness, double* kurtosis) {
     double mean0, variance0, skewness0, kurtosis0, error;
     double x, y;
-    double *p, *end;
+    const double *p, *end;
 
     /* Handle the trivial case of n = 0 */
     if (n == 0) {
