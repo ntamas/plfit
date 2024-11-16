@@ -25,7 +25,6 @@
 #include <string.h>
 #include <time.h>
 #include "getopt.h"
-#include "platform.h"
 #include "plfit.h"
 
 /* exit status code for incorrect input data as defined in sysexits.h (8.1) */

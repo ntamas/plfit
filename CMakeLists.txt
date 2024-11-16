@@ -21,6 +21,10 @@ project(
 )
 enable_testing()
 
+# Set C standard version
+set(CMAKE_C_STANDARD 99)
+set(CMAKE_C_STANDARD_REQUIRED True)
+
 # Expose the BUILD_SHARED_LIBS option in the ccmake UI
 option(BUILD_SHARED_LIBS "Build shared libraries" OFF)
 

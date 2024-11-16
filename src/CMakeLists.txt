@@ -8,7 +8,7 @@ else()
   set(PKGCONFIG_LIBS_PRIVATE "-lm")
 endif()
 
-set(PLFIT_CORE_SRCS error.c gss.c kolmogorov.c lbfgs.c mt.c platform.c plfit.c options.c rbinom.c sampling.c stats.c hzeta.c)
+set(PLFIT_CORE_SRCS error.c gss.c kolmogorov.c lbfgs.c mt.c plfit.c options.c rbinom.c sampling.c stats.c hzeta.c)
 
 add_library(plfit ${PLFIT_CORE_SRCS})
 target_include_directories(plfit PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
