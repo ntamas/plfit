@@ -11,8 +11,8 @@
  * This file has been placed in the public domain.
  */
 
-#ifndef __PLFIT_MT_H__
-#define __PLFIT_MT_H__
+#ifndef PLFIT_MT_H
+#define PLFIT_MT_H
 
 #include <stdint.h>
 
@@ -93,4 +93,4 @@ double plfit_mt_uniform_01(plfit_mt_rng_t* rng);
 
 __END_DECLS
 
-#endif
+#endif /* PLFIT_MT_H */

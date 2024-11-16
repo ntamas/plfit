@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef __SAMPLING_H__
-#define __SAMPLING_H__
+#ifndef PLFIT_SAMPLING_H
+#define PLFIT_SAMPLING_H
 
 #include <stdlib.h>
 #include "plfit_mt.h"
@@ -174,4 +174,4 @@ int plfit_walker_alias_sampler_sample(const plfit_walker_alias_sampler_t* sample
 
 __END_DECLS
 
-#endif
+#endif /* PLFIT_SAMPLING_H */

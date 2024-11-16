@@ -18,8 +18,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef __PLFIT_H__
-#define __PLFIT_H__
+#ifndef PLFIT_H
+#define PLFIT_H
 
 #include <stdlib.h>
 #include "plfit_mt.h"
@@ -137,4 +137,4 @@ int plfit_moments(const double* data, size_t n, double* mean, double* variance,
 
 __END_DECLS
 
-#endif /* __PLFIT_H__ */
+#endif /* PLFIT_H */

@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#ifndef __ERROR_H__
-#define __ERROR_H__
+#ifndef PLFIT_ERROR_H
+#define PLFIT_ERROR_H
 
 #undef __BEGIN_DECLS
 #undef __END_DECLS
@@ -84,4 +84,4 @@ void plfit_error_handler_printignore(const char *reason, const char *file, int l
 
 __END_DECLS
 
-#endif /* __ERROR_H__ */
+#endif /* PLFIT_ERROR_H */
