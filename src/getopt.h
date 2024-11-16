@@ -37,11 +37,9 @@
 #ifndef GETOPT_H_
 #define GETOPT_H_
 
+#include "plfit_decls.h"
 
-#ifdef __cplusplus
-extern "C" {
-#endif
-
+__BEGIN_DECLS
 
 extern char* optarg;
 extern int optind;
@@ -50,11 +48,7 @@ extern int optopt;
 
 int getopt(int argc, char** argv, char* optstr);
 
-
-#ifdef __cplusplus
-}
-#endif
-
+__END_DECLS
 
 #endif /* GETOPT_H_ */
 

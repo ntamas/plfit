@@ -32,6 +32,7 @@ install(TARGETS plfit LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(
     FILES
     ${PROJECT_SOURCE_DIR}/src/plfit.h
+    ${PROJECT_SOURCE_DIR}/src/plfit_decls.h
     ${PROJECT_SOURCE_DIR}/src/plfit_error.h
     ${PROJECT_SOURCE_DIR}/src/plfit_mt.h
     ${PROJECT_SOURCE_DIR}/src/plfit_sampling.h
