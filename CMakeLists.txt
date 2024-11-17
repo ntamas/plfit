@@ -12,6 +12,16 @@ endif(POLICY CMP0086)
 # Add etc/cmake to CMake's search path so we can put our private stuff there
 list(APPEND CMAKE_MODULE_PATH ${CMAKE_CURRENT_LIST_DIR}/etc/cmake)
 
+# Set a default build type if none was specified
+# This must precede the project() line, which would set the CMAKE_BUILD_TYPE
+# to 'Debug' with single-config generators on Windows.
+# Note that we must do this only if PROJECT_NAME is not set at this point. If
+# it is set, it means that plfit is being used as a subproject of another
+# project.
+if(NOT PROJECT_NAME)
+  include(BuildType)
+endif()
+
 project(
   plfit
   VERSION 0.9.6
@@ -81,6 +91,9 @@ if(WIN32)
 else()
     FIND_LIBRARY(MATH_LIBRARY NAMES m)
 endif()
+
+# Set default symbol visibility to hidden
+set(CMAKE_C_VISIBILITY_PRESET hidden)
 
 # Add version information
 configure_file(

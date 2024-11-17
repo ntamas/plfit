@@ -24,6 +24,13 @@ if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
   set_target_properties(plfit PROPERTIES LINK_DEPENDS ${PROJECT_SOURCE_DIR}/src/plfit.map)
 endif()
 
+# Generate export header
+include(GenerateExportHeader)
+generate_export_header(plfit
+  STATIC_DEFINE PLFIT_STATIC
+  EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/src/plfit_export.h
+)
+
 join_paths(libdir_for_pc_file "\${exec_prefix}" "${CMAKE_INSTALL_LIBDIR}")
 join_paths(includedir_for_pc_file "\${prefix}" "${CMAKE_INSTALL_INCLUDEDIR}")
 configure_file(${PROJECT_SOURCE_DIR}/libplfit.pc.in ${PROJECT_BINARY_DIR}/libplfit.pc @ONLY)
@@ -32,7 +39,9 @@ install(TARGETS plfit LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(
     FILES
     ${PROJECT_SOURCE_DIR}/src/plfit.h
+    ${PROJECT_SOURCE_DIR}/src/plfit_decls.h
     ${PROJECT_SOURCE_DIR}/src/plfit_error.h
+    ${PROJECT_BINARY_DIR}/src/plfit_export.h
     ${PROJECT_SOURCE_DIR}/src/plfit_mt.h
     ${PROJECT_SOURCE_DIR}/src/plfit_sampling.h
     ${PROJECT_BINARY_DIR}/src/plfit_version.h
