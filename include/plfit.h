@@ -23,7 +23,9 @@
 
 #include <stdlib.h>
 #include "plfit_decls.h"
+#include "plfit_error.h"
 #include "plfit_mt.h"
+#include "plfit_sampling.h"
 #include "plfit_version.h"
 
 __BEGIN_DECLS

@@ -97,8 +97,8 @@ set(CMAKE_C_VISIBILITY_PRESET hidden)
 
 # Add version information
 configure_file(
-    ${CMAKE_CURRENT_SOURCE_DIR}/src/plfit_version.h.in
-    ${CMAKE_CURRENT_BINARY_DIR}/src/plfit_version.h
+    ${CMAKE_CURRENT_SOURCE_DIR}/include/plfit_version.h.in
+    ${CMAKE_CURRENT_BINARY_DIR}/include/plfit_version.h
 )
 
 add_subdirectory(src)

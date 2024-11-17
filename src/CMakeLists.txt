@@ -11,7 +11,13 @@ endif()
 set(PLFIT_CORE_SRCS error.c gss.c kolmogorov.c lbfgs.c mt.c plfit.c options.c rbinom.c sampling.c stats.c hzeta.c)
 
 add_library(plfit ${PLFIT_CORE_SRCS})
-target_include_directories(plfit PUBLIC ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR})
+target_include_directories(
+  plfit PUBLIC
+  ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_BINARY_DIR}/include
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}/include
+)
 set_target_properties(plfit PROPERTIES SOVERSION 0)
 target_link_libraries(plfit ${MATH_LIBRARY})
 
@@ -28,7 +34,7 @@ endif()
 include(GenerateExportHeader)
 generate_export_header(plfit
   STATIC_DEFINE PLFIT_STATIC
-  EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/src/plfit_export.h
+  EXPORT_FILE_NAME ${PROJECT_BINARY_DIR}/include/plfit_export.h
 )
 
 join_paths(libdir_for_pc_file "\${exec_prefix}" "${CMAKE_INSTALL_LIBDIR}")
@@ -38,13 +44,13 @@ configure_file(${PROJECT_SOURCE_DIR}/libplfit.pc.in ${PROJECT_BINARY_DIR}/libplf
 install(TARGETS plfit LIBRARY DESTINATION ${CMAKE_INSTALL_LIBDIR})
 install(
     FILES
-    ${PROJECT_SOURCE_DIR}/src/plfit.h
-    ${PROJECT_SOURCE_DIR}/src/plfit_decls.h
-    ${PROJECT_SOURCE_DIR}/src/plfit_error.h
-    ${PROJECT_BINARY_DIR}/src/plfit_export.h
-    ${PROJECT_SOURCE_DIR}/src/plfit_mt.h
-    ${PROJECT_SOURCE_DIR}/src/plfit_sampling.h
-    ${PROJECT_BINARY_DIR}/src/plfit_version.h
+    ${PROJECT_SOURCE_DIR}/include/plfit.h
+    ${PROJECT_SOURCE_DIR}/include/plfit_decls.h
+    ${PROJECT_SOURCE_DIR}/include/plfit_error.h
+    ${PROJECT_BINARY_DIR}/include/plfit_export.h
+    ${PROJECT_SOURCE_DIR}/include/plfit_mt.h
+    ${PROJECT_SOURCE_DIR}/include/plfit_sampling.h
+    ${PROJECT_BINARY_DIR}/include/plfit_version.h
     DESTINATION ${CMAKE_INSTALL_INCLUDEDIR}/plfit
 )
 install(
@@ -81,7 +87,10 @@ if(PLFIT_COMPILE_PYTHON_MODULE)
 
     target_include_directories(
         plfit_python PUBLIC
-        ${CMAKE_CURRENT_BINARY_DIR} ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_CURRENT_BINARY_DIR}
+        ${CMAKE_BINARY_DIR}/include
+        ${CMAKE_CURRENT_SOURCE_DIR}
+        ${CMAKE_SOURCE_DIR}/include
         ${Python3_INCLUDE_DIRS}
     )
 
