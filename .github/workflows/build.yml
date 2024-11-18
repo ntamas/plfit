@@ -99,7 +99,7 @@ jobs:
           CTEST_OUTPUT_ON_FAILURE: 1
         run: |
           cd build
-          ctest --output-junit report.xml
+          ctest -C ${{ matrix.config.build_type }} --output-junit report.xml
 
       - name: Archive unit test results
         uses: actions/upload-artifact@v4
