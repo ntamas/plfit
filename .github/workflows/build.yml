@@ -2,6 +2,10 @@ name: Build and run tests
 
 on: [push, pull_request]
 
+env:
+  CMAKE_COLOR_DIAGNOSTICS: ON
+  OMP_NUM_THREADS: 1
+
 jobs:
   build:
     name: ${{ matrix.config.name }}
@@ -12,21 +16,45 @@ jobs:
       matrix:
         config:
         - {
-            name: "Windows",
+            name: "Windows static",
             os: windows-latest,
             build_type: "Release",
+            shared_libs: false,
             generators: "Visual Studio 17 2022"
           }
         - {
-            name: "Ubuntu Linux",
+            name: "Ubuntu Linux static",
             os: ubuntu-latest,
             build_type: "Release",
+            shared_libs: false,
             generators: "Ninja"
           }
         - {
-            name: "macOS",
+            name: "macOS static",
             os: macos-latest,
             build_type: "Release",
+            shared_libs: false,
+            generators: "Ninja"
+          }
+        - {
+            name: "Windows shared",
+            os: windows-latest,
+            build_type: "Release",
+            shared_libs: true,
+            generators: "Visual Studio 17 2022"
+          }
+        - {
+            name: "Ubuntu Linux shared",
+            os: ubuntu-latest,
+            build_type: "Release",
+            shared_libs: true,
+            generators: "Ninja"
+          }
+        - {
+            name: "macOS shared",
+            os: macos-latest,
+            build_type: "Release",
+            shared_libs: true,
             generators: "Ninja"
           }
 
@@ -56,6 +84,7 @@ jobs:
           cmake \
             -S . \
             -B build \
+            -DBUILD_SHARED_LIBS=${{ matrix.config.shared_libs }} \
             -DCMAKE_BUILD_TYPE=${{ matrix.config.build_type }} \
             -G "${{ matrix.config.generators }}" \
             -DCMAKE_INSTALL_PREFIX:PATH=instdir
@@ -76,7 +105,7 @@ jobs:
         uses: actions/upload-artifact@v4
         if: always()
         with:
-          name: unit-test-results-${{ matrix.config.os }}
+          name: unit-test-results-${{ matrix.config.os }}-${{ matrix.config.shared_libs }}
           path: build/report.xml
 
       - name: Install and strip
