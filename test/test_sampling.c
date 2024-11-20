@@ -17,8 +17,8 @@
  * Foundation, Inc., 51 Franklin Street, Fifth Floor, Boston, MA 02110-1301, USA.
  */
 
-#include <math.h>
-#include "plfit_sampling.h"
+#include <plfit.h>
+
 #include "test_common.h"
 
 #define NUM_SAMPLES 1000000
