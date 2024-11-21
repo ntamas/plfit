@@ -1,6 +1,12 @@
 # plfit library changelog
 
+## [1.0.0]
+
 ### Changed
+
+* Public headers are moved to the `include` folder in the source tree.
+
+* Updated vendored `liblgfs`.
 
 * plfit now requires a compiler that supports the C99 standard.
 
@@ -100,7 +106,8 @@
 
 First version with a changelog entry.
 
-[Unreleased]: https://github.com/ntamas/plfit/compare/0.9.6..HEAD
+[Unreleased]: https://github.com/ntamas/plfit/compare/1.0.0..HEAD
+[1.0.0]: https://github.com/ntamas/plfit/compare/0.9.6...1.0.0
 [0.9.6]: https://github.com/ntamas/plfit/compare/0.9.5...0.9.6
 [0.9.5]: https://github.com/ntamas/plfit/compare/0.9.4...0.9.5
 [0.9.4]: https://github.com/ntamas/plfit/compare/0.9.3...0.9.4
