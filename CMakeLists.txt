@@ -24,7 +24,7 @@ endif()
 
 project(
   plfit
-  VERSION 0.9.6
+  VERSION 1.0.0
   DESCRIPTION "Library to fit power-law distributions to empirical data"
   HOMEPAGE_URL "https://github.com/ntamas/plfit"
   LANGUAGES C
