@@ -27,9 +27,12 @@ int test_hsl_sf_lnhzeta() {
 
     ASSERT_ALMOST_EQUAL(hsl_sf_lnhzeta(alpha, xmin), -1.16389915, 1e-6);
 
-	return 0;
+    return 0;
 }
 
 int main(int argc, char* argv[]) {
-	return test_hsl_sf_lnhzeta();
+    RUN_TEST_CASE(
+        test_hsl_sf_lnhzeta,
+        "lnhzeta() calculation smoke test"
+    );
 }
