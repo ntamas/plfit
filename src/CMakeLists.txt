@@ -25,7 +25,7 @@ if(PLFIT_USE_OPENMP AND OPENMP_FOUND)
     target_link_libraries(plfit OpenMP::OpenMP_C)
 endif()
 
-if(CMAKE_C_COMPILER_ID STREQUAL "GNU")
+if(CMAKE_C_COMPILER_ID STREQUAL "GNU" AND NOT APPLE)
   set_target_properties(plfit PROPERTIES LINK_FLAGS "-Wl,--version-script=${PROJECT_SOURCE_DIR}/src/plfit.map")
   set_target_properties(plfit PROPERTIES LINK_DEPENDS ${PROJECT_SOURCE_DIR}/src/plfit.map)
 endif()
