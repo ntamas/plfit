@@ -15,51 +15,51 @@ jobs:
       fail-fast: false
       matrix:
         config:
-        - {
-            name: "Windows static",
-            os: windows-latest,
-            build_type: "Release",
-            shared_libs: false,
-            generators: "Visual Studio 17 2022"
-          }
-        - {
-            name: "Ubuntu Linux static",
-            os: ubuntu-latest,
-            build_type: "Release",
-            shared_libs: false,
-            generators: "Ninja"
-          }
-        - {
-            name: "macOS static",
-            os: macos-latest,
-            build_type: "Release",
-            shared_libs: false,
-            generators: "Ninja"
-          }
-        - {
-            name: "Windows shared",
-            os: windows-latest,
-            build_type: "Release",
-            shared_libs: true,
-            generators: "Visual Studio 17 2022"
-          }
-        - {
-            name: "Ubuntu Linux shared",
-            os: ubuntu-latest,
-            build_type: "Release",
-            shared_libs: true,
-            generators: "Ninja"
-          }
-        - {
-            name: "macOS shared",
-            os: macos-latest,
-            build_type: "Release",
-            shared_libs: true,
-            generators: "Ninja"
-          }
+          - {
+              name: "Windows static",
+              os: windows-latest,
+              build_type: "Release",
+              shared_libs: false,
+              generators: "Visual Studio 18 2026",
+            }
+          - {
+              name: "Ubuntu Linux static",
+              os: ubuntu-latest,
+              build_type: "Release",
+              shared_libs: false,
+              generators: "Ninja",
+            }
+          - {
+              name: "macOS static",
+              os: macos-latest,
+              build_type: "Release",
+              shared_libs: false,
+              generators: "Ninja",
+            }
+          - {
+              name: "Windows shared",
+              os: windows-latest,
+              build_type: "Release",
+              shared_libs: true,
+              generators: "Visual Studio 18 2026",
+            }
+          - {
+              name: "Ubuntu Linux shared",
+              os: ubuntu-latest,
+              build_type: "Release",
+              shared_libs: true,
+              generators: "Ninja",
+            }
+          - {
+              name: "macOS shared",
+              os: macos-latest,
+              build_type: "Release",
+              shared_libs: true,
+              generators: "Ninja",
+            }
 
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
 
       - name: Install dependencies on Windows
         if: startsWith(matrix.config.os, 'windows')
