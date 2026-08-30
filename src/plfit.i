@@ -165,8 +165,8 @@ typedef struct _plfit_discrete_options_t {
     $1 = (double*) malloc(sizeof(double) * $2);
     for (i = 0; i < $2; i++) {
         PyObject *obj = PyList_GetItem($input, i);
-        if (PyInt_Check(obj)) {
-            $1[i] = (double)PyInt_AsLong(obj);
+        if (PyLong_Check(obj)) {
+            $1[i] = (double)PyLong_AsLong(obj);
         } else if (PyFloat_Check(obj)) {
             $1[i] = PyFloat_AsDouble(obj);
         } else {
